@@ -1,6 +1,7 @@
 """Páginas e dados compartilhados do Copiloto de Suporte (app.py monta a navegação)."""
 import csv
 import json
+import os
 import random
 from datetime import datetime
 from pathlib import Path
@@ -345,3 +346,71 @@ def page_roi():
     st.caption("Capacidade liberada não vira caixa automaticamente: ela vai para a fila parada. O piloto em sombra (IA sugere, humano decide, nada é enviado) mede os minutos reais antes de qualquer meta.")
 
 
+
+
+# REVIEW_FILE permite aos testes gravar fora de outputs/.
+REVIEW_FILE = Path(os.environ.get("REVIEW_FILE", OUT / "revisao_humana.csv"))
+REVIEW_FIELDS = ["ticket_id", "tipo", "prioridade", "riscos", "rascunho", "comentario", "revisado_em"]
+REVIEW_SAMPLE = 20
+
+
+def load_review() -> pd.DataFrame:
+    if REVIEW_FILE.exists():
+        return pd.read_csv(REVIEW_FILE, dtype={"comentario": str}).fillna("")
+    return pd.DataFrame(columns=REVIEW_FIELDS)
+
+
+def page_review():
+    st.title("Revisão humana do LLM")
+    rows = [r for r in EVAL.get("rows", []) if r.get("llm")][:REVIEW_SAMPLE]
+    done = load_review()
+    st.markdown(f"As primeiras {len(rows)} triagens da amostra aleatória de {EVAL['summary']['sample']} tickets, revisadas por uma pessoa. "
+                "As verificações automáticas da página *Evidências* não substituem esse julgamento.")
+    if len(done):
+        agree = {c: (done[c] == "concordo").mean() for c in ["tipo", "prioridade", "riscos"]}
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Revisadas", f"{len(done)}/{len(rows)}")
+        c2.metric("Concorda com o tipo", pct(agree["tipo"], 0))
+        c3.metric("Concorda com a prioridade", pct(agree["prioridade"], 0))
+        c4.metric("Concorda com os riscos", pct(agree["riscos"], 0))
+        st.bar_chart(done["rascunho"].value_counts(), horizontal=True, height=150)
+    else:
+        st.info("Nenhuma triagem revisada ainda.")
+
+    if os.environ.get("ENABLE_REVIEW") != "1":
+        if len(done):
+            st.dataframe(done, hide_index=True, width="stretch")
+        st.caption("Formulário desligado nesta instalação. Para revisar: ENABLE_REVIEW=1 streamlit run app/app.py")
+        return
+
+    ids = [r["ticket_id"] for r in rows]
+    pending = [i for i in ids if i not in set(done["ticket_id"].astype(int))]
+    default = ids.index(pending[0]) if pending else 0
+    pick = st.selectbox("Ticket", ids, index=default, format_func=lambda i: f"#{i}" + ("  (revisado)" if i not in pending else ""))
+    r = next(x for x in rows if x["ticket_id"] == pick)
+    o = r["llm"]
+    st.markdown(f"> {r['text']}")
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Tipo sugerido", o["ticket_type"])
+    c2.metric("Prioridade sugerida", o["priority"])
+    c3.metric("Destino", r["decision"]["destination"])
+    st.markdown(f"**Riscos marcados:** {', '.join(policy.RISK_LABELS_PT.get(f, f) for f in o['risk_flags']) or 'nenhum'}  \n"
+                f"**Pedir ao cliente:** {'; '.join(o['missing_information']) or 'nada'}")
+    st.markdown(f"**Rascunho:** {o['suggested_reply']}")
+    prev = done[done["ticket_id"].astype(int) == pick]
+    get = lambda c, d: prev.iloc[0][c] if len(prev) else d
+    with st.form(f"review-{pick}"):
+        options = ["concordo", "discordo"]
+        tipo = st.radio("O tipo está certo?", options, index=options.index(get("tipo", "concordo")), horizontal=True)
+        prioridade = st.radio("A prioridade está certa?", options, index=options.index(get("prioridade", "concordo")), horizontal=True)
+        riscos = st.radio("Os riscos marcados estão certos?", options, index=options.index(get("riscos", "concordo")), horizontal=True)
+        drafts = ["enviaria como está", "enviaria com pequenas edições", "reescreveria"]
+        rascunho = st.radio("O rascunho", drafts, index=drafts.index(get("rascunho", drafts[1])))
+        comentario = st.text_input("Comentário (opcional)", value=get("comentario", ""))
+        if st.form_submit_button("Salvar revisão", type="primary"):
+            row = {"ticket_id": pick, "tipo": tipo, "prioridade": prioridade, "riscos": riscos, "rascunho": rascunho,
+                   "comentario": comentario, "revisado_em": datetime.now().isoformat(timespec="seconds")}
+            done = pd.concat([done[done["ticket_id"].astype(int) != pick], pd.DataFrame([row])]).sort_values("ticket_id")
+            done[REVIEW_FIELDS].to_csv(REVIEW_FILE, index=False)
+            st.toast(f"Revisão do ticket #{pick} salva")
+            st.rerun()

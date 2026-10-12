@@ -11,4 +11,5 @@ st.navigation([
     st.Page("views/fila.py", title="Fila priorizada"),
     st.Page("views/evidencias.py", title="Evidências"),
     st.Page("views/retorno.py", title="ROI"),
+    st.Page("views/revisao.py", title="Revisão humana"),
 ]).run()

@@ -22,10 +22,17 @@ def fresh() -> AppTest:
 def main() -> None:
     at = fresh()
     assert "Diretor" in at.title[0].value
-    for page in ["evidencias", "fila", "retorno"]:
+    for page in ["evidencias", "fila", "retorno", "revisao"]:
         at.switch_page(f"views/{page}.py").run()
         assert not at.exception, (page, at.exception)
         print(f"ok  {page}: {at.title[0].value}")
+
+    if os.environ.get("ENABLE_REVIEW") == "1":
+        at.switch_page("views/revisao.py").run()
+        at.button[0].click().run()  # salva a revisão do primeiro ticket com os valores padrão
+        assert not at.exception, at.exception
+        assert Path(os.environ["REVIEW_FILE"]).exists(), "revisão não foi salva"
+        print("ok  revisão humana salva em", os.environ["REVIEW_FILE"])
 
     at.switch_page("views/triagem.py").run()
     at.radio[0].set_value("Interno (TI)").run()
