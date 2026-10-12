@@ -251,9 +251,12 @@
   }
 })();
 </script>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }</script>
+<script src="vendor/three-src.js"></script>
 <script type="module">
-import * as THREE from "three";
+// Three.js embutido em vendor/three-src.js: abre direto do disco e sem internet. Sem o arquivo, tenta a CDN.
+const THREE = window.__THREE_SRC
+  ? await import(URL.createObjectURL(new Blob([window.__THREE_SRC], { type: "text/javascript" })))
+  : await import("https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js");
 
 const D = window.DATA, N = D.status.length, HOOK = D.hook.index;
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
