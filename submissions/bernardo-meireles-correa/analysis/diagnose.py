@@ -129,7 +129,7 @@ def text_quality(df: pd.DataFrame) -> dict:
 
 def slim_tickets(df: pd.DataFrame) -> pd.DataFrame:
     """Tabela sem nome/e-mail para o protótipo; o resto é a fonte original (CC0)."""
-    keep = ["Ticket ID", "Product Purchased", "Ticket Type", "Ticket Subject", "Ticket Description",
+    keep = ["Ticket ID", "Product Purchased", "Date of Purchase", "Ticket Type", "Ticket Subject", "Ticket Description",
             "Ticket Status", "Ticket Priority", "Ticket Channel", "First Response Time",
             "Time to Resolution", "Customer Satisfaction Rating"]
     out = df[keep].copy()

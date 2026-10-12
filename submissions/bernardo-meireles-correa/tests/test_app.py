@@ -36,13 +36,16 @@ def main() -> None:
     label = next(m for m in at.metric if m.label == "Categoria")
     print(f"ok  triagem TI: {label.value} ({label.delta})")
 
-    if os.environ.get("LLM_PROVIDER", "").lower() == "off":
-        print("--  triagem de cliente com LLM pulada (LLM_PROVIDER=off)")
-        return
     at.radio[0].set_value("Cliente (produto)").run()
     at.button[0].click().run()
     at.button[1].click().run()
     assert not at.exception, at.exception
+    panel = next(e for e in at.expander if e.label.startswith("Contexto recuperado"))
+    assert any("Cadastro: compra" in m.value for m in panel.markdown), "painel sem dados do cadastro"
+    print("ok  contexto recuperado:", [m.value.splitlines()[0][:60] for m in panel.markdown][:2])
+    if os.environ.get("LLM_PROVIDER", "").lower() == "off":
+        print("--  triagem de cliente com LLM pulada (LLM_PROVIDER=off)")
+        return
     if at.error:
         sys.exit(f"LLM falhou: {at.error[0].value}")
     print("ok  triagem cliente:", [(m.label, m.value) for m in at.metric])

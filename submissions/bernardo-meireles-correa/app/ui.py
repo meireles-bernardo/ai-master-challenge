@@ -9,6 +9,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
+import context
 import llm
 import policy
 import roi
@@ -161,10 +162,13 @@ def page_triage():
         if domain.startswith("Cliente"):
             row = tickets.iloc[random.randrange(len(tickets))]
             st.session_state.update(text=row["Description (display)"], channel=row["Ticket Channel"],
-                                    product=row["Product Purchased"], ref=f"Ticket #{row['Ticket ID']}", label=None)
+                                    product=row["Product Purchased"], purchase=row["Date of Purchase"],
+                                    raw=row["Ticket Description"], sampled=row["Description (display)"],
+                                    ref=f"Ticket #{row['Ticket ID']}", label=None)
         else:
             row = it_sample.iloc[random.randrange(len(it_sample))]
-            st.session_state.update(text=row["text"], channel="", product="", ref="Holdout IT (não visto no treino)", label=row["label"])
+            st.session_state.update(text=row["text"], channel="", product="", purchase=None, raw=None, sampled=row["text"],
+                                    ref="Holdout IT (não visto no treino)", label=row["label"])
         st.session_state.pop("analysis", None)
     text = st.text_area("Texto do ticket", key="text", height=150)
     if st.session_state.get("ref"):
@@ -195,6 +199,7 @@ def page_triage():
         decision_card(decision)
         return
 
+    context_panel(text)
     if "error" in analysis:
         st.error(f"LLM indisponível: {analysis['error']}")
         decision_card(policy.decide_customer(None, text))
@@ -218,6 +223,29 @@ def page_triage():
                           "llm_priority": out["priority"], "draft": draft})
             st.toast(f"Decisão registrada: {action}")
     st.caption(f"Resposta em {out['_seconds']} s via {out['_provider']}. Nada é enviado ao cliente; a decisão fica em local-state/decisoes.csv.")
+
+
+def context_panel(text: str):
+    # Ticket sorteado e não editado: usa cadastro e texto original; texto livre: só o que está escrito.
+    sampled = st.session_state.get("sampled") == text
+    raw = st.session_state.get("raw") if sampled else None
+    ctx = context.recover(raw or text, st.session_state.get("product") if sampled else None,
+                          st.session_state.get("purchase") if sampled else None)
+    with st.expander("Contexto recuperado antes de perguntar ao cliente", expanded=True):
+        left, right = st.columns(2)
+        with left:
+            st.markdown("**Encontrado no ticket e no cadastro**")
+            if ctx.found:
+                st.markdown("\n".join(f"- *{src}:* {value}" for src, value in ctx.found))
+            else:
+                st.caption("Nada além do texto. Num ticket real, o cadastro do cliente entraria aqui.")
+            if ctx.missing:
+                st.markdown("**Chegou em branco:** " + "; ".join(ctx.missing))
+        with right:
+            st.markdown("**Fontes que dependem de integração**")
+            st.caption("Simulado: o dataset não tem essas fontes. Mostramos a consulta que seria feita, não um resultado.")
+            st.markdown("\n".join(f"- *{src}:* {query}" for src, query in ctx.queries))
+        st.caption("Regras: " + " ".join(context.PRIVACY_RULES))
 
 
 def page_queue():
