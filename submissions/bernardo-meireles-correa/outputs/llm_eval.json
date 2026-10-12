@@ -1,0 +1,1943 @@
+{
+  "summary": {
+    "provider": "codex",
+    "sample": 60,
+    "seed": 42,
+    "succeeded": 60,
+    "failed": 0,
+    "median_seconds": 11.5,
+    "rule_risk_tickets": 11,
+    "rule_risk_missed_by_llm": [],
+    "llm_only_risk_tickets": 12,
+    "error_placeholder_tickets": 5,
+    "error_placeholder_flagged_missing": 5,
+    "forbidden_promises": [],
+    "type_agreement_with_label": 0.16666666666666666,
+    "priority_agreement_with_label": 0.26666666666666666,
+    "stages": {
+      "assistido": 31,
+      "julgamento humano": 29
+    },
+    "human_required_pct": 100.0
+  },
+  "rows": [
+    {
+      "ticket_id": 4831,
+      "text": "I'm having an issue with the Roomba Robot Vacuum. Please assist. I'm using xda-developer for something different. If there are issues with the Roomba Robot Vacuum it's likely you are not using the I've tried clearing the cache and data for the Roomba Robot Vacuum app, but the issue persists.",
+      "label_type": "Refund request",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema persistente com o aplicativo do Roomba Robot Vacuum após limpar o cache e os dados, mas não descreve o sintoma.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema persistente, mas o ticket não informa bloqueio total, perda de dados ou falha de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual é o problema específico e quando ele ocorre?",
+          "Aparece alguma mensagem de erro? Se sim, qual é o texto exato?",
+          "Qual é o modelo do Roomba e qual dispositivo e sistema operacional são usados com o aplicativo?",
+          "O que significa a referência a xda-developer neste caso?"
+        ],
+        "suggested_reply": "I'm sorry the issue is still happening after you cleared the Roomba app's cache and data. Could you describe exactly what happens and when, and share any error message you see? Please also tell us your Roomba model, the device and operating system you use with the app, and how xda-developer relates to this issue.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 13.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 7076,
+      "text": "I'm having trouble connecting my Roomba Robot Vacuum to my home Wi-Fi network. It doesn't detect any networks, although other devices are connecting fine. What can be done to resolve this issue? I will refer to this issue I've checked for any available software updates for my Roomba Robot Vacuum, but there are none.",
+      "label_type": "Product inquiry",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda porque o Roomba não detecta redes Wi-Fi, embora outros dispositivos consigam se conectar à rede doméstica.",
+        "priority": "High",
+        "priority_reason_pt": "O problema impede o cliente de conectar o Roomba à rede Wi-Fi.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato do Roomba.",
+          "Se o Roomba já se conectou a essa rede antes ou se é a primeira configuração.",
+          "Se aparece alguma mensagem de erro no aplicativo.",
+          "Quais outras etapas de solução de problemas já foram tentadas."
+        ],
+        "suggested_reply": "I'm sorry your Roomba isn't detecting any Wi-Fi networks, especially when your other devices connect normally. I understand you've already checked for software updates and found none. Could you share your Roomba's exact model, whether it has connected to this network before, any message shown in the app, and any other steps you've tried? That will help us investigate.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 12.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 4716,
+      "text": "I'm having an issue with the Philips Hue Lights. Please assist.\n\nPlease give credit to: @joeyclay I'm concerned about the security of my Philips Hue Lights and would like to ensure that my data is safe.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente está preocupado com a segurança das luzes Philips Hue e quer confirmar se seus dados estão seguros.",
+        "priority": "Critical",
+        "priority_reason_pt": "O ticket relata uma preocupação de segurança, mas não descreve um incidente específico.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "Qual é a preocupação específica de segurança e o que a motivou?",
+          "O cliente observou acesso não autorizado, atividade incomum ou algum alerta?",
+          "Quando o problema começou e quais dispositivos ou contas podem estar envolvidos?"
+        ],
+        "suggested_reply": "I understand your concern about the security of your Philips Hue Lights and your data. What prompted the concern? Have you noticed any unusual activity, unauthorized access, or alerts? Please let us know when this started and which devices or accounts may be affected. We’ll also note your request to credit @joeyclay.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2023,
+      "text": "I'm having an issue with the LG OLED. Please assist.\n\n4. Check and compare product pricing\n\nYou will see that prices are based on the current prices on your credit card. If you are a resident of I've noticed a peculiar error message popping up on my LG OLED screen. It says '{error_message}'. What does it mean?",
+      "label_type": "Billing inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": true,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente quer entender uma mensagem de erro que aparece na tela da TV LG OLED.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um erro recorrente na tela, mas o ticket não informa interrupção do serviço, perda de dados ou bloqueio de uso.",
+        "risk_flags": [],
+        "missing_information": [
+          "Texto exato da mensagem de erro, pois o ticket contém apenas o marcador {error_message}.",
+          "Quando a mensagem aparece e se impede o uso da TV.",
+          "Modelo da TV LG OLED."
+        ],
+        "suggested_reply": "I'm sorry you're seeing an error on your LG OLED screen. The message came through as a placeholder, so could you send the exact wording or a photo of it? Please also tell us your TV model, when the message appears, and whether it prevents you from using the TV. That will help us explain what it means.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.8
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 677,
+      "text": "I'm having an issue with the Roomba Robot Vacuum. Please assist.\n\nI would like my price to rise so that I can return it.\n\nPlease notify me if you do not want their refund.\n\nPlease do I've noticed a sudden decrease in battery life on my Roomba Robot Vacuum. It used to last much longer.",
+      "label_type": "Refund request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "refund_or_money"
+      ],
+      "llm": {
+        "ticket_type": "Refund request",
+        "summary_pt": "O cliente relata uma queda repentina na duração da bateria do Roomba e menciona devolução e reembolso, mas precisa esclarecer o que deseja solicitar.",
+        "priority": "High",
+        "priority_reason_pt": "O ticket menciona devolução e reembolso, envolvendo dinheiro.",
+        "risk_flags": [
+          "refund_or_money"
+        ],
+        "missing_information": [
+          "Esclarecer se deseja ajuda com a bateria, solicitar devolução ou pedir reembolso.",
+          "Informar o modelo do Roomba e quando a queda na duração da bateria começou.",
+          "Informar quanto tempo a bateria durava antes e quanto dura agora.",
+          "Caso queira tratar de devolução ou reembolso, informar quando e onde comprou o produto."
+        ],
+        "suggested_reply": "I'm sorry your Roomba's battery life has suddenly decreased. I also saw that you mentioned a return and refund. Could you clarify whether you'd like help troubleshooting the battery, want to request a return, or both? Please share your Roomba model, when the change began, and approximately how long it ran before versus now. If you're asking about a return or refund, please also tell us when and where you purchased it.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 13.8
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2284,
+      "text": "I've encountered a data loss issue with my Sony PlayStation. All the files and documents seem to have disappeared. Can you guide me on how to retrieve them?\n\n\nI cannot verify this information though. It doesn't look very I've noticed that the issue occurs consistently when I use a specific feature or application on my Sony PlayStation.",
+      "label_type": "Refund request",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "data_loss"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que arquivos e documentos desapareceram do Sony PlayStation e pede orientação para tentar recuperá-los.",
+        "priority": "Critical",
+        "priority_reason_pt": "O relato indica possível perda de dados.",
+        "risk_flags": [
+          "data_loss"
+        ],
+        "missing_information": [
+          "Modelo do PlayStation.",
+          "Quais arquivos ou documentos desapareceram e onde estavam armazenados.",
+          "Quando o desaparecimento foi percebido.",
+          "Qual recurso ou aplicativo está associado ao problema e o que acontece ao usá-lo.",
+          "Se aparece alguma mensagem de erro e se o cliente já tentou alguma verificação ou solução."
+        ],
+        "suggested_reply": "I'm sorry your files and documents appear to have disappeared. To help us understand what happened, could you tell us your PlayStation model, which files are missing and where they were stored, and when you first noticed the issue? You mentioned that it happens consistently with a specific feature or application—which one is it, and what happens when you use it? Please also share any error message and anything you've already tried.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.6
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 5077,
+      "text": "I'm having an issue with the Sony 4K HDR TV. Please assist. I've noticed a peculiar error message popping up on my Sony 4K HDR TV screen. It says '{error_message}'. What does it mean?",
+      "label_type": "Product inquiry",
+      "label_priority": "Medium",
+      "had_error_placeholder": true,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente quer saber o significado de uma mensagem de erro exibida na TV Sony 4K HDR, mas não informou o texto da mensagem.",
+        "priority": "Medium",
+        "priority_reason_pt": "Uma mensagem de erro aparece na tela, mas o cliente não relatou interrupção total do serviço nem impedimento de uso.",
+        "risk_flags": [],
+        "missing_information": [
+          "Texto exato da mensagem de erro exibida na tela.",
+          "Modelo exato da TV.",
+          "Quando a mensagem aparece e o que o cliente está fazendo nesse momento."
+        ],
+        "suggested_reply": "I’m sorry you’re seeing an error message on your Sony 4K HDR TV. The message text came through as a placeholder, so could you tell us exactly what it says? Please also share your TV’s model number and when the message appears, including what you’re doing at the time. That will help us explain what it means.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.6
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 2477,
+      "text": "I'm having an issue with the Xbox. Please assist.\n\nIf you are having trouble with your package you need to contact customer service with the following:\n\nWebsite\n\nP.O. Box 300 I've noticed a sudden decrease in battery life on my Xbox. It used to last much longer.",
+      "label_type": "Refund request",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata uma queda repentina na duração da bateria de um dispositivo Xbox e precisa de ajuda para identificar o problema.",
+        "priority": "Medium",
+        "priority_reason_pt": "A duração da bateria diminuiu, indicando funcionamento degradado, sem relato de bloqueio total, perda de dados ou problema de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual dispositivo Xbox está apresentando a queda na duração da bateria?",
+          "Quando a queda começou e quanto tempo a bateria durava antes e dura agora?",
+          "Que tipo de bateria ou pilhas o dispositivo usa?"
+        ],
+        "suggested_reply": "I'm sorry to hear the battery life on your Xbox device has suddenly decreased. Could you tell us which device is affected, when you first noticed the change, approximately how long the battery lasted before and how long it lasts now, and what type of battery or batteries it uses?",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 6848,
+      "text": "I'm encountering a software bug in the Microsoft Office. Whenever I try to perform a specific action, the application crashes. Are there any updates or fixes available? Will my account get frozen in order to save money? Is my password I've checked for software updates, and my Microsoft Office is already running the latest version.",
+      "label_type": "Refund request",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "security_or_account_access"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que o Microsoft Office fecha inesperadamente ao realizar uma ação específica, apesar de estar atualizado, e pergunta sobre correções e possíveis questões de conta.",
+        "priority": "Medium",
+        "priority_reason_pt": "O aplicativo apresenta falha durante uma ação, mas o ticket não informa perda de dados, indisponibilidade total, bloqueio da conta ou cobrança efetiva.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "Qual aplicativo do Microsoft Office apresenta a falha e qual ação provoca o fechamento?",
+          "Qual sistema operacional está sendo usado e aparece alguma mensagem de erro?",
+          "O que o cliente quis dizer com a pergunta sobre congelar a conta para economizar dinheiro?",
+          "Qual era a pergunta completa sobre a senha?"
+        ],
+        "suggested_reply": "I’m sorry Microsoft Office is crashing when you perform that action, especially since you’ve already checked for updates. Which Office app are you using, what action triggers the crash, and what operating system are you on? Please also share any error message you see. Could you clarify what you mean by your account being frozen to save money and complete your question about your password? With those details, we can review the issue and your questions.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 13.0
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 512,
+      "text": "I'm having an issue with the Canon EOS. Please assist.\n\nThanks, and thanks a lot, I've tried clearing the cache and data for the Canon EOS app, but the issue persists.",
+      "label_type": "Product inquiry",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema não especificado no aplicativo Canon EOS que persiste após limpar o cache e os dados.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema persiste após uma tentativa de solução, mas o impacto no uso não foi informado.",
+        "risk_flags": [],
+        "missing_information": [
+          "Descrição do problema e das funções afetadas.",
+          "Mensagem de erro, se houver.",
+          "Modelo do dispositivo, sistema operacional e versão do aplicativo.",
+          "Passos para reproduzir o problema e quando ele começou.",
+          "Se o problema impede o uso do aplicativo ou apenas afeta algumas funções."
+        ],
+        "suggested_reply": "I'm sorry the issue with the Canon EOS app persists after you cleared its cache and data. Could you describe what happens, which features are affected, and whether you see an error message? Please also share your device model, operating system and app version, when the issue began, and the steps that reproduce it.",
+        "confidence": "low",
+        "_provider": "codex",
+        "_seconds": 10.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 5194,
+      "text": "I'm having an issue with the Microsoft Surface. Please assist. Your product has now shipped to us and the seller agreed to ship to your address for you to use. Thank you\n\n\nShipping\n\nWe believe you will ship I've tried clearing the cache and data for the Microsoft Surface app, but the issue persists.",
+      "label_type": "Product inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema não especificado no aplicativo Microsoft Surface que persiste após limpar o cache e os dados, e menciona uma possível dúvida sobre o envio.",
+        "priority": "Medium",
+        "priority_reason_pt": "O cliente relata um problema persistente no aplicativo, mas não informa bloqueio total, perda de dados ou questão de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Descrição do problema e do que acontece ao usar o aplicativo.",
+          "Mensagem de erro, se houver, e etapas para reproduzir o problema.",
+          "Esclarecimento sobre se também precisa de ajuda com o envio mencionado."
+        ],
+        "suggested_reply": "I'm sorry you're still having trouble with the Microsoft Surface app after clearing its cache and data. Could you describe what happens when you use it, share any error message, and tell us the steps that lead to the issue? You also mentioned shipping—could you clarify whether you need help with that as well?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.1
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 8011,
+      "text": "I've encountered a data loss issue with my Microsoft Xbox Controller. All the files and documents seem to have disappeared. Can you guide me on how to retrieve them? Thanks! <s2> (2:23) (edited 3 I'm using the original charger that came with my Microsoft Xbox Controller, but it's not charging properly.",
+      "label_type": "Cancellation request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "data_loss"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata o desaparecimento de arquivos e documentos e também que o controle Microsoft Xbox não está carregando corretamente.",
+        "priority": "Critical",
+        "priority_reason_pt": "O ticket relata perda de dados, o que atende ao critério de prioridade crítica.",
+        "risk_flags": [
+          "data_loss"
+        ],
+        "missing_information": [
+          "Em qual dispositivo ou serviço os arquivos e documentos estavam armazenados?",
+          "Quando o desaparecimento dos arquivos foi percebido e o que aconteceu antes disso?",
+          "O que ocorre ao tentar carregar o controle e qual é o modelo do controle?"
+        ],
+        "suggested_reply": "I'm sorry to hear that your files and documents seem to have disappeared and that your Xbox controller isn't charging properly. Where were the files stored, and when did you first notice they were missing? Did anything happen just before that? For the charging issue, could you tell us the controller model and what happens when you connect the charger?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 9.9
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 5693,
+      "text": "I'm having an issue with the Samsung Soundbar. Please assist.\n\nThe item is currently under repair. The issue I'm facing is intermittent. Sometimes it works fine, but other times it acts up unexpectedly.",
+      "label_type": "Technical issue",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata uma falha intermitente na Samsung Soundbar, que está atualmente em reparo, e precisa de assistência.",
+        "priority": "Medium",
+        "priority_reason_pt": "A falha é intermitente e o aparelho funciona em alguns momentos, indicando funcionamento prejudicado.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo da Soundbar.",
+          "Descrição do que acontece quando a falha ocorre.",
+          "Quando a falha começou e com que frequência ocorre.",
+          "Informações sobre o reparo em andamento e testes já realizados."
+        ],
+        "suggested_reply": "I'm sorry your Samsung Soundbar is acting up intermittently while it's under repair. Could you tell us the model, what happens when the issue occurs, when it started, and how often it happens? Please also share the current repair status and any tests already performed so we can better understand the problem.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.2
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 790,
+      "text": "I'm encountering a software bug in the Nintendo Switch Pro Controller. Whenever I try to perform a specific action, the application crashes. Are there any updates or fixes available?\n\nNot really, at least from a hardware perspective. The hardware I've tried using different cables, adapters, or peripherals with my Nintendo Switch Pro Controller, but the issue persists.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que o aplicativo trava ao executar uma ação específica com o Nintendo Switch Pro Controller e pergunta se há atualizações ou correções disponíveis.",
+        "priority": "Medium",
+        "priority_reason_pt": "O travamento afeta uma ação específica, mas o ticket não informa indisponibilidade total, perda de dados ou risco de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual ação específica provoca o travamento e quais são as etapas para reproduzi-lo?",
+          "Qual aplicativo e versão estão em uso?",
+          "Em qual dispositivo e versão do sistema o problema ocorre?",
+          "Aparece alguma mensagem de erro? Se sim, qual é o texto?",
+          "O problema impede apenas essa ação ou também outras funções?"
+        ],
+        "suggested_reply": "I'm sorry the application crashes when you perform that action. I understand you've already tried different cables, adapters, and peripherals. Could you tell us which action triggers the crash, the steps to reproduce it, the application and version you're using, and your device and system version? Please also share any error message you see and whether other functions still work. That will help us check what updates or fixes may be relevant.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 12.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 7496,
+      "text": "I'm having an issue with the Canon DSLR Camera. Please assist.\n\nYou cannot add value by spending a minimum of $20. Any changes to the Canon DSLR Camera will violent make this purchase. I've already contacted customer support multiple times, but the issue remains unresolved.",
+      "label_type": "Technical issue",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Billing inquiry",
+        "summary_pt": "O cliente relata dificuldade para adicionar valor ou concluir uma compra relacionada à câmera Canon DSLR e diz que o problema persiste após vários contatos com o suporte.",
+        "priority": "High",
+        "priority_reason_pt": "O problema envolve uma compra e um valor mínimo de US$ 20, além de permanecer sem solução após vários contatos.",
+        "risk_flags": [
+          "refund_or_money",
+          "angry_or_escalation"
+        ],
+        "missing_information": [
+          "Esclarecer o que significa “adicionar valor” e qual ação o cliente está tentando realizar.",
+          "Informar em que etapa o problema ocorre e qual mensagem aparece, se houver.",
+          "Esclarecer o que o cliente quis dizer com a frase sobre alterações na câmera e a compra."
+        ],
+        "suggested_reply": "I'm sorry this issue with your Canon DSLR Camera is still unresolved after multiple contacts with support. Could you clarify what you mean by “add value,” what you're trying to purchase, and where the process stops? If you see an error message, please share its exact wording. Could you also clarify what you meant by changes to the camera affecting the purchase?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 1489,
+      "text": "I'm having an issue with the MacBook Pro. Please assist.\n\n3. How do I switch the product from a gift?\n\nSwitch the product from gift to gift.\n\n\nThis tool will automatically switch the product I've tried different settings and configurations on my MacBook Pro, but the issue persists.",
+      "label_type": "Cancellation request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Product inquiry",
+        "summary_pt": "O cliente pede ajuda com o MacBook Pro, mas precisa esclarecer o que significa mudar o produto “de presente para presente” e qual problema persiste.",
+        "priority": "Low",
+        "priority_reason_pt": "O texto apresenta uma pergunta de orientação, sem indicar bloqueio de uso, perda de dados, risco de segurança ou questão financeira.",
+        "risk_flags": [],
+        "missing_information": [
+          "O que o cliente quer dizer com mudar o produto “de presente para presente”.",
+          "Qual função ou configuração do MacBook Pro apresenta o problema.",
+          "Quais configurações foram testadas e o que aconteceu em cada tentativa.",
+          "Se apareceu alguma mensagem de erro, qual foi o texto exato."
+        ],
+        "suggested_reply": "I’m sorry you’re still having trouble with your MacBook Pro. Could you clarify what you mean by switching the product “from gift to gift”? Please tell us which feature or setting you’re trying to change, what happens when you try, which settings you’ve already tested, and the exact wording of any error message. That will help us understand the issue.",
+        "confidence": "low",
+        "_provider": "codex",
+        "_seconds": 13.0
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2944,
+      "text": "I'm having an issue with the Google Nest. Please assist. #include <u> @include \"<u>{rpi}, @import {rxpi}\"; }\n\nThis will be the first set of functions that I've already contacted customer support multiple times, but the issue remains unresolved.",
+      "label_type": "Product inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema não especificado no Google Nest que permanece sem solução após vários contatos com o suporte.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema continua sem solução após vários contatos, mas o ticket não informa indisponibilidade, perda de dados, bloqueio de uso ou questão financeira.",
+        "risk_flags": [
+          "angry_or_escalation"
+        ],
+        "missing_information": [
+          "Qual é o modelo do dispositivo Google Nest?",
+          "O que acontece ao tentar usá-lo e há alguma mensagem de erro?",
+          "Quando o problema começou e quais etapas já foram tentadas?",
+          "Há números de protocolo dos contatos anteriores com o suporte?"
+        ],
+        "suggested_reply": "I'm sorry the issue with your Google Nest is still unresolved after multiple contacts with support. Could you tell us which Nest device you have, what happens when you try to use it, and whether you see an error message? Please also share when the issue started, what you've already tried, and any case numbers from your previous contacts so we can review the history.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 14.9
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 6985,
+      "text": "I've forgotten my password for my Garmin Forerunner account, and the password reset option is not working. How can I recover my account?\n\nMicrosoft recommends you follow these steps, on the Start menu, right-click a I've checked for any available software updates for my Garmin Forerunner, but there are none.",
+      "label_type": "Billing inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "security_or_account_access"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente esqueceu a senha da conta Garmin Forerunner e não consegue redefini-la para recuperar o acesso.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente está impedido de acessar a conta porque a redefinição de senha não funciona.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "E-mail associado à conta.",
+          "O que acontece ao tentar redefinir a senha, incluindo qualquer mensagem de erro.",
+          "Se o e-mail de redefinição chega e, caso chegue, em qual etapa o processo falha."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble accessing your account. To help us understand where the password reset is failing, could you share the email address associated with the account, what happens when you try to reset the password, and any error message you see? Please also let us know whether you receive the reset email and, if you do, which step fails. Please don't send us your password.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.0
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2128,
+      "text": "I'm having an issue with the LG Washing Machine. Please assist.\n\n\"The seller is offering $9,350 as a refund of product costs minus the expected $3.50 in warranty. \" I've noticed a peculiar error message popping up on my LG Washing Machine screen. It says '{error_message}'. What does it mean?",
+      "label_type": "Refund request",
+      "label_priority": "Low",
+      "had_error_placeholder": true,
+      "rule_risks": [
+        "refund_or_money"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente quer saber o significado de uma mensagem de erro na lavadora LG e menciona uma oferta de reembolso do vendedor.",
+        "priority": "High",
+        "priority_reason_pt": "O ticket menciona dinheiro em uma oferta de reembolso.",
+        "risk_flags": [
+          "refund_or_money"
+        ],
+        "missing_information": [
+          "Texto exato da mensagem de erro exibida na tela.",
+          "Modelo da lavadora LG.",
+          "Quando a mensagem aparece e o que acontece com a lavadora nesse momento."
+        ],
+        "suggested_reply": "I'm sorry you're seeing an error on your LG washing machine. The text provided, '{error_message}', appears to be a placeholder, so I can't tell which error is showing. Could you send the exact message or code from the screen, your washing machine's model, and when the message appears? I also see you mentioned a refund offer from the seller; please let us know if you need help with that as well.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 1056,
+      "text": "I've recently set up my Microsoft Surface, but it fails to connect to any available networks. What steps should I take to troubleshoot this issue? I'm sorry! I've tried using different cables, adapters, or peripherals with my Microsoft Surface, but the issue persists.",
+      "label_type": "Billing inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente não consegue conectar o Microsoft Surface a nenhuma rede e pede ajuda para diagnosticar o problema.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente está sem acesso à rede no dispositivo, o que bloqueia seu uso da conexão.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo do Microsoft Surface e versão do sistema operacional.",
+          "Se a tentativa de conexão é por Wi-Fi, cabo ou ambos.",
+          "Mensagem de erro exibida, se houver.",
+          "Se outros dispositivos conseguem se conectar às mesmas redes.",
+          "Quais etapas de diagnóstico já foram tentadas, além de trocar cabos, adaptadores ou periféricos."
+        ],
+        "suggested_reply": "I'm sorry your Surface isn't connecting to any available networks, even after you tried different cables, adapters, and peripherals. Could you tell us your Surface model and operating system version, whether you're trying Wi-Fi or a wired connection, and whether you see an error message? Please also let us know if other devices can connect to those networks and what troubleshooting steps you've already tried.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 2572,
+      "text": "My Sony 4K HDR TV is making strange noises and not functioning properly. I suspect there might be a hardware issue. Can you please help me with this? Thanks\n\nReplyReply\n\nReplyReply Balloon: I've seen this issue I've tried using different cables, adapters, or peripherals with my Sony 4K HDR TV, but the issue persists.",
+      "label_type": "Cancellation request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda para diagnosticar ruídos estranhos e falhas de funcionamento na TV Sony 4K HDR, que persistem após testar cabos, adaptadores e periféricos diferentes.",
+        "priority": "Medium",
+        "priority_reason_pt": "A TV apresenta funcionamento prejudicado, mas o ticket não informa que ela esteja totalmente inoperante.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato da TV.",
+          "Descrição dos ruídos e de quando ocorrem.",
+          "Descrição das falhas de funcionamento e de quando começaram.",
+          "Quais cabos, adaptadores e periféricos foram testados e se o problema também ocorre sem eles conectados."
+        ],
+        "suggested_reply": "I’m sorry your Sony 4K HDR TV is making strange noises and isn’t working properly. I understand the issue persists after you tried different cables, adapters, and peripherals. Could you share the exact TV model, describe the noises and what isn’t working, and tell us when the issue started? Please also let us know whether it happens with all external devices disconnected.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.2
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 6780,
+      "text": "I'm having an issue with the Nikon D. Please assist.\n\nThanks!\n\n~Dennis\n\nA new game is available which I found to be pretty much better. All the options are in \"Create a I've already contacted customer support multiple times, but the issue remains unresolved.",
+      "label_type": "Product inquiry",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "Dennis precisa de ajuda com um problema não especificado na Nikon D que continua sem solução após vários contatos com o suporte.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema persiste após vários contatos, mas o ticket não informa bloqueio, perda de dados, incidente de segurança ou valores envolvidos.",
+        "risk_flags": [],
+        "missing_information": [
+          "Descrição do problema com a Nikon D e do que acontece ao tentar usá-la.",
+          "Modelo específico da Nikon D e eventuais mensagens de erro.",
+          "Esclarecimento sobre a referência a um jogo no texto do ticket.",
+          "Detalhes dos contatos anteriores com o suporte, se disponíveis."
+        ],
+        "suggested_reply": "Hi Dennis, I'm sorry the issue with your Nikon D is still unresolved after multiple contacts. Could you tell us the specific model, what happens when you use it, and whether you see any error message? Your message also mentions a game—could you clarify how that relates to the Nikon D issue? If you have details from your previous support contacts, please share those too.",
+        "confidence": "low",
+        "_provider": "codex",
+        "_seconds": 12.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 3957,
+      "text": "I'm having an issue with the Bose QuietComfort. Please assist.\n\n* Update, delete, or delete this item\n\nThis Item is discontinued, or no longer available.\n\nPlease help us keep the order order current I need assistance as soon as possible because it's affecting my work and productivity.",
+      "label_type": "Billing inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Product inquiry",
+        "summary_pt": "O cliente precisa de ajuda com um item Bose QuietComfort exibido como descontinuado ou indisponível e quer esclarecer como atualizar ou remover o item de um pedido.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema está afetando o trabalho e a produtividade do cliente, mas o ticket não informa bloqueio total, perda de dados ou questão de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual item ou modelo Bose QuietComfort está envolvido.",
+          "Onde aparece a mensagem de item descontinuado ou indisponível.",
+          "O que o cliente deseja atualizar ou remover e se já existe um pedido.",
+          "Número do pedido, caso exista."
+        ],
+        "suggested_reply": "I'm sorry this issue with your Bose QuietComfort is affecting your work. Could you tell us which item or model is involved and where you see the message that it is discontinued or unavailable? Please also clarify what you want to update or remove. If this concerns an existing order, please provide the order number so we can review it.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 2988,
+      "text": "I'm unable to access my Roomba Robot Vacuum account. It keeps displaying an 'Invalid Credentials' error, even though I'm using the correct login information. How can I regain access to my account?\n\nThere are This problem started occurring after the recent software update. I haven't made any other changes to the device.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa recuperar o acesso à conta do Roomba após receber o erro “Invalid Credentials” desde uma atualização de software.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente está impedido de acessar a conta.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "E-mail associado à conta, sem informar a senha.",
+          "Versão do aplicativo e do software após a atualização.",
+          "Etapas de acesso ou recuperação de senha já tentadas."
+        ],
+        "suggested_reply": "I'm sorry you're unable to access your Roomba account after the recent software update. To help us investigate, could you share the email address associated with the account, the app and software versions, and any sign-in or password reset steps you've already tried? Please don't send your password.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.2
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 3101,
+      "text": "I'm having an issue with the iPhone. Please assist. — Mike O'Sullivan (@MikeO'Sullivan) January 9, 2015\n\nAs the tweet went viral online, more and more people shared their complaints about both I've recently updated the firmware of my iPhone, and the issue started happening afterward. Could it be related to the update?",
+      "label_type": "Cancellation request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado no iPhone que começou após uma atualização de firmware e quer saber se há relação.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema relatado após a atualização, mas o ticket não informa perda de dados, falha de segurança, indisponibilidade do serviço ou bloqueio de uso.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual é o problema específico e há alguma mensagem de erro?",
+          "Qual é o modelo do iPhone e a versão do iOS instalada?",
+          "Quando o problema começou e quais passos o reproduzem?"
+        ],
+        "suggested_reply": "Hi Mike, I'm sorry you're having trouble with your iPhone after the firmware update. Could you describe what happens, including any error message? Please also share your iPhone model, installed iOS version, when the issue began, and the steps that reproduce it. That will help us investigate whether the update may be related.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 10.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 3093,
+      "text": "I'm having an issue with the Sony 4K HDR TV. Please assist.\n\nNote: The payment for the services are not currently paid, or they are not available for your purchases. We have received some enquiry as to whether that This problem started occurring after the recent software update. I haven't made any other changes to the device.",
+      "label_type": "Cancellation request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado na TV Sony 4K HDR após uma atualização de software e menciona pagamentos ou compras indisponíveis.",
+        "priority": "High",
+        "priority_reason_pt": "O relato menciona pagamento e indisponibilidade de compras, mas não esclarece como isso se relaciona ao problema na TV.",
+        "risk_flags": [
+          "refund_or_money"
+        ],
+        "missing_information": [
+          "Descrição do problema observado na TV e de qualquer mensagem de erro exibida.",
+          "Modelo exato da TV e versão do software instalada após a atualização.",
+          "Esclarecimento sobre quais serviços, pagamentos ou compras estão afetados e como isso se relaciona ao problema na TV."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your Sony 4K HDR TV after the software update. Could you describe exactly what happens and share any error message you see? Please also provide the TV's exact model and current software version. You mentioned payments and purchases—could you clarify which service or purchase is affected and how it relates to the TV issue?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2523,
+      "text": "I'm having an issue with the Nikon D. Please assist.\n\nPlease provide a valid email address which matches the ID you specified for the product in the product description and email the email address.\n\nPlease show an error I've performed a factory reset on my Nikon D, hoping it would resolve the problem, but it didn't help.",
+      "label_type": "Technical issue",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado com a Nikon D que persiste após uma restauração de fábrica e menciona uma dúvida sobre um endereço de e-mail associado ao ID do produto.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema persiste após a restauração de fábrica, mas o ticket não informa que o cliente esteja impedido de usar o produto nem relata perda de dados ou incidente de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato da Nikon D.",
+          "Descrição do problema e da mensagem de erro, caso exista.",
+          "Esclarecimento sobre o que o cliente precisa em relação ao endereço de e-mail e ao ID do produto."
+        ],
+        "suggested_reply": "I'm sorry the factory reset didn't resolve the issue with your Nikon D. Could you tell us the exact model, describe what happens, and share any error message you see? Please also clarify what you mean by the email address matching the product ID so we can understand how to help.",
+        "confidence": "low",
+        "_provider": "codex",
+        "_seconds": 12.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 234,
+      "text": "I'm having an issue with the Bose SoundLink Speaker. Please assist. Thanks! I've recently updated the firmware of my Bose SoundLink Speaker, and the issue started happening afterward. Could it be related to the update?",
+      "label_type": "Refund request",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado no Bose SoundLink Speaker que começou após uma atualização de firmware e quer saber se há relação.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema técnico relatado após a atualização, mas o cliente não informou perda de acesso, dados ou outra situação crítica.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual é o problema específico e o que acontece ao usar a caixa de som?",
+          "Qual é o modelo exato e a versão atual do firmware?",
+          "Quando a atualização foi feita e o problema acontece sempre ou apenas em certas situações?",
+          "Aparece alguma mensagem de erro? Se sim, qual é o texto exato?"
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your Bose SoundLink Speaker after the firmware update. The timing may be relevant, but we need a few details to investigate: What exactly is happening, and does it happen every time? What is the exact speaker model and current firmware version? When did you update it, and do you see any error message?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.9
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 869,
+      "text": "I'm having an issue with the Dyson Vacuum Cleaner. Please assist. Thank you.\n\nI'm having an issue with the Dyson Vacuum Cleaner. Please assist. Thank you.\n\nI'm having an issue with I'm concerned about the security of my Dyson Vacuum Cleaner and would like to ensure that my data is safe.",
+      "label_type": "Cancellation request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente está preocupado com a segurança do aspirador Dyson e quer saber se seus dados estão seguros.",
+        "priority": "Critical",
+        "priority_reason_pt": "O cliente relata uma preocupação de segurança envolvendo seus dados.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "Modelo do aspirador Dyson.",
+          "O que motivou a preocupação com a segurança e quando isso começou.",
+          "Quais dados o cliente acredita que possam estar em risco.",
+          "Se houve algum comportamento incomum, alerta ou acesso não reconhecido."
+        ],
+        "suggested_reply": "I'm sorry you're concerned about the security of your Dyson vacuum cleaner and your data. Could you tell us the model, what prompted your concern, when it started, and whether you noticed any unusual behavior, alerts, or unrecognized access? Please also let us know what data you believe may be at risk so we can review the issue.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2535,
+      "text": "I've forgotten my password for my Autodesk AutoCAD account, and the password reset option is not working. How can I recover my account?\n\nYou can recover your login by resetting your password in the {product_p I'm experiencing this issue on multiple devices of the same model, so it seems to be a widespread problem.",
+      "label_type": "Refund request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "security_or_account_access"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente esqueceu a senha da conta Autodesk AutoCAD e não consegue usar a opção de redefinição para recuperar o acesso.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente está impedido de acessar a conta porque a redefinição de senha não funciona; o ticket não relata incidente de segurança.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "E-mail associado à conta.",
+          "O que acontece ao tentar redefinir a senha, incluindo a mensagem de erro exata, se houver.",
+          "Se o e-mail de redefinição chega à caixa de entrada ou à pasta de spam."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble accessing your Autodesk AutoCAD account. Could you share the email address associated with the account and describe what happens when you try to reset your password, including any exact error message? Please also let us know whether you receive a password reset email, including in your spam folder. This will help us investigate the issue.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 7227,
+      "text": "I'm having an issue with the Amazon Kindle. Please assist. -S @david@mei_mai_ui_wu @geolphobee @geolphobee @m_mai I'm experiencing this issue on multiple devices of the same model, so it seems to be a widespread problem.",
+      "label_type": "Product inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado em vários dispositivos Amazon Kindle do mesmo modelo e precisa de ajuda.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há relato de problema em vários dispositivos, mas o ticket não informa bloqueio de uso, perda de dados ou falha de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Descrição do problema e do que acontece em cada dispositivo.",
+          "Modelo exato dos dispositivos e versão do software, se disponível.",
+          "Quando o problema começou e quais etapas o reproduzem.",
+          "Mensagens de erro, se houver."
+        ],
+        "suggested_reply": "I'm sorry you're experiencing this issue on multiple Kindle devices. Could you describe what happens, share the exact model and software version if available, and tell us when it started and what steps reproduce it? Please also include any error messages you see.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 10.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 5772,
+      "text": "I'm having an issue with the Nikon D. Please assist.\n\nThanks!\n\nPawel\n\n\nOffline\n\n\nActivity: 112\n\nMerit: 10\n\n\nMemberActivity: 112Merit: 10 Re: The issue I'm facing is intermittent. Sometimes it works fine, but other times it acts up unexpectedly.",
+      "label_type": "Product inquiry",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata uma falha intermitente no Nikon D e precisa de ajuda para identificar o problema.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema é intermitente: o produto funciona em alguns momentos, indicando funcionamento degradado.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato do Nikon D.",
+          "O que acontece quando a falha ocorre e se aparece alguma mensagem de erro.",
+          "Quando a falha começou e com que frequência ocorre.",
+          "Passos ou condições em que o problema aparece.",
+          "O que o cliente já tentou para resolver o problema."
+        ],
+        "suggested_reply": "Hi Pawel, I’m sorry the Nikon D is acting up intermittently. Could you tell us the exact model, what happens when the issue occurs, and whether you see any error message? It would also help to know when it started, how often it happens, what you’re doing when it occurs, and what you’ve already tried. Thanks!",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 9.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 4923,
+      "text": "I'm having an issue with the Autodesk AutoCAD. Please assist. This problem started occurring after the recent software update. I haven't made any other changes to the device.",
+      "label_type": "Technical issue",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema no Autodesk AutoCAD que começou após uma atualização recente.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema técnico relatado após a atualização, mas o impacto e a gravidade ainda não foram informados.",
+        "risk_flags": [],
+        "missing_information": [
+          "Descrição do problema e mensagem de erro, se houver",
+          "Versão do AutoCAD e atualização instalada",
+          "Sistema operacional",
+          "Etapas para reproduzir o problema",
+          "Impacto no uso do AutoCAD"
+        ],
+        "suggested_reply": "I’m sorry you’re having trouble with AutoCAD after the recent update. Could you describe what happens, share any error message, and tell us which AutoCAD version and operating system you’re using? Please also let us know the steps that trigger the issue and whether you can still use AutoCAD.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 10.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 6663,
+      "text": "I'm encountering a software bug in the Autodesk AutoCAD. Whenever I try to perform a specific action, the application crashes. Are there any updates or fixes available?\n\nI'm receiving these messages frequently from the public, who have I'm concerned about the security of my Autodesk AutoCAD and would like to ensure that my data is safe.",
+      "label_type": "Product inquiry",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que o AutoCAD fecha ao executar uma ação específica e pergunta sobre atualizações ou correções, além de manifestar preocupação com a segurança dos dados.",
+        "priority": "Critical",
+        "priority_reason_pt": "O ticket menciona uma preocupação com segurança, embora não descreva um incidente confirmado, e relata falhas recorrentes do aplicativo.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "Qual ação provoca o fechamento do AutoCAD e quais são os passos para reproduzir o problema?",
+          "Qual é a versão do AutoCAD e do sistema operacional?",
+          "Aparece alguma mensagem de erro? Se sim, qual é o texto exato?",
+          "Quais mensagens o cliente tem recebido e o que motivou a preocupação com a segurança dos dados?"
+        ],
+        "suggested_reply": "I'm sorry AutoCAD is crashing, and I understand your concern about your data. Could you tell us which action triggers the crash, the steps to reproduce it, your AutoCAD and operating system versions, and the exact text of any error message? Please also share what messages you've been receiving and what raised your security concern. With those details, we can review the issue and check whether a relevant update or fix is available.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 14.2
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 4929,
+      "text": "I'm having trouble connecting my Bose SoundLink Speaker to my home Wi-Fi network. It doesn't detect any networks, although other devices are connecting fine. What can be done to resolve this issue? First of all, enable the I've recently updated the firmware of my Bose SoundLink Speaker, and the issue started happening afterward. Could it be related to the update?",
+      "label_type": "Technical issue",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda porque a caixa de som Bose SoundLink não detecta redes Wi-Fi após uma atualização de firmware.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente está impedido de conectar a caixa de som à rede Wi-Fi doméstica.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato da caixa de som Bose SoundLink.",
+          "Versão do firmware instalada, se disponível.",
+          "O que o cliente quis dizer com “First of all, enable the”, pois a instrução parece incompleta.",
+          "Etapas de solução já tentadas e eventuais mensagens de erro."
+        ],
+        "suggested_reply": "I'm sorry your Bose SoundLink Speaker isn't detecting any Wi-Fi networks, especially since the issue began after a firmware update. The timing may be relevant, but we'd need a few details to investigate. What is the exact SoundLink model and firmware version, if available? Have you tried any troubleshooting steps, and do you see an error message? Also, could you clarify what you meant by “First of all, enable the”?",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 6347,
+      "text": "I'm having an issue with the Nest Thermostat. Please assist. I'm trying to create a \"new\" product that is new to the same company. Please help. I hope the new product I have is working out well. I've noticed that the issue occurs consistently when I use a specific feature or application on my Nest Thermostat.",
+      "label_type": "Product inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema recorrente ao usar um recurso ou aplicativo específico no Nest Thermostat, mas não descreve o que acontece.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema parece recorrente durante o uso, mas o ticket não informa bloqueio total, perda de dados ou falha de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual recurso ou aplicativo apresenta o problema.",
+          "O que acontece ao usá-lo e qual era o resultado esperado.",
+          "Quais passos reproduzem o problema e se aparece alguma mensagem de erro.",
+          "O que o cliente quer dizer com criar um produto novo."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your Nest Thermostat. Which feature or application is affected, and what happens when you use it? Please share the steps that reproduce the issue, what you expected to happen, and any error message you see. Could you also clarify what you mean by creating a “new” product?",
+        "confidence": "low",
+        "_provider": "codex",
+        "_seconds": 13.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2139,
+      "text": "I'm having an issue with the GoPro Action Camera. Please assist.\n\nProduct Details\n\nDotable\n\nAvailable in either a white or grey.\n\nColor Information\n\nPlease note that this product has been made I've already contacted customer support multiple times, but the issue remains unresolved.",
+      "label_type": "Cancellation request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado com a câmera GoPro Action Camera que permanece sem solução após vários contatos com o suporte.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema persistente, mas o ticket não informa bloqueio de uso, perda de dados ou questão de segurança.",
+        "risk_flags": [
+          "angry_or_escalation"
+        ],
+        "missing_information": [
+          "Descrição do problema e dos sintomas apresentados.",
+          "Modelo exato da câmera.",
+          "Quando o problema começou e se aparece alguma mensagem de erro.",
+          "O que já foi tentado e, se houver, números dos atendimentos anteriores."
+        ],
+        "suggested_reply": "I'm sorry the issue with your GoPro Action Camera remains unresolved after multiple contacts with support. Could you describe what happens, share the exact camera model, and let us know when the issue began? If you see an error message, please include its wording. Please also tell us what you've already tried and provide any previous support case numbers, if available, so we can review the history.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 34,
+      "text": "I'm having an issue with the Autodesk AutoCAD. Please assist. We hope that every vendor takes the time it takes in to do the following: \"Remove the product from your account - notify consumers, call them, make their I'm concerned about the security of my Autodesk AutoCAD and would like to ensure that my data is safe.",
+      "label_type": "Refund request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata uma preocupação com a segurança do Autodesk AutoCAD e quer confirmar se seus dados estão seguros.",
+        "priority": "Critical",
+        "priority_reason_pt": "O ticket menciona uma preocupação de segurança, mas não descreve uma invasão ou perda de dados confirmada.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "Qual problema ou atividade suspeita foi observado?",
+          "Quando o problema começou?",
+          "A preocupação envolve a conta Autodesk, arquivos do AutoCAD ou ambos?",
+          "Há alguma mensagem de erro ou indício de acesso não autorizado?"
+        ],
+        "suggested_reply": "I'm sorry you're concerned about the security of your Autodesk AutoCAD account and data. Could you tell us what you observed, when it started, and whether your concern involves your Autodesk account, AutoCAD files, or both? Please also share any error messages or signs of unauthorized access. This will help us review the issue.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.0
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 4162,
+      "text": "I'm having an issue with the Sony Xperia. Please assist. #purchase #id=1422 #product_sell #id=1421 #value@product_purchased #id=1420 #product_ I've reviewed the troubleshooting steps on the official support website, but they didn't resolve the problem.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema não especificado em um Sony Xperia após tentar as orientações do site oficial de suporte.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema técnico não resolvido, mas o cliente não relata bloqueio total, perda de dados ou risco de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato do Sony Xperia.",
+          "Descrição do problema e quando ele ocorre.",
+          "Mensagem de erro, se houver.",
+          "Quais etapas de solução de problemas foram tentadas e o que aconteceu em cada uma."
+        ],
+        "suggested_reply": "I'm sorry you're still having trouble with your Sony Xperia after following the steps on the official support website. Could you tell us the exact model, describe what happens and when, and share any error message you see? Please also let us know which troubleshooting steps you tried and what happened after each one.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 10.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 5509,
+      "text": "I'm having an issue with the Xbox. Please assist.\n\n\"Products that have been purchased at that time are now out of stock. Thank you for your support. The Xbox will get I'm using the original charger that came with my Xbox, but it's not charging properly.",
+      "label_type": "Refund request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que o Xbox não está carregando corretamente com o carregador original e precisa de ajuda.",
+        "priority": "Medium",
+        "priority_reason_pt": "O carregamento está com problema, mas o cliente não informou que o aparelho esteja totalmente inutilizável.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo do Xbox e do dispositivo que não está carregando.",
+          "O que acontece ao tentar carregar e se aparece alguma mensagem de erro.",
+          "Quando o problema começou.",
+          "Se a mensagem sobre produtos fora de estoque também faz parte da solicitação."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble charging your Xbox device with its original charger. Which Xbox model and device are you trying to charge? What happens when you connect it, and do you see any error message? When did the issue start? Your message also mentions products being out of stock—could you clarify whether you need help with that as well?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 4462,
+      "text": "I'm having an issue with the Nikon D. Please assist.\n\n1.1.1.1 - Fix for issue #1115\n\n1.1.5.1 - Fixed some typo\n\n1. I've already contacted customer support multiple times, but the issue remains unresolved.",
+      "label_type": "Technical issue",
+      "label_priority": "High",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado com a Nikon D que permanece sem solução após vários contatos com o suporte.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema persistente e contatos repetidos com o suporte, mas o ticket não informa bloqueio de uso, perda de dados ou falha de segurança.",
+        "risk_flags": [
+          "angry_or_escalation"
+        ],
+        "missing_information": [
+          "Descrição do problema e do comportamento esperado.",
+          "Modelo exato da Nikon D.",
+          "Quando o problema começou e como reproduzi-lo.",
+          "Mensagens de erro, se houver.",
+          "Números dos atendimentos anteriores e medidas já tentadas, se disponíveis."
+        ],
+        "suggested_reply": "I'm sorry the issue with your Nikon D is still unresolved after multiple contacts. Could you tell us the exact model, what happens when the issue occurs, when it started, and any error messages you see? If you have references from your earlier support contacts or steps you've already tried, please share those too so we can review what has been done.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 10.9
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 4904,
+      "text": "My Amazon Echo is making strange noises and not functioning properly. I suspect there might be a hardware issue. Can you please help me with this? I want to know what other people have done to this machine. Could you please I'm experiencing this issue on multiple devices of the same model, so it seems to be a widespread problem.",
+      "label_type": "Refund request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata ruídos estranhos e mau funcionamento em vários dispositivos Amazon Echo do mesmo modelo e pede ajuda para entender o problema.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há mau funcionamento em vários dispositivos, mas o ticket não afirma que o serviço esteja totalmente indisponível.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo dos dispositivos afetados.",
+          "Descrição dos ruídos e das funções que não estão funcionando.",
+          "Quando o problema começou e se ocorre sempre ou apenas em certas situações.",
+          "Quantidade de dispositivos afetados e se apresentam os mesmos sintomas.",
+          "O que o cliente quis dizer com “what other people have done to this machine”."
+        ],
+        "suggested_reply": "I’m sorry your Echo devices are making strange noises and not working properly. Could you tell us the model, how many devices are affected, what the noises sound like, which functions are failing, and when this started? Also, could you clarify what you mean by “what other people have done to this machine”? That will help us understand what information you’re looking for.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 10.8
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 361,
+      "text": "I'm having an issue with the Nintendo Switch Pro Controller. Please assist.\n\nIf your account has an account holder you need to create an account. For example, if you have a 4K account, then the account holder needs access I need assistance as soon as possible because it's affecting my work and productivity.",
+      "label_type": "Cancellation request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema não especificado no Nintendo Switch Pro Controller e menciona uma possível questão de acesso à conta que está afetando sua produtividade.",
+        "priority": "Medium",
+        "priority_reason_pt": "O cliente relata impacto no trabalho e na produtividade, mas não informa que esteja totalmente impedido de usar o produto.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual problema específico ocorre com o controle e quando ele acontece.",
+          "O que o cliente quis dizer com a necessidade de acesso do titular da conta e com a referência a uma conta 4K.",
+          "Quais etapas o cliente já tentou e se aparece alguma mensagem de erro."
+        ],
+        "suggested_reply": "I'm sorry the controller issue is affecting your work and productivity. Could you describe exactly what happens when you try to use the Nintendo Switch Pro Controller? Please also clarify what you mean by the account holder needing access and the 4K account, and let us know what you've already tried and whether you see an error message. This will help us understand how to assist.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 2580,
+      "text": "I've recently set up my Sony PlayStation, but it fails to connect to any available networks. What steps should I take to troubleshoot this issue?\n\nIf you've already set up your router and connected via a modem I've already contacted customer support multiple times, but the issue remains unresolved.",
+      "label_type": "Technical issue",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente não consegue conectar o PlayStation a nenhuma rede e pede ajuda após contatos anteriores com o suporte sem solução.",
+        "priority": "High",
+        "priority_reason_pt": "A falha de conexão impede o cliente de usar os recursos de rede do PlayStation, e o problema permanece sem solução após vários contatos com o suporte.",
+        "risk_flags": [
+          "angry_or_escalation"
+        ],
+        "missing_information": [
+          "Modelo do PlayStation.",
+          "Se a conexão tentada é por Wi-Fi, cabo de rede ou ambos.",
+          "Mensagem ou código de erro exibido, se houver.",
+          "Se as redes aparecem na lista do PlayStation e se outros dispositivos conseguem se conectar à mesma rede.",
+          "Etapas de solução de problemas já tentadas e resultado de cada uma."
+        ],
+        "suggested_reply": "I'm sorry your PlayStation still won't connect to any network, especially after you've contacted support several times. To help narrow this down, which PlayStation model do you have, and are you trying Wi-Fi, a wired connection, or both? Do any networks appear on the console, and do you see an error message or code? Please also let us know whether other devices can connect to the same network and what troubleshooting steps you've already tried, so we don't ask you to repeat them.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 12.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 7308,
+      "text": "I'm having an issue with the Nest Thermostat. Please assist.\n\nMy question?\n\nDoes the Product Purchase Policy address the current availability (if at all) of the product we provide?\n\nPlease see the FAQ I've recently updated the firmware of my Nest Thermostat, and the issue started happening afterward. Could it be related to the update?",
+      "label_type": "Cancellation request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema no Nest Thermostat após uma atualização de firmware e pergunta se a Política de Compra de Produtos aborda a disponibilidade atual do produto.",
+        "priority": "Low",
+        "priority_reason_pt": "O cliente faz perguntas, mas não descreve o problema nem informa bloqueio de uso, perda de dados ou falha do serviço.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual problema ocorre no termostato e quando ele aparece.",
+          "Qual é o modelo do termostato e a versão do firmware instalada.",
+          "A qual produto e região se refere a pergunta sobre disponibilidade."
+        ],
+        "suggested_reply": "I'm sorry you're having an issue with your Nest Thermostat after updating its firmware. Could you describe what happens, when it happens, and share the thermostat model and firmware version? For your Product Purchase Policy question, which product and region are you asking about?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 2813,
+      "text": "I'm having an issue with the Canon EOS. Please assist. - Please also help me with further problems like the {productID} has been changed.\n\nI'm having an issue with the {product_purchased I've noticed a peculiar error message popping up on my Canon EOS screen. It says '{error_message}'. What does it mean?",
+      "label_type": "Refund request",
+      "label_priority": "Low",
+      "had_error_placeholder": true,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente quer entender uma mensagem de erro na tela da Canon EOS e esclarecer o que significa dizer que o identificador do produto mudou.",
+        "priority": "Low",
+        "priority_reason_pt": "O cliente pede uma explicação sobre um erro, sem relatar bloqueio de uso, perda de dados ou problema de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Mensagem de erro exata exibida na tela.",
+          "Modelo específico da Canon EOS.",
+          "O que o cliente quer dizer com o identificador do produto ter mudado e onde observou essa mudança.",
+          "Quando o erro aparece e o que estava fazendo nesse momento."
+        ],
+        "suggested_reply": "I'm sorry you're seeing an error on your Canon EOS. Could you share the exact message shown on the screen and your camera's specific model? Please also tell us when the message appears and what you mean by the product ID having changed, including where you noticed the change. That will help us understand the issue.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 8133,
+      "text": "I'm having an issue with the Amazon Kindle. Please assist.\n\n\nI am having an issue with the Amazon Kindle. Please assist. I am having an issue with the Amazon Kindle. I've followed online tutorials and community forums to troubleshoot the issue, but no luck so far.",
+      "label_type": "Refund request",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com um problema não especificado no Amazon Kindle após tentar solucioná-lo com tutoriais e fóruns.",
+        "priority": "Low",
+        "priority_reason_pt": "O ticket não descreve o problema nem indica bloqueio de uso, perda de dados, falha geral do serviço ou questão financeira.",
+        "risk_flags": [],
+        "missing_information": [
+          "Descrição do problema e do que acontece ao tentar usar o Kindle.",
+          "Modelo do dispositivo ou indicação de que está usando o aplicativo Kindle.",
+          "Mensagem de erro, se houver.",
+          "Quando o problema começou e quais tentativas de solução já foram feitas."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your Amazon Kindle, especially after trying online tutorials and community forums. Could you tell us what happens when you try to use it, which Kindle device or app you're using, whether you see an error message, when the issue started, and which troubleshooting steps you've already tried?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.1
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 2517,
+      "text": "I'm unable to access my Amazon Kindle account. It keeps displaying an 'Invalid Credentials' error, even though I'm using the correct login information. How can I regain access to my account? [ edit ] I've performed a factory reset on my Amazon Kindle, hoping it would resolve the problem, but it didn't help.",
+      "label_type": "Technical issue",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa recuperar o acesso à conta Amazon Kindle após receber o erro “Invalid Credentials”, mesmo depois de restaurar o aparelho aos padrões de fábrica.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente está impedido de acessar a conta.",
+        "risk_flags": [
+          "security_or_account_access"
+        ],
+        "missing_information": [
+          "E-mail associado à conta (sem informar a senha).",
+          "Modelo do Kindle.",
+          "Se consegue acessar a conta em outro dispositivo ou navegador.",
+          "Quando o erro começou a ocorrer."
+        ],
+        "suggested_reply": "I’m sorry you’re still unable to access your Kindle account after the factory reset. To help investigate, could you share the email address associated with the account (please don’t send your password), your Kindle model, when the “Invalid Credentials” error started, and whether you can sign in on another device or in a browser?",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 8144,
+      "text": "I'm having an issue with the LG Washing Machine. Please assist. I am running the full product by the end of next week and the package says \"I received205 and 15% refund. I ordered another product on the same day I've performed a factory reset on my LG Washing Machine, hoping it would resolve the problem, but it didn't help.",
+      "label_type": "Technical issue",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "refund_or_money"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado com a máquina de lavar LG que persistiu após uma restauração de fábrica e menciona um reembolso de 15% em um trecho pouco claro.",
+        "priority": "High",
+        "priority_reason_pt": "O ticket menciona um reembolso, mas não esclarece o problema técnico nem o contexto financeiro.",
+        "risk_flags": [
+          "refund_or_money"
+        ],
+        "missing_information": [
+          "Descrição do problema apresentado pela máquina de lavar e de quando começou.",
+          "Mensagem ou código de erro, caso apareça algum.",
+          "Esclarecimento sobre o trecho “I received205 and 15% refund” e sua relação com este atendimento.",
+          "Esclarecimento sobre o prazo mencionado para o fim da próxima semana."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your LG Washing Machine, and that the factory reset didn't help. Could you describe what the machine is doing, when the issue started, and whether it shows an error message or code? Could you also clarify what you meant by “I received205 and 15% refund” and what needs to happen by the end of next week?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.7
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 6947,
+      "text": "I'm having an issue with the Bose QuietComfort. Please assist.\n\nYou've now just charged $10. We're not sure if we'll receive it for an error or an refund. I've noticed a peculiar error message popping up on my Bose QuietComfort screen. It says '{error_message}'. What does it mean?",
+      "label_type": "Refund request",
+      "label_priority": "Medium",
+      "had_error_placeholder": true,
+      "rule_risks": [
+        "refund_or_money"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente quer entender uma mensagem de erro no Bose QuietComfort e esclarecer uma cobrança de US$ 10.",
+        "priority": "High",
+        "priority_reason_pt": "O cliente relata uma cobrança de US$ 10, portanto há dinheiro envolvido.",
+        "risk_flags": [
+          "refund_or_money"
+        ],
+        "missing_information": [
+          "Texto exato ou foto da mensagem de erro, pois o ticket contém apenas o marcador {error_message}.",
+          "Quando e onde apareceu a cobrança de US$ 10, e qual é a referência da transação, se disponível.",
+          "O que o cliente estava fazendo quando a mensagem apareceu."
+        ],
+        "suggested_reply": "I'm sorry you're seeing an error on your Bose QuietComfort and are unsure about the $10 charge. The error text didn't come through in your message. Could you send the exact wording or a photo of it, and let us know what you were doing when it appeared? For the charge, please tell us when and where it appeared and share a transaction reference if you have one. That will help us review both issues.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.8
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 2949,
+      "text": "My PlayStation is making strange noises and not functioning properly. I suspect there might be a hardware issue. Can you please help me with this? Thank you so much! <3 ------------------------- http://webdevel. I've checked the device settings and made sure that everything is configured correctly.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda para diagnosticar ruídos incomuns e falhas de funcionamento no PlayStation.",
+        "priority": "Medium",
+        "priority_reason_pt": "O aparelho apresenta funcionamento inadequado, mas o cliente não informou que está totalmente inutilizável.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo do PlayStation.",
+          "Descrição do ruído e quando ele ocorre.",
+          "Quais funções não estão funcionando corretamente e se aparece alguma mensagem de erro.",
+          "Quando o problema começou e se houve algum evento antes disso."
+        ],
+        "suggested_reply": "I'm sorry your PlayStation is making unusual noises and not working properly. Thanks for checking the device settings. Could you tell us which PlayStation model you have, what the noise sounds like and when it happens, and which functions aren't working? Please also let us know when the issue started, whether anything happened just before it began, and if you see any error message.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 12.9
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 5515,
+      "text": "I've noticed a software bug in the Bose QuietComfort app. It's causing data loss and unexpected errors. How can I resolve this issue?\n\nHere's what you CAN do:\n\nSearch for your project's { I'm worried that the issue might be hardware-related and might require repair or replacement.",
+      "label_type": "Refund request",
+      "label_priority": "Medium",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "data_loss"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata perda de dados e erros inesperados no aplicativo Bose QuietComfort e quer saber como resolver o problema.",
+        "priority": "Critical",
+        "priority_reason_pt": "O cliente relata perda de dados.",
+        "risk_flags": [
+          "data_loss"
+        ],
+        "missing_information": [
+          "Qual é o modelo do dispositivo Bose QuietComfort?",
+          "Qual é a versão do aplicativo e do sistema operacional do celular?",
+          "Quais dados foram perdidos e quando isso ocorreu?",
+          "Qual é a mensagem exata dos erros e quais ações os provocam?",
+          "Quais sintomas levam à suspeita de um problema de hardware?"
+        ],
+        "suggested_reply": "I'm sorry you're experiencing data loss and unexpected errors in the Bose QuietComfort app. To help us investigate, could you share your QuietComfort model, your phone's operating system and app version, what data was lost and when, the exact error messages, and the steps that trigger them? You also mentioned a possible hardware issue—what symptoms have you noticed?",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 13.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 6994,
+      "text": "I'm having an issue with the Canon EOS. Please assist. Thanks!\n\nI'm having an issue with the product_purchased,. Please assist. Thanks!\n\nThe price is $19.00 without a I'm unable to find the option to perform the desired action in the Canon EOS. Could you please guide me through the steps?",
+      "label_type": "Billing inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Product inquiry",
+        "summary_pt": "O cliente quer orientação para encontrar a opção de realizar uma ação não especificada no Canon EOS.",
+        "priority": "Low",
+        "priority_reason_pt": "O cliente pede instruções de uso; o texto não descreve indisponibilidade do serviço nem um problema de cobrança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual ação o cliente deseja realizar.",
+          "Qual é o modelo do Canon EOS e onde o cliente está procurando a opção."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble finding the option in your Canon EOS. What action are you trying to perform, which EOS model are you using, and where have you looked so far? That will help us guide you through the right steps.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.0
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 1091,
+      "text": "I've encountered a data loss issue with my Google Pixel. All the files and documents seem to have disappeared. Can you guide me on how to retrieve them? Thanks! I rely heavily on my Google Pixel for my daily tasks, and this issue is hindering my productivity.",
+      "label_type": "Technical issue",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [
+        "data_loss"
+      ],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que arquivos e documentos desapareceram do Google Pixel e precisa de ajuda para localizá-los ou recuperá-los.",
+        "priority": "Critical",
+        "priority_reason_pt": "O cliente relata perda de dados que está prejudicando suas tarefas diárias.",
+        "risk_flags": [
+          "data_loss"
+        ],
+        "missing_information": [
+          "Modelo do Google Pixel.",
+          "Quando os arquivos e documentos desapareceram.",
+          "Onde os arquivos estavam armazenados e se há cópias de segurança.",
+          "Se houve alguma mudança recente no aparelho ou na conta e quais medidas o cliente já tentou."
+        ],
+        "suggested_reply": "I'm sorry your files and documents have disappeared, especially since you rely on your Pixel for daily tasks. To help us investigate, could you tell us your Pixel model, when you first noticed the files were missing, where they were stored, whether you have a backup, and what you've already tried? Please also let us know if anything changed on the device or your account shortly before this happened.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.1
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 240,
+      "text": "I'm having an issue with the Nest Thermostat. Please assist.\n\nWhen you select the product on our site and click on the 'add to cart' button, it says: 'Sorry – no product is found. Please I'm using the original charger that came with my Nest Thermostat, but it's not charging properly.",
+      "label_type": "Cancellation request",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata que o Nest Thermostat não carrega corretamente com o carregador original e que o site exibe um erro ao tentar adicioná-lo ao carrinho.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há falhas relatadas no carregamento e na adição ao carrinho, mas o ticket não informa perda de dados, risco de segurança ou indisponibilidade total do serviço.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo do Nest Thermostat e o que acontece ao tentar carregá-lo.",
+          "Quando o problema de carregamento começou e se aparece alguma mensagem no aparelho.",
+          "Mensagem completa exibida ao clicar em “add to cart” e endereço da página onde isso ocorre."
+        ],
+        "suggested_reply": "I'm sorry your Nest Thermostat isn't charging properly with its original charger and that you're seeing an error when adding the product to your cart. Could you tell us your thermostat model, what happens when you try to charge it, and when the charging issue began? Please also send the full add-to-cart error message and the page URL where it appears so we can investigate both issues.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 12.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 3146,
+      "text": "I'm having an issue with the LG Washing Machine. Please assist.\n\nHere comes the update in regards to the [v1.01] release.\n\nTo make sure any errors that you see during the troubleshooting will I've checked the device settings and made sure that everything is configured correctly.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado com a lavadora LG e pede ajuda.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema técnico relatado, mas o ticket não informa interrupção total, perda de dados, risco de segurança ou bloqueio de uso.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo da lavadora LG.",
+          "Descrição do problema e de quando começou.",
+          "Mensagens ou códigos de erro, se houver.",
+          "Etapas de solução já tentadas e seus resultados.",
+          "Se a menção à versão v1.01 está relacionada ao problema."
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your LG washing machine. Could you share the model number, describe what happens and when it started, and let us know if you see any error codes? Please also tell us what troubleshooting steps you've tried and whether the v1.01 update is related to the issue.",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 7462,
+      "text": "I'm facing a problem with my Google Pixel. The Google Pixel is not turning on. It was working fine until yesterday, but now it doesn't respond.\n\nSolution 2) Don't use the I've tried troubleshooting steps mentioned in the user manual, but the issue persists.",
+      "label_type": "Cancellation request",
+      "label_priority": "Low",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda porque seu Google Pixel não liga nem responde, apesar de ter tentado as orientações do manual.",
+        "priority": "High",
+        "priority_reason_pt": "O aparelho não liga, impedindo o cliente de usá-lo.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato do Google Pixel.",
+          "Quais etapas de solução de problemas do manual foram tentadas.",
+          "Se o aparelho mostra algum sinal de funcionamento ou carregamento e o que acontece ao conectá-lo ao carregador."
+        ],
+        "suggested_reply": "I'm sorry your Google Pixel isn't turning on. I understand it was working until yesterday and that you've tried steps from the user manual. Could you tell us the exact Pixel model, which steps you tried, and whether it shows any sign of responding or charging when connected to a charger?",
+        "confidence": "medium",
+        "_provider": "codex",
+        "_seconds": 11.3
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 1618,
+      "text": "I'm having an issue with the Google Pixel. Please assist.\n\nIf you need help or advice, please reach out to me in the forums or email support@zombiecobra.com.\n\nWe can The issue I'm facing is intermittent. Sometimes it works fine, but other times it acts up unexpectedly.",
+      "label_type": "Refund request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda com uma falha intermitente em um Google Pixel, mas não descreveu o que acontece.",
+        "priority": "Medium",
+        "priority_reason_pt": "O problema é intermitente e indica funcionamento degradado; não há relato de bloqueio total, perda de dados ou incidente de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo do Google Pixel.",
+          "Descrição do comportamento inesperado e de quando ele ocorre.",
+          "Passos para reproduzir o problema e frequência aproximada.",
+          "Mensagens de erro, se houver."
+        ],
+        "suggested_reply": "I'm sorry your Google Pixel is acting up intermittently. Could you tell us which Pixel model you have, what happens when the issue occurs, how often it happens, and whether there are any steps that trigger it or error messages you see? Those details will help us investigate.",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.5
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    },
+    {
+      "ticket_id": 6634,
+      "text": "I'm having an issue with the GoPro Action Camera. Please assist.\n\nThe price is at the top of our list. If you can't find where you're at, try our online store.\n\nThe item in our I've tried different settings and configurations on my GoPro Action Camera, but the issue persists.",
+      "label_type": "Refund request",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente relata um problema não especificado com a câmera GoPro que persiste após testar diferentes configurações.",
+        "priority": "Medium",
+        "priority_reason_pt": "Há um problema persistente com o produto, mas o ticket não indica bloqueio total, perda de dados ou risco de segurança.",
+        "risk_flags": [],
+        "missing_information": [
+          "Qual é o problema específico e quando ele ocorre?",
+          "Qual é o modelo da câmera?",
+          "Quais configurações já foram testadas?",
+          "Aparece alguma mensagem de erro? Se sim, qual?"
+        ],
+        "suggested_reply": "I'm sorry you're having trouble with your GoPro Action Camera. I understand the issue persists after you've tried different settings. Could you describe exactly what happens and when, tell us your camera model and which settings you've tried, and share any error message you see?",
+        "confidence": "low",
+        "_provider": "codex",
+        "_seconds": 11.8
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente sênior revisa antes de responder",
+        "human_required": true,
+        "stage": "julgamento humano"
+      }
+    },
+    {
+      "ticket_id": 6356,
+      "text": "I'm having an issue with the Nikon D. Please assist.\n\n\" I was really curious why you didn't add the first product to your shopping cart. If you know who gave it away... I'll be happy to I'm using the original charger that came with my Nikon D, but it's not charging properly.",
+      "label_type": "Billing inquiry",
+      "label_priority": "Critical",
+      "had_error_placeholder": false,
+      "rule_risks": [],
+      "llm": {
+        "ticket_type": "Technical issue",
+        "summary_pt": "O cliente precisa de ajuda porque a Nikon D não está carregando corretamente com o carregador original.",
+        "priority": "Medium",
+        "priority_reason_pt": "O carregamento está prejudicado, mas o ticket não informa perda de dados, risco de segurança ou bloqueio total de uso.",
+        "risk_flags": [],
+        "missing_information": [
+          "Modelo exato da câmera Nikon D.",
+          "O que acontece ao tentar carregar, incluindo luzes indicadoras ou mensagens de erro.",
+          "Quando o problema começou e se ocorre em outras tomadas."
+        ],
+        "suggested_reply": "I'm sorry your Nikon D isn't charging properly, even with the original charger. Could you tell us the exact camera model, what happens when you try to charge it (including any indicator lights or error messages), when the issue began, and whether it also happens with a different outlet?",
+        "confidence": "high",
+        "_provider": "codex",
+        "_seconds": 11.4
+      },
+      "error": null,
+      "decision": {
+        "destination": "Agente revisa o rascunho e pede os dados faltantes",
+        "human_required": true,
+        "stage": "assistido"
+      }
+    }
+  ]
+}

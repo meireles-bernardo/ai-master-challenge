@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A fila do suporte</title>
+<meta name="description" content="O diagnóstico do Challenge 002 contado com os 8.469 tickets reais do dataset.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fog: #E8ECEF;
+    --ink: #17202B;
+    --ink-soft: #4A5663;
+    --slip: #B9C3CC;
+    --rule: #C9D1D8;
+    --red: #D7263D;
+    --amber: #E9A23B;
+    --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+    --text: "Newsreader", Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--fog); color: var(--ink); font-family: var(--text); font-size: 1.1875rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  .story { display: grid; grid-template-columns: minmax(20rem, 34rem) 1fr; gap: 0 clamp(1.5rem, 4vw, 4rem); padding: 0 clamp(1rem, 4vw, 4rem); }
+  .figure { grid-column: 2; grid-row: 1; position: sticky; top: 0; height: 100vh; height: 100svh; }
+  .figure canvas { width: 100%; height: 100%; display: block; }
+  .steps { grid-column: 1; grid-row: 1; position: relative; z-index: 1; }
+
+  .step { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 4rem 0; }
+  .step p, .step ol { margin: 0 0 1rem; max-width: 30rem; color: var(--ink-soft); }
+  .step p strong { color: var(--ink); font-weight: 500; }
+  .step ol { padding-left: 1.4rem; }
+  .step ol li { padding-left: 0.3rem; margin-bottom: 0.55rem; }
+  .step ol li::marker { font-family: var(--display); font-weight: 700; color: var(--ink); }
+
+  h1, h2 { font-family: var(--display); font-optical-sizing: auto; font-variation-settings: "wdth" 82; letter-spacing: -0.02em; line-height: 0.98; margin: 0 0 1.25rem; color: var(--ink); }
+  h1 { font-size: clamp(2.75rem, 6.2vw, 5.25rem); font-weight: 750; }
+  h2 { font-size: clamp(2rem, 3.6vw, 3.25rem); font-weight: 700; }
+
+  .questions { list-style: none; padding: 0; margin: 0.25rem 0 2rem; font-family: var(--display); font-variation-settings: "wdth" 90; font-size: 1.25rem; line-height: 1.35; }
+  .questions li { padding: 0.55rem 0; border-top: 1px solid var(--rule); }
+  .questions li:last-child { border-bottom: 1px solid var(--rule); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; margin: 0.25rem 0 1rem; padding: 0; list-style: none; font-family: var(--display); font-size: 1rem; color: var(--ink); }
+  .legend li { display: flex; align-items: center; gap: 0.5rem; }
+  .legend i { width: 1.1rem; height: 0.55rem; display: inline-block; }
+  .hint, .links { font-family: var(--display); font-size: 1rem; color: var(--ink-soft); }
+  .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.75rem; }
+  .colophon { font-family: var(--display); font-size: 0.9rem; color: var(--ink-soft); max-width: 30rem; padding: 0 0 4rem; }
+
+  @media (max-width: 820px) {
+    body { font-size: 1.0625rem; }
+    .story { grid-template-columns: 1fr; }
+    .figure { grid-column: 1; grid-row: 1; height: 52vh; height: 52svh; z-index: 2; background: var(--fog); border-bottom: 1px solid var(--rule); }
+    .steps { grid-column: 1; grid-row: 2; }
+    .step { min-height: 75vh; min-height: 75svh; justify-content: flex-start; padding: 2rem 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main class="story">
+  <div class="figure" aria-hidden="true"><canvas id="slips"></canvas></div>
+  <div class="steps">
+    <section class="step" data-scene="arrive">
+      <div class="card">
+        <h1>8.469 tickets e três perguntas do diretor</h1>
+        <ul class="questions">
+          <li>Onde estamos perdendo tempo?</li>
+          <li>O que dá para automatizar com IA?</li>
+          <li>Funciona de verdade?</li>
+        </ul>
+        <p>Cada ficha é um ticket real do dataset de suporte. A história inteira está nelas.</p>
+        <p class="hint">Role para ver a fila.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="color">
+      <div class="card">
+        <h2>Primeiro, a cor de cada ticket</h2>
+        <p>Cada ficha mostra em que pé o atendimento está agora.</p>
+        <ul class="legend">
+          <li><i style="background:var(--red)"></i>nunca respondido</li>
+          <li><i style="background:var(--amber)"></i>esperando o cliente</li>
+          <li><i style="background:var(--slip)"></i>fechado</li>
+        </ul>
+      </div>
+    </section>
+    <section class="step" data-scene="status">
+      <div class="card">
+        <h2>Dois terços da fila estão parados</h2>
+        <p><strong data-n="open"></strong> tickets nunca receberam a primeira resposta. Outros <strong data-n="pending"></strong> esperam o cliente mandar algo que faltou.</p>
+        <p>O tempo não se perde num canal ou num tipo de problema. Ele se perde na fila.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="priority">
+      <div class="card">
+        <h2>E a prioridade não muda nada</h2>
+        <p>Separados por prioridade, os grupos ficam quase idênticos. <strong data-n="critPct"></strong> dos tickets <em>Critical</em> estão parados, a mesma proporção dos <em>Low</em>.</p>
+        <p>A fila anda por ordem de chegada, não por risco. Esse é o primeiro conserto, e não precisa de IA.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="csat">
+      <div class="card">
+        <h2>Nada nos dados explica a satisfação</h2>
+        <p>Só os <strong data-n="closed"></strong> tickets fechados têm nota, e as cinco notas aparecem quase na mesma quantidade.</p>
+        <p>Canal, prioridade, tipo, assunto, produto, gênero, idade e tempo de resolução: nenhuma dessas variáveis tem relação com a nota (menor p = <span data-n="minP"></span>). Antes de prometer CSAT, é preciso registrar o que hoje falta: a abertura do ticket, cada mudança de status e o motivo das notas baixas.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="flow">
+      <div class="card">
+        <h2>A IA lê, a regra decide, uma pessoa responde</h2>
+        <ol>
+          <li>O LLM lê o ticket, sugere tipo e prioridade, marca riscos, lista o que falta e escreve um rascunho.</li>
+          <li>Uma regra fixa procura sinais de risco no texto, mesmo que o LLM deixe passar.</li>
+          <li>Reembolso, cancelamento, perda de dados, acesso e casos jurídicos vão para um agente sênior. O resto vai para um agente com o rascunho pronto.</li>
+        </ol>
+        <p>Ao lado estão os <strong data-n="sample"></strong> tickets sorteados para o teste. Nenhum pôde ser respondido sem pedir algo ao cliente, por isso nenhum saiu automático.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="proof">
+      <div class="card">
+        <h2>Funciona com dados reais</h2>
+        <p>Nos tickets de TI, o classificador acerta <strong data-n="acc"></strong> dos <span data-n="itN"></span> casos que nunca viu. Quando está confiante, ele encaminha sozinho: <strong data-n="auto"></strong> de cada 100, com <span data-n="prec"></span> de acerto. Os outros vão para uma pessoa.</p>
+        <p>Nos tickets de clientes, o LLM fez a triagem dos <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez, sem deixar passar nenhum caso de risco e pedindo a mensagem de erro que faltava em <span data-n="placeholder"></span> casos.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="roi">
+      <div class="card">
+        <h2>Cerca de <span data-n="hours"></span> horas por mês de volta</h2>
+        <p>Somando triagem, rascunho da primeira resposta e as idas e voltas evitadas, o cenário central libera <strong data-n="hours"></strong> horas por mês, um pouco mais que uma pessoa em tempo integral.</p>
+        <p>A faixa vai de <span data-n="low"></span> a <span data-n="high"></span> horas porque o dataset não registra o tempo do agente. Essas premissas são justamente o que o piloto vai medir.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="next">
+      <div class="card">
+        <h2>Na segunda-feira</h2>
+        <p>A mesma fila de <strong data-n="stuck"></strong> tickets parados, agora em ordem de risco. Os <strong data-n="risky"></strong> com sinais de perda de dados, dinheiro, acesso, cancelamento ou ameaça jurídica vão para o topo.</p>
+        <ul class="legend">
+          <li><i style="background:var(--red)"></i>risco no texto: vai primeiro</li>
+          <li><i style="background:var(--ink)"></i>sem primeira resposta</li>
+          <li><i style="background:var(--slip)"></i>esperando o cliente</li>
+        </ul>
+        <ol>
+          <li>Esta semana, reordenar a fila por risco. Não precisa de IA.</li>
+          <li>Por quatro semanas, rodar a IA em sombra: ela sugere, a pessoa decide e nada é enviado sozinho.</li>
+          <li>Registrar abertura, mudanças de status e motivo das notas baixas.</li>
+          <li>Manter reembolso, cancelamento, perda de dados, acesso e jurídico sempre com uma pessoa.</li>
+          <li>Só depois do piloto, liberar resposta automática para perguntas simples.</li>
+        </ol>
+        <p class="links"><a href="../README.md">Ler a submissão</a><a href="../README.md#como-rodar-2-min">Rodar o protótipo</a></p>
+      </div>
+    </section>
+    <p class="colophon">Dados: Customer Support Ticket Dataset e IT Service Ticket Classification Dataset (Kaggle, CC0). O Dataset 1 é sintético; as conclusões valem para o desenho do processo, não como desempenho real.</p>
+  </div>
+</main>
+<script src="data.js"></script>
+<script>
+(() => {
+  const D = window.DATA;
+  const N = D.status.length;
+  const css = getComputedStyle(document.documentElement);
+  const rgb = (v) => { const h = css.getPropertyValue(v).trim().slice(1); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
+  const COLORS = { neutral: rgb("--slip"), o: rgb("--red"), p: rgb("--amber"), c: rgb("--slip"), red: rgb("--red"), amber: rgb("--amber"), slip: rgb("--slip"), ink: rgb("--ink") };
+  const INK = css.getPropertyValue("--ink").trim(), SOFT = css.getPropertyValue("--ink-soft").trim(), RULE = css.getPropertyValue("--rule").trim();
+  const fmt = (n) => n.toLocaleString("pt-BR");
+  const pct = (x, d = 0) => (x * 100).toFixed(d).replace(".", ",") + "%";
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------- números derivados dos dados
+  const count = (s, ch) => [...s].filter(x => x === ch).length;
+  const byStatus = { o: count(D.status, "o"), p: count(D.status, "p"), c: count(D.status, "c") };
+  const PRI = ["C", "H", "M", "L"], PRI_NAME = { C: "Critical", H: "High", M: "Medium", L: "Low" };
+  const priStats = Object.fromEntries(PRI.map(p => {
+    const idx = [...D.priority].map((x, i) => x === p ? i : -1).filter(i => i >= 0);
+    return [p, { n: idx.length, stuckPct: idx.filter(i => D.status[i] !== "c").length / idx.length }];
+  }));
+  const auto100 = Math.round(D.classifier.auto * 100);
+  const wrong100 = Math.round(auto100 * (1 - D.classifier.autoPrecision));
+  const stages = { assistido: 0, "julgamento humano": 0, automatizável: 0 };
+  D.llm.rows.forEach(r => stages[r.stage]++);
+  const text = {
+    open: fmt(byStatus.o), pending: fmt(byStatus.p), critPct: pct(priStats.C.stuckPct), closed: fmt(byStatus.c),
+    minP: D.csatMinP.toFixed(2).replace(".", ","), sample: D.llm.sample,
+    acc: pct(D.classifier.accuracy, 1), itN: fmt(D.classifier.n), auto: auto100, prec: pct(D.classifier.autoPrecision),
+    placeholder: `${D.llm.placeholder[0]} de ${D.llm.placeholder[1]}`,
+    hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
+    stuck: fmt(byStatus.o + byStatus.p), risky: fmt([...D.status].filter((st, i) => st !== "c" && D.risk[i] === "1").length),
+  };
+  document.querySelectorAll("[data-n]").forEach(el => el.textContent = text[el.dataset.n]);
+
+  // ---------- estado das fichas: x, y, w, h, r, g, b, alpha
+  const K = 8;
+  const cur = new Float32Array(N * K), from = new Float32Array(N * K), to = new Float32Array(N * K);
+  const delay = new Float32Array(N);
+  const canvas = document.getElementById("slips");
+  const ctx = canvas.getContext("2d");
+  let W = 0, H = 0, dpr = 1, t0 = 0, duration = 0, scene = null;
+  let overlay = { labels: [], shapes: [] }, overlayFrom = { labels: [], shapes: [] };
+
+  const order = Array.from({ length: N }, (_, i) => i);
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = N - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+
+  function fit(n, w, h, minS = 1, maxS = 40) {
+    for (let s = maxS; s >= minS; s -= 0.25) {
+      const sw = 2 * s, sh = s, g = Math.max(1, s * 0.45);
+      const cols = Math.floor((w + g) / (sw + g)), rows = Math.floor((h + g) / (sh + g));
+      if (cols * rows >= n) return { sw, sh, g, cols, rows };
+    }
+    return { sw: 2 * minS, sh: minS, g: 1, cols: Math.max(1, Math.floor(w / (3 * minS))), rows: Math.floor(h / (2 * minS)) };
+  }
+  const pad = () => ({ l: 8, r: 8, t: Math.max(40, H * 0.08), b: Math.max(24, H * 0.05) });
+  const labelSizes = () => ({ big: Math.round(Math.max(20, Math.min(44, W * 0.045))), small: Math.round(Math.max(12, Math.min(17, W * 0.018))) });
+
+  function put(T, i, x, y, w, h, c, a = 1) { const o = i * K; T[o] = x; T[o + 1] = y; T[o + 2] = w; T[o + 3] = h; T[o + 4] = c[0]; T[o + 5] = c[1]; T[o + 6] = c[2]; T[o + 7] = a; }
+  function hide(T, i) { const o = i * K; for (let k = 0; k < 7; k++) T[o + k] = cur[o + k]; T[o + 7] = 0; }
+
+  // ---------- cenas
+  function layout(name) {
+    const P = pad(), T = new Float32Array(N * K), labels = [], shapes = [];
+    const aw = W - P.l - P.r, ah = H - P.t - P.b, fs = labelSizes();
+
+    if (name === "arrive" || name === "color") {
+      const f = fit(N, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
+      order.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, name === "arrive" ? COLORS.neutral : COLORS[D.status[i]]));
+    }
+
+    if (name === "status") {
+      const groups = ["o", "p", "c"], gap = Math.max(16, W * 0.04), labelH = Math.max(70, H * 0.12);
+      const bw = (aw - gap * 2) / 3, bh = ah - labelH, f = fit(Math.max(...groups.map(g => byStatus[g])), bw, bh);
+      const names = { o: "nunca respondidos", p: "esperando o cliente", c: "fechados" };
+      groups.forEach((g, gi) => {
+        const bx = P.l + gi * (bw + gap), base = P.t + labelH + bh; let k = 0;
+        order.forEach(i => { if (D.status[i] !== g) return; put(T, i, bx + (k % f.cols) * (f.sw + f.g), base - f.sh - Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, COLORS[g]); k++; });
+        labels.push({ x: bx, y: base - Math.ceil(byStatus[g] / f.cols) * (f.sh + f.g) - 14, big: fmt(byStatus[g]), small: names[g], maxW: bw, color: g === "c" ? SOFT : INK });
+      });
+    }
+
+    if (name === "priority") {
+      ctx.font = `400 ${fs.small}px "Bricolage Grotesque", sans-serif`;
+      const labelW = Math.ceil(ctx.measureText("69% parados").width) + 16, gap = Math.max(14, H * 0.035);
+      const bandH = (ah - gap * 3) / 4, f = fit(Math.max(...PRI.map(p => priStats[p].n)), aw - labelW, bandH - 4);
+      const rank = { o: 0, p: 1, c: 2 }, rows = Math.max(1, Math.floor((bandH + f.g) / (f.sh + f.g)));
+      PRI.forEach((p, pi) => {
+        const by = P.t + pi * (bandH + gap), bx = P.l + labelW;
+        order.filter(i => D.priority[i] === p).sort((a, b) => rank[D.status[a]] - rank[D.status[b]])
+          .forEach((i, k) => put(T, i, bx + Math.floor(k / rows) * (f.sw + f.g), by + (k % rows) * (f.sh + f.g), f.sw, f.sh, COLORS[D.status[i]]));
+        labels.push({ x: P.l, y: by + Math.min(bandH, rows * (f.sh + f.g)) / 2 - 6, big: PRI_NAME[p], small: pct(priStats[p].stuckPct) + " parados", color: INK, inline: true });
+      });
+    }
+
+    if (name === "csat") {
+      const gap = Math.max(10, W * 0.025), labelH = Math.max(60, H * 0.1), footH = fs.small + 18;
+      const bw = (aw - gap * 4) / 5, bh = ah - labelH - footH;
+      const counts = [1, 2, 3, 4, 5].map(n => count(D.csat, String(n)));
+      const f = fit(Math.max(...counts), bw, bh);
+      [1, 2, 3, 4, 5].forEach((n, ni) => {
+        const bx = P.l + ni * (bw + gap), base = P.t + labelH + bh; let k = 0;
+        order.forEach(i => { if (D.csat[i] !== String(n)) return; put(T, i, bx + (k % f.cols) * (f.sw + f.g), base - f.sh - Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, COLORS.ink); k++; });
+        labels.push({ x: bx, y: base - Math.ceil(counts[ni] / f.cols) * (f.sh + f.g) - 12, big: fmt(counts[ni]), small: "", color: INK, compact: true });
+        labels.push({ x: bx, y: base + fs.small + 10, big: "", small: `nota ${n}`, color: SOFT, plain: true });
+      });
+      order.forEach(i => { if (D.csat[i] === "0") hide(T, i); });
+    }
+
+    if (name === "flow") {
+      const bins = [["assistido", "agente com o rascunho pronto"], ["julgamento humano", "agente sênior"], ["automatizável", "resposta automática"]];
+      const gap = Math.max(12, W * 0.03), labelH = Math.max(70, H * 0.13), bw = (aw - gap * 2) / 3, bh = Math.min(ah - labelH, bw * 1.25);
+      const f = fit(Math.max(...Object.values(stages), 1), bw - 24, bh - 24, 1, 22);
+      const used = new Set(), top = P.t + labelH + (ah - labelH - bh) / 2;
+      bins.forEach(([stage, label], bi) => {
+        const bx = P.l + bi * (bw + gap), by = top;
+        shapes.push({ x: bx, y: by, w: bw, h: bh, dashed: stages[stage] === 0 });
+        labels.push({ x: bx, y: by - 14, big: String(stages[stage]), small: label, maxW: bw, color: stages[stage] ? INK : SOFT });
+        D.llm.rows.filter(r => r.stage === stage).forEach((r, k) => {
+          put(T, r.i, bx + 12 + (k % f.cols) * (f.sw + f.g), by + 12 + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, stage === "julgamento humano" ? COLORS.red : COLORS.ink);
+          used.add(r.i);
+        });
+      });
+      for (let i = 0; i < N; i++) if (!used.has(i)) hide(T, i);
+    }
+
+    if (name === "proof") {
+      const cols = 10, wide = aw > 420, gw = wide ? aw * 0.55 : aw, gh = wide ? ah * 0.8 : ah * 0.75;
+      const s0 = Math.min(gw / (cols * 2 + (cols - 1) * 0.45), gh / (10 + 9 * 0.45), 24);
+      const f = { sw: 2 * s0, sh: s0, g: s0 * 0.45 };
+      const gridW = cols * (f.sw + f.g) - f.g, gridH = 10 * (f.sh + f.g) - f.g, x0 = P.l, y0 = P.t + (ah - gridH) / 2 - (wide ? 0 : fs.small);
+      const correct = auto100 - wrong100, kinds = [];
+      for (let k = 0; k < 100; k++) kinds.push(k < correct ? "ok" : k < auto100 ? "bad" : "human");
+      const col = { ok: COLORS.ink, bad: COLORS.red, human: COLORS.slip };
+      order.forEach((i, k) => { if (k < 100) put(T, i, x0 + (k % cols) * (f.sw + f.g), y0 + Math.floor(k / cols) * (f.sh + f.g), f.sw, f.sh, col[kinds[k]]); else hide(T, i); });
+      const lx = x0 + gridW + Math.max(16, W * 0.03), maxW = aw - (lx - P.l);
+      const rowsY = (n) => y0 + Math.floor(n / cols) * (f.sh + f.g) + f.sh;
+      if (maxW > 110) {
+        const items = [[rowsY(0), String(correct), "foram sozinhos para a fila certa", INK],
+                       [rowsY(auto100 - 1), String(wrong100), "foram sozinhos para a fila errada", rgbCss(COLORS.red)],
+                       [rowsY(99), String(100 - auto100), "foram para uma pessoa", SOFT]];
+        let lastY = -Infinity;
+        items.forEach(([yy, big, small, color]) => { const y = Math.max(yy + 4, lastY + fs.big + fs.small * 2 + 14); lastY = y; labels.push({ x: lx, y, big, small, maxW, color }); });
+      } else {
+        labels.push({ x: x0, y: y0 + 10 * (f.sh + f.g) + fs.small + 12, big: "", small: `${correct} certos, ${wrong100} errados, ${100 - auto100} para uma pessoa`, color: SOFT, plain: true });
+      }
+    }
+
+    if (name === "roi") {
+      const hours = D.roi.hours.Central, per = D.roi.fteHours, people = Math.ceil(hours / per);
+      const gap = Math.max(16, W * 0.04), labelH = Math.max(50, H * 0.08), footH = fs.small * 2 + 24;
+      const boxW = (aw - gap * (people - 1)) / people, boxH = ah - labelH - footH;
+      let cols = 12, s = 0;
+      for (let c = 4; c <= 24; c++) { const r = Math.ceil(per / c), v = Math.min((boxW - 20) / (c * 2 + (c - 1) * 0.45), (boxH - 20) / (r + (r - 1) * 0.45), 22); if (v > s) { s = v; cols = c; } }
+      const rows = Math.ceil(per / cols), sw = 2 * s, sh = s, g = s * 0.45, realW = cols * (sw + g) - g + 20, realH = rows * (sh + g) - g + 20;
+      const top = P.t + labelH + (ah - labelH - footH - realH) / 2;
+      for (let p = 0; p < people; p++) {
+        const bx = P.l + p * (realW + gap), by = top;
+        shapes.push({ x: bx, y: by, w: realW, h: realH, dashed: true });
+        labels.push({ x: bx, y: by + realH + fs.small + 10, big: "", small: `${p + 1}ª pessoa: ${per} h por mês`, color: SOFT, plain: true });
+      }
+      order.forEach((i, k) => {
+        if (k >= hours) return hide(T, i);
+        const p = Math.floor(k / per), kk = k % per, bx = P.l + p * (realW + gap) + 10, by = top + 10;
+        put(T, i, bx + (kk % cols) * (sw + g), by + Math.floor(kk / cols) * (sh + g), sw, sh, COLORS.ink);
+      });
+      labels.push({ x: P.l, y: top - 14, big: `${hours} h/mês`, small: "", color: INK, compact: true });
+    }
+
+    if (name === "next") {
+      const stuck = order.filter(i => D.status[i] !== "c");
+      const rank = (i) => D.risk[i] === "1" ? 0 : D.status[i] === "o" ? 1 : 2;
+      stuck.sort((a, b) => rank(a) - rank(b));
+      const f = fit(stuck.length, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
+      const col = [COLORS.red, COLORS.ink, COLORS.slip];
+      stuck.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, col[rank(i)]));
+      order.forEach(i => { if (D.status[i] === "c") hide(T, i); });
+    }
+    return { T, labels, shapes };
+  }
+
+  function rgbCss(c) { return `rgb(${c[0]},${c[1]},${c[2]})`; }
+
+  // ---------- transição e desenho
+  function go(name, instant) {
+    if (!W) return;
+    const first = scene === null;
+    const next = layout(name);
+    from.set(cur); to.set(next.T);
+    if (first) for (let i = 0; i < N; i++) { const o = i * K; for (let k = 0; k < K; k++) from[o + k] = to[o + k]; from[o + 1] = -20 - rnd() * H * 0.6; }
+    for (let k = 0; k < N; k++) delay[order[k]] = first ? (k / N) * 900 : name === "color" ? rnd() * 700 : (k / N) * 350;
+    overlayFrom = overlay; overlay = next;
+    duration = instant || reduced ? 0 : (first ? 1300 : 1100);
+    t0 = performance.now(); scene = name;
+    if (duration) requestAnimationFrame(frame); else frame(t0);
+  }
+
+  const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  function frame(now) {
+    const elapsed = now - t0;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    drawOverlay(overlayFrom, duration ? 1 - Math.min(1, elapsed / 250) : 0);
+    for (let i = 0; i < N; i++) {
+      const p = duration ? ease(Math.min(1, Math.max(0, (elapsed - delay[i]) / duration))) : 1, o = i * K;
+      for (let k = 0; k < K; k++) cur[o + k] = from[o + k] + (to[o + k] - from[o + k]) * p;
+      const a = cur[o + 7];
+      if (a < 0.02) continue;
+      ctx.globalAlpha = a;
+      ctx.fillStyle = `rgb(${cur[o + 4] | 0},${cur[o + 5] | 0},${cur[o + 6] | 0})`;
+      ctx.fillRect(cur[o], cur[o + 1], cur[o + 2], cur[o + 3]);
+    }
+    ctx.globalAlpha = 1;
+    drawOverlay(overlay, duration ? Math.min(1, Math.max(0, (elapsed - duration * 0.6) / 500)) : 1);
+    if (elapsed < duration + 900) requestAnimationFrame(frame);
+  }
+
+  function wrap(value, maxW) {
+    if (!maxW || ctx.measureText(value).width <= maxW) return [value];
+    const lines = [""];
+    value.split(" ").forEach(w => { const t = (lines[lines.length - 1] + " " + w).trim(); if (ctx.measureText(t).width > maxW && lines[lines.length - 1]) lines.push(w); else lines[lines.length - 1] = t; });
+    return lines;
+  }
+
+  function drawOverlay(o, alpha) {
+    if (alpha <= 0) return;
+    ctx.globalAlpha = alpha;
+    const { big, small } = labelSizes();
+    o.shapes.forEach(s => {
+      ctx.strokeStyle = RULE; ctx.lineWidth = 1.5; ctx.setLineDash(s.dashed ? [6, 5] : []);
+      ctx.strokeRect(s.x + 0.5, s.y + 0.5, s.w, s.h);
+    });
+    ctx.setLineDash([]);
+    o.labels.forEach(l => {
+      if (l.inline) {
+        ctx.font = `700 ${Math.round(big * 0.6)}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = l.color; ctx.fillText(l.big, l.x, l.y);
+        ctx.font = `400 ${small}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = SOFT; ctx.fillText(l.small, l.x, l.y + small + 6);
+        return;
+      }
+      if (l.plain) { ctx.font = `400 ${small}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = l.color; ctx.fillText(l.small, l.x, l.y); return; }
+      if (l.compact) { ctx.font = `750 ${Math.round(big * 0.75)}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = l.color; ctx.fillText(l.big, l.x, l.y); return; }
+      ctx.font = `400 ${small}px "Bricolage Grotesque", sans-serif`;
+      const lines = wrap(l.small, l.maxW ? l.maxW - 6 : 0), lh = small + 3;
+      ctx.fillStyle = SOFT;
+      lines.forEach((t, k) => ctx.fillText(t, l.x, l.y - (lines.length - 1 - k) * lh));
+      ctx.font = `750 ${big}px "Bricolage Grotesque", sans-serif`;
+      ctx.fillStyle = l.color; ctx.fillText(l.big, l.x, l.y - (lines.length - 1) * lh - small - 6);
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    if (scene) go(scene, true);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const steps = [...document.querySelectorAll(".step")];
+  steps.forEach(s => s.id = s.dataset.scene);
+  // No celular o gráfico ocupa a metade de cima; a cena troca quando o texto chega logo abaixo dele.
+  const narrow = matchMedia("(max-width: 820px)").matches;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting && e.target.dataset.scene !== scene) go(e.target.dataset.scene); });
+  }, { rootMargin: narrow ? "-55% 0px -35% 0px" : "-45% 0px -45% 0px" });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+    // ?cena=status mostra a cena fixa, sem scroll (usado para conferir capturas)
+    const fixed = new URLSearchParams(location.search).get("cena");
+    if (fixed) { go("arrive", true); go(fixed, true); return; }
+    const deep = steps.find(s => "#" + s.id === location.hash);
+    if (deep) { deep.scrollIntoView(); go(deep.dataset.scene, true); }
+    else go("arrive");
+    steps.forEach(s => io.observe(s));
+  });
+})();
+</script>
+</body>
+</html>

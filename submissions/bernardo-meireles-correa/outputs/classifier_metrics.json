@@ -1,0 +1,235 @@
+{
+  "source": {
+    "zip": "it-service-ticket-classification-dataset.zip",
+    "member": "all_tickets_processed_improved_v3.csv",
+    "sha256": "1e6c2508dba84f737ef30f589c2e4f7b2b27a4bbec753e6b5c84183a5f91ed4f",
+    "rows": 47837
+  },
+  "cleaning": {
+    "raw_rows": 47837,
+    "conflicting_texts_removed": 0,
+    "rows_in_conflicting_groups": 0,
+    "exact_duplicates_removed": 0,
+    "clean_rows": 47837
+  },
+  "splits": {
+    "train": 33485,
+    "calibration": 4784,
+    "test": 9568
+  },
+  "selection_macro_f1_calibration": {
+    "TF-IDF (palavras e bigramas) + SVM linear, C=0.25": 0.8693012267214519,
+    "TF-IDF (palavras e bigramas) + SVM linear, C=1.0": 0.8614473917734333
+  },
+  "chosen": "TF-IDF (palavras e bigramas) + SVM linear, C=0.25",
+  "gate": {
+    "threshold": 0.745,
+    "coverage": 0.740175585284281,
+    "precision": 0.9511437447048856,
+    "target_precision": 0.95
+  },
+  "test": {
+    "n": 9568,
+    "accuracy": 0.8652801003344481,
+    "macro_f1": 0.8651541537152754,
+    "auto_coverage": 0.7425794314381271,
+    "auto_precision": 0.9503166783954962,
+    "human_queue_accuracy": 0.6199756394640682,
+    "per_class": {
+      "Access": {
+        "precision": 0.9065354884047786,
+        "recall": 0.9052631578947369,
+        "f1-score": 0.9058988764044944,
+        "support": 1425.0
+      },
+      "Administrative rights": {
+        "precision": 0.8456375838926175,
+        "recall": 0.7159090909090909,
+        "f1-score": 0.7753846153846153,
+        "support": 352.0
+      },
+      "HR Support": {
+        "precision": 0.8707328174783796,
+        "recall": 0.8763169949610627,
+        "f1-score": 0.8735159817351598,
+        "support": 2183.0
+      },
+      "Hardware": {
+        "precision": 0.8352816153028693,
+        "recall": 0.8656387665198237,
+        "f1-score": 0.8501892915089238,
+        "support": 2724.0
+      },
+      "Internal Project": {
+        "precision": 0.8779904306220095,
+        "recall": 0.8655660377358491,
+        "f1-score": 0.8717339667458432,
+        "support": 424.0
+      },
+      "Miscellaneous": {
+        "precision": 0.8280479210711769,
+        "recall": 0.8321529745042493,
+        "f1-score": 0.8300953726598375,
+        "support": 1412.0
+      },
+      "Purchase": {
+        "precision": 0.9457700650759219,
+        "recall": 0.8843813387423936,
+        "f1-score": 0.9140461215932913,
+        "support": 493.0
+      },
+      "Storage": {
+        "precision": 0.9224952741020794,
+        "recall": 0.8792792792792793,
+        "f1-score": 0.9003690036900369,
+        "support": 555.0
+      },
+      "accuracy": 0.8652801003344481,
+      "macro avg": {
+        "precision": 0.8790613994937291,
+        "recall": 0.8530634550683107,
+        "f1-score": 0.8651541537152754,
+        "support": 9568.0
+      },
+      "weighted avg": {
+        "precision": 0.8659401638265727,
+        "recall": 0.8652801003344481,
+        "f1-score": 0.8652468336934932,
+        "support": 9568.0
+      }
+    },
+    "labels": [
+      "Access",
+      "Administrative rights",
+      "HR Support",
+      "Hardware",
+      "Internal Project",
+      "Miscellaneous",
+      "Purchase",
+      "Storage"
+    ],
+    "confusion_matrix": [
+      [
+        1290,
+        3,
+        25,
+        61,
+        6,
+        31,
+        2,
+        7
+      ],
+      [
+        6,
+        252,
+        12,
+        74,
+        0,
+        8,
+        0,
+        0
+      ],
+      [
+        32,
+        5,
+        1913,
+        136,
+        12,
+        70,
+        4,
+        11
+      ],
+      [
+        66,
+        24,
+        123,
+        2358,
+        17,
+        108,
+        17,
+        11
+      ],
+      [
+        3,
+        1,
+        21,
+        20,
+        367,
+        12,
+        0,
+        0
+      ],
+      [
+        22,
+        5,
+        70,
+        113,
+        15,
+        1175,
+        2,
+        10
+      ],
+      [
+        1,
+        4,
+        9,
+        31,
+        1,
+        9,
+        436,
+        2
+      ],
+      [
+        3,
+        4,
+        24,
+        30,
+        0,
+        6,
+        0,
+        488
+      ]
+    ],
+    "strict_subset": {
+      "rule": "teste sem nenhum texto de treino com cosseno >= 0,8",
+      "n": 8411,
+      "accuracy": 0.8541196052788016,
+      "macro_f1": 0.8454921483284532
+    },
+    "majority_baseline_accuracy": 0.2846989966555184
+  },
+  "transfer_to_customer": {
+    "n": 8469,
+    "it_test_auto_coverage": 0.7425794314381271,
+    "customer_auto_coverage": 0.6085724406659582,
+    "customer_median_confidence": 0.7960334439500035,
+    "it_test_median_confidence": 0.9069650272137171,
+    "customer_predicted_distribution": {
+      "Hardware": 7251,
+      "Access": 664,
+      "Miscellaneous": 257,
+      "Administrative rights": 213,
+      "HR Support": 46,
+      "Storage": 28,
+      "Internal Project": 8,
+      "Purchase": 2
+    }
+  },
+  "customer_text_signal": {
+    "Ticket Type": {
+      "accuracy": 0.19766445764942248,
+      "chance": 0.20687212185618137,
+      "classes": 5
+    },
+    "Ticket Subject": {
+      "accuracy": 0.06151867785331781,
+      "chance": 0.06801275239107332,
+      "classes": 16
+    },
+    "Ticket Priority": {
+      "accuracy": 0.2509149069262907,
+      "chance": 0.2588263077104735,
+      "classes": 4
+    }
+  }
+}
