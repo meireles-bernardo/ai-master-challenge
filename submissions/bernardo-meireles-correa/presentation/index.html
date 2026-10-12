@@ -53,6 +53,28 @@
   .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.75rem; }
   .colophon { font-family: var(--display); font-size: 0.9rem; color: var(--ink-soft); max-width: 30rem; padding: 0 0 4rem; }
 
+  .quote { margin: 0 0 1.25rem; padding: 0.9rem 1rem; border-left: 3px solid var(--red); background: rgba(255,255,255,0.45); }
+  .quote p { margin: 0 0 0.4rem; color: var(--ink); font-style: italic; }
+  .quote footer { font-family: var(--display); font-size: 0.95rem; color: var(--ink-soft); }
+  .sources { margin: 0 0 1rem; padding-left: 1.1rem; max-width: 30rem; color: var(--ink-soft); }
+  .sources li { margin-bottom: 0.5rem; }
+  .sources strong { color: var(--ink); font-weight: 500; }
+  .actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
+  .button { font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--fog); background: var(--ink); padding: 0.7rem 1.2rem; text-decoration: none; }
+  .button:hover { background: #2B3846; }
+  .hero .card { transition: opacity 700ms ease; }
+  .hero h1 { font-size: clamp(2.4rem, 4.6vw, 4rem); }
+  .hero .quote p { font-size: 1.05rem; }
+  .hero p { margin-bottom: 0.8rem; }
+  body.intro .hero .card { opacity: 0; }
+  .intro-card { position: fixed; z-index: 10; left: 50%; top: 50%; width: min(46rem, calc(100vw - 2rem)); transform: translate(-50%, -50%);
+    background: #FFFFFF; border-top: 6px solid var(--red); padding: 1.8rem 2rem 1.6rem; box-shadow: 0 18px 50px rgba(23,32,43,0.18);
+    opacity: 0; transform-origin: top left; }
+  .intro-card .meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; font-family: var(--display); font-size: 0.95rem; }
+  .intro-card .meta span { padding: 0.15rem 0.55rem; background: var(--fog); color: var(--ink); }
+  .intro-card .meta .alarm { background: var(--red); color: #fff; }
+  .intro-card p { margin: 0; font-size: clamp(1.35rem, 3vw, 2.1rem); line-height: 1.4; color: var(--ink); }
+  .intro-card .skip { position: absolute; right: 0.9rem; bottom: 0.7rem; font-family: var(--display); font-size: 0.85rem; color: var(--ink-soft); background: none; border: 0; cursor: pointer; text-decoration: underline; }
   @media (max-width: 820px) {
     body { font-size: 1.0625rem; }
     .story { grid-template-columns: 1fr; }
@@ -63,31 +85,27 @@
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
-<body>
+<body class="intro">
+<div class="intro-card" role="dialog" aria-label="Ticket de abertura">
+  <div class="meta"><span>Ticket <b data-n="hookId"></b></span><span>Critical</span><span class="alarm">nunca respondido</span></div>
+  <p data-n="quote"></p>
+  <button class="skip" type="button">Pular</button>
+</div>
 <main class="story">
   <div class="figure" aria-hidden="true"><canvas id="slips"></canvas></div>
   <div class="steps">
-    <section class="step" data-scene="arrive">
+    <section class="step hero" data-scene="color">
       <div class="card">
-        <h1>8.469 tickets e três perguntas do diretor</h1>
-        <ul class="questions">
-          <li>Onde estamos perdendo tempo?</li>
-          <li>O que dá para automatizar com IA?</li>
-          <li>Funciona de verdade?</li>
-        </ul>
-        <p>Cada ficha é um ticket real do dataset de suporte. A história inteira está nelas.</p>
-        <p class="hint">Role para ver a fila.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="color">
-      <div class="card">
-        <h2>Primeiro, a cor de cada ticket</h2>
-        <p>Cada ficha mostra em que pé o atendimento está agora.</p>
+        <h1>Um cliente perdeu todos os dados. Ninguém respondeu.</h1>
+        <blockquote class="quote"><p data-n="quote"></p><footer>Ticket <span data-n="hookId"></span>, <span data-n="hookProduct"></span>, prioridade Critical, aberto pelas redes sociais. Nunca respondido.</footer></blockquote>
+        <p>Ele não é o único: <strong data-n="open"></strong> tickets nunca tiveram resposta, <strong data-n="hookSame"></strong> deles críticos e com perda de dados. Cada ficha ao lado é um ticket real do dataset.</p>
         <ul class="legend">
           <li><i style="background:var(--red)"></i>nunca respondido</li>
           <li><i style="background:var(--amber)"></i>esperando o cliente</li>
           <li><i style="background:var(--slip)"></i>fechado</li>
         </ul>
+        <p>O diretor perguntou onde perdemos tempo, o que dá para automatizar e se funciona. A resposta começa na fila.</p>
+        <p class="actions"><a class="button" href="#status">Ver a fila</a><span class="hint">ou role a página</span></p>
       </div>
     </section>
     <section class="step" data-scene="status">
@@ -120,6 +138,24 @@
           <li>Reembolso, cancelamento, perda de dados, acesso e casos jurídicos vão para um agente sênior. O resto vai para um agente com o rascunho pronto.</li>
         </ol>
         <p>Ao lado estão os <strong data-n="sample"></strong> tickets sorteados para o teste. Nenhum pôde ser respondido sem pedir algo ao cliente, por isso nenhum saiu automático.</p>
+      </div>
+    </section>
+    <section class="step" data-scene="recover">
+      <div class="card">
+        <h2>Antes de perguntar de novo, procurar</h2>
+        <p>Um terço da fila espera o cliente mandar algo que faltou. Parte dessa informação já está em algum lugar.</p>
+        <ul class="sources">
+          <li><strong>No próprio texto:</strong> contatos e trechos de log citados pelo cliente (<span data-n="foundStuck"></span> tickets parados).</li>
+          <li><strong>No cadastro:</strong> produto e data de compra. Todas as compras têm mais de 12 meses, então a conversa sobre garantia já começa respondida.</li>
+          <li><strong>Em branco:</strong> <span data-n="blankStuck"></span> tickets parados chegaram sem a mensagem de erro. Ela pode vir da telemetria do produto.</li>
+          <li><strong>Com integração:</strong> e-mail do suporte, CRM e histórico do cliente. No protótipo essas fontes são simuladas: o app mostra a consulta que faria, não um resultado inventado.</li>
+        </ul>
+        <ul class="legend">
+          <li><i style="background:var(--ink)"></i>achado no texto</li>
+          <li><i style="background:var(--red)"></i>mensagem de erro em branco</li>
+          <li><i style="background:var(--slip)"></i>depende de integração</li>
+        </ul>
+        <p>Regras: só leitura, só o que está ligado ao ticket, o mínimo necessário, cada consulta registrada e nada enviado ao cliente sem uma pessoa.</p>
       </div>
     </section>
     <section class="step" data-scene="proof">
@@ -189,6 +225,9 @@
     acc: pct(D.classifier.accuracy, 1), itN: fmt(D.classifier.n), auto: auto100, prec: pct(D.classifier.autoPrecision),
     placeholder: `${D.llm.placeholder[0]} de ${D.llm.placeholder[1]}`,
     hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
+    quote: "“" + D.hook.quote + "”", hookId: D.hook.id, hookProduct: D.hook.product, hookSame: D.hook.same,
+    foundStuck: fmt([...D.status].filter((st, i) => st !== "c" && D.found[i] === "1").length),
+    blankStuck: fmt([...D.status].filter((st, i) => st !== "c" && D.blank[i] === "1").length),
     stuck: fmt(byStatus.o + byStatus.p), risky: fmt([...D.status].filter((st, i) => st !== "c" && D.risk[i] === "1").length),
   };
   document.querySelectorAll("[data-n]").forEach(el => el.textContent = text[el.dataset.n]);
@@ -227,7 +266,9 @@
 
     if (name === "arrive" || name === "color") {
       const f = fit(N, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
-      order.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, name === "arrive" ? COLORS.neutral : COLORS[D.status[i]]));
+      order.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, name === "arrive" && i !== D.hook.index ? COLORS.neutral : COLORS[D.status[i]]));
+      const h = D.hook.index * K, ring = Math.max(3, f.sh);
+      shapes.push({ x: T[h] - ring, y: T[h + 1] - ring, w: T[h + 2] + ring * 2, h: T[h + 3] + ring * 2, accent: true });
     }
 
     if (name === "status") {
@@ -283,6 +324,16 @@
         });
       });
       for (let i = 0; i < N; i++) if (!used.has(i)) hide(T, i);
+    }
+
+    if (name === "recover") {
+      const stuck = order.filter(i => D.status[i] !== "c");
+      const rank = (i) => D.found[i] === "1" ? 0 : D.blank[i] === "1" ? 1 : 2;
+      stuck.sort((a, b) => rank(a) - rank(b));
+      const f = fit(stuck.length, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
+      const col = [COLORS.ink, COLORS.red, COLORS.slip];
+      stuck.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, col[rank(i)]));
+      order.forEach(i => { if (D.status[i] === "c") hide(T, i); });
     }
 
     if (name === "proof") {
@@ -350,6 +401,12 @@
     from.set(cur); to.set(next.T);
     if (first) for (let i = 0; i < N; i++) { const o = i * K; for (let k = 0; k < K; k++) from[o + k] = to[o + k]; from[o + 1] = -20 - rnd() * H * 0.6; }
     for (let k = 0; k < N; k++) delay[order[k]] = first ? (k / N) * 900 : name === "color" ? rnd() * 700 : (k / N) * 350;
+    if (first && !instant) {
+      // A ficha do ticket de abertura não cai: ela surge onde o cartão pousa.
+      const h = D.hook.index * K;
+      for (let k = 0; k < 7; k++) from[h + k] = to[h + k];
+      from[h + 7] = 0; delay[D.hook.index] = 1150;
+    }
     overlayFrom = overlay; overlay = next;
     duration = instant || reduced ? 0 : (first ? 1300 : 1100);
     t0 = performance.now(); scene = name;
@@ -389,7 +446,7 @@
     ctx.globalAlpha = alpha;
     const { big, small } = labelSizes();
     o.shapes.forEach(s => {
-      ctx.strokeStyle = RULE; ctx.lineWidth = 1.5; ctx.setLineDash(s.dashed ? [6, 5] : []);
+      ctx.strokeStyle = s.accent ? INK : RULE; ctx.lineWidth = s.accent ? 2 : 1.5; ctx.setLineDash(s.dashed ? [6, 5] : []);
       ctx.strokeRect(s.x + 0.5, s.y + 0.5, s.w, s.h);
     });
     ctx.setLineDash([]);
@@ -428,14 +485,49 @@
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting && e.target.dataset.scene !== scene) go(e.target.dataset.scene); });
   }, { rootMargin: narrow ? "-55% 0px -35% 0px" : "-45% 0px -45% 0px" });
+  // Abertura: o ticket 609 aparece, encolhe até a sua ficha e a fila se colore sozinha.
+  const card = document.querySelector(".intro-card");
+  let introDone = false, introTimers = [], flight = null;
+  function finishIntro() {
+    if (introDone) return;
+    introDone = true;
+    introTimers.forEach(clearTimeout);
+    if (flight) flight.cancel();
+    card.style.display = "none";
+    document.body.classList.remove("intro");
+    if (scene !== "color" && window.scrollY < innerHeight * 0.5) go("color", scene === null);
+    steps.forEach(s => io.observe(s));
+  }
+  function playIntro() {
+    card.animate([{ opacity: 0, transform: "translate(-50%, -46%)" }, { opacity: 1, transform: "translate(-50%, -50%)" }], { duration: 600, easing: "ease-out", fill: "forwards" });
+    introTimers.push(setTimeout(() => {
+      go("arrive");
+      const t = layout("arrive").T, h = D.hook.index * K, c = canvas.getBoundingClientRect(), r = card.getBoundingClientRect();
+      const tx = c.left + t[h], ty = c.top + t[h + 1], sx = t[h + 2] / r.width, sy = t[h + 3] / r.height;
+      card.style.transform = "none"; card.style.left = r.left + "px"; card.style.top = r.top + "px"; card.style.opacity = 1;
+      flight = card.animate([
+        { transform: "translate(0, 0) scale(1, 1)", opacity: 1 },
+        { transform: `translate(${tx - r.left}px, ${ty - r.top}px) scale(${sx}, ${sy})`, opacity: 0.9, offset: 0.85 },
+        { transform: `translate(${tx - r.left}px, ${ty - r.top}px) scale(${sx}, ${sy})`, opacity: 0 },
+      ], { duration: 1300, easing: "cubic-bezier(.6,0,.2,1)", fill: "forwards" });
+    }, 2900));
+    introTimers.push(setTimeout(() => go("color"), 4500));
+    introTimers.push(setTimeout(finishIntro, 6200));
+    ["wheel", "touchstart", "keydown"].forEach(ev => addEventListener(ev, finishIntro, { once: true, passive: true }));
+    card.querySelector(".skip").addEventListener("click", finishIntro);
+  }
+
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
     // ?cena=status mostra a cena fixa, sem scroll (usado para conferir capturas)
     const fixed = new URLSearchParams(location.search).get("cena");
-    if (fixed) { go("arrive", true); go(fixed, true); return; }
-    const deep = steps.find(s => "#" + s.id === location.hash);
-    if (deep) { deep.scrollIntoView(); go(deep.dataset.scene, true); }
-    else go("arrive");
-    steps.forEach(s => io.observe(s));
+    if (fixed) { introDone = true; card.style.display = "none"; document.body.classList.remove("intro"); go("arrive", true); go(fixed, true); return; }
+    const deep = steps.find(s => "#" + s.id === location.hash && s.id !== "color");
+    if (deep || reduced || window.scrollY > innerHeight * 0.5) {
+      if (deep) deep.scrollIntoView();
+      introDone = true; card.style.display = "none"; document.body.classList.remove("intro");
+      go(deep ? deep.dataset.scene : "color", true);
+      steps.forEach(s => io.observe(s));
+    } else playIntro();
   });
 })();
 </script>
