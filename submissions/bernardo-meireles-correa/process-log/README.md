@@ -1,61 +1,63 @@
 # Process Log — Como usei IA
 
-> **Rascunho para revisão do candidato.** Os trechos marcados com **[CONFIRMAR]** descrevem decisões minhas registradas nas sessões. Precisam ser conferidos e completados por mim antes do PR.
+> **Rascunho para minha revisão.** As decisões citadas vêm das minhas mensagens nas sessões ([integra](../evidencias/codex/mensagens-do-candidato.md), [linha do tempo](../evidencias/README.md)). Antes do PR, falta completar o trecho marcado **[COMPLETAR]**.
 
 ## Ferramentas e por quê
 
-| Ferramenta | Fase | Uso |
+| Ferramenta | Quando | Uso |
 |---|---|---|
-| ChatGPT / Codex (agente) | 08–09/10 | Auditoria dos ZIPs, primeiro classificador, dois protótipos (Python e Node/React), dez versões de apresentação |
-| Claude Code (agente) | 11/10 | Revisão crítica da entrega anterior e reconstrução enxuta desta pasta |
-| Codex CLI, modelo `gpt-6-sol` | 11/10 | LLM de triagem dentro do app, chamado pela minha assinatura ChatGPT durante os testes. Na publicação, a troca para API é só configuração |
-| Python: pandas, scipy, scikit-learn, Streamlit | 11/10 | Testes estatísticos, classificador, protótipo e teste automatizado do app |
+| ChatGPT / Codex (agente) | 08–10/10 | Auditoria dos ZIPs, primeiro classificador, contraprova independente, dois protótipos, dez versões de apresentação |
+| Claude Code (agente) | 11–12/10 | Revisão crítica da entrega anterior e reconstrução enxuta desta pasta |
+| Codex CLI, `gpt-6-sol` | 11/10 | LLM de triagem durante o desenvolvimento, pela minha assinatura ChatGPT |
+| Claude Haiku 5.5 (API) | publicação | LLM de triagem no site público, com tetos de uso e de gasto |
+| Python: pandas, scipy, scikit-learn, Streamlit | 11–12/10 | Testes estatísticos, classificador, protótipo, testes automatizados |
+| AWS (EC2, SSM, CloudFormation), Docker, Caddy | 12/10 | Deploy preparado com boas práticas |
 
-Usei dois agentes de propósito: um construiu, o outro revisou como avaliador cético. Os dois rodavam nos meus arquivos locais, e eu decidia entre as rodadas.
+Usei dois agentes de propósito: um construiu e o outro revisou como avaliador cético. Entre as rodadas, as decisões eram minhas.
 
-## Linha do tempo
+## Como trabalhei
 
-### Fase 1: exploração com ChatGPT/Codex (dez iterações)
+**Fase 1, exploração com Codex (08–10/10).** Antes de qualquer análise, questionei o volume ("se ele está mencionando 30k tickets por ano, temos que verificar", 08/10 12:42) e pedi o estudo dos datasets no Kaggle. Isso revelou 8.469 registros sintéticos, datas invertidas e marcadores sem preencher. Pedi uma **sessão independente como contraprova** (13:22), para comparar a solução feita sozinha pela IA com a que eu conduzia. Rejeitei a apresentação várias vezes, do "não entendi nada" (13:41) ao "UI genérica, claramente gerada por IA" (23:50). Também trouxe o foco de volta ao enunciado ("qual é o case? o que nos pediram?", 17:43) e exigi tratar os tickets já abertos, não só prevenir os futuros (18:27).
 
-1. **Auditoria antes de análise.** Pedi que os ZIPs fossem lidos antes de qualquer conclusão. O agente achou o volume real (8.469, não ~30 mil), o marcador `{product_purchased}` em 100% das descrições e 1.365 dos 2.769 fechados com datas invertidas. **[CONFIRMAR]** Questionei o volume, as fontes e os timestamps quando o primeiro rascunho começou a ranquear atrasos.
-2. **Primeiro classificador** (Naive Bayes escrito à mão, com treino, calibração e teste separados): 79,0% de acurácia.
-3. **Dois protótipos concorrentes.** Uma solução em Python, com relatório e carteira de recuperação, e outra em Node/React, com dois fluxos demonstrativos e motion.
-4. **Dez versões visuais.** **[CONFIRMAR]** Rejeitei várias versões da apresentação por estarem centradas no produto e não no problema do diretor.
+O resultado dessa fase foi uma auditoria de dados correta, mas 77 documentos e 87 mil palavras, nenhuma pergunta do diretor respondida com número, protótipo sem IA ao vivo e datasets nunca cruzados.
 
-O que saiu dessa fase: uma auditoria de dados correta e honesta, mas **77 documentos e 87 mil palavras**, nenhuma das três perguntas do diretor respondida com um número, protótipo sem IA generativa ao vivo (6 casos pré-processados, API "adiada") e nenhum cruzamento entre os datasets.
-
-### Fase 2: revisão crítica e reconstrução com Claude Code
-
-5. **Revisão como avaliador.** Pedi ao Claude Code uma avaliação franca do que impediria a aprovação. O diagnóstico teve sete pontos: ressalvas no lugar de respostas, protótipo sem IA, recusa em cruzar os datasets, classificador fraco, excesso de material, process log que apagava o candidato e duas soluções concorrentes.
-6. **Prova rápida antes de reescrever.** Antes de aceitar a crítica, pedi evidência. Em minutos saíram o teste de associação do CSAT (nenhuma variável com p < 0,15; notas uniformes) e um baseline de 8 linhas a 86,7%, que mostrou que a crítica tinha base.
-7. **Decisões de escopo (minhas):** partir do núcleo analítico da solução Python e criar um app novo; escopo enxuto de 4 a 6 horas; LLM pela assinatura nos testes e API real só na publicação; modelo `gpt-6-sol` quando o padrão do meu Codex foi recusado pela conta.
-8. **Construção:** diagnóstico com testes (qui-quadrado, Kruskal-Wallis, permutação, Spearman); classificador com split limpo, limiar calibrado para 95% de precisão e teste sem quase-duplicatas; dois testes de cruzamento; camada de LLM com provedores intercambiáveis e política determinística; avaliação do LLM em 60 tickets sorteados; app Streamlit; teste automatizado de ponta a ponta.
+**Fase 2, revisão e reconstrução com Claude Code (11–12/10).** Pedi uma avaliação franca do que impediria a aprovação, e **prova antes de aceitar a crítica**. Em minutos saíram o teste do CSAT (nenhuma variável com p < 0,15) e um classificador simples a 86,7%. Decidi:
+- a base: o núcleo da contraprova, com um app novo;
+- o escopo: de 4 a 6 horas;
+- o LLM: pela assinatura nos testes e API só na publicação;
+- o modelo `gpt-6-sol`, quando o padrão do Codex foi recusado pela conta;
+- a direção visual da apresentação, aprovada por amostra antes do resto;
+- deploy real na AWS com segredos fora do código;
+- recuperar informação faltante antes de perguntar ao cliente.
 
 ## Onde a IA errou e como corrigimos
 
 | Erro | Como apareceu | Correção |
 |---|---|---|
-| Ressalva no lugar de resposta | "Não é possível medir desperdício nem causa do CSAT" em toda a fase 1 | Ausência de sinal virou achado testado ("nada explica o CSAT", "as piores combinações são ruído") e recomendação (instrumentar) |
-| Classificador fraco | 79,0% com Naive Bayes feito à mão | TF-IDF + SVM calibrado: 86,5% no holdout; 85,4% sem quase-duplicatas |
-| Cruzamento evitado | "Sem chave comum, não cruzar" | Transferência: o modelo de TI passaria 61% dos tickets de clientes com confiança alta, e o texto de clientes não prevê seus rótulos. Os dois fatos definiram a arquitetura |
-| Protótipo sem IA | 6 casos pré-processados | LLM ao vivo para qualquer texto; avaliação em amostra aleatória com semente fixa |
-| Política conservadora demais | 1ª rodada: 77% dos casos para revisão sênior, nenhum assistido | Sênior só com risco, decisão comercial ou confiança baixa; confiança média vai para o agente comum (31 assistidos, 29 sênior) |
-| Bug de interface (Claude) | No Streamlit, o clique em "Aprovar" recarregava a página e perdia o resultado | Estado guardado em `session_state`; teste automatizado cobre aprovar e registrar |
-| Modelo grande demais (Claude) | 26 MB, pesado para um PR | Vocabulário de 100 mil termos e um único SVM calibrado: 5,6 MB, sem perda de acurácia |
-| Modelo padrão inválido | `gpt-6.1-sol` recusado pela conta ChatGPT | O agente parou e perguntou; eu escolhi `gpt-6-sol` |
+| Ressalva no lugar de resposta | Fase 1 inteira: "não é possível medir" | Ausência de sinal virou achado testado ("nada explica o CSAT") e recomendação (instrumentar) |
+| Classificador fraco | 79,0% com Naive Bayes feito à mão | TF-IDF + SVM calibrado: 86,5% no teste, 85,4% sem quase-duplicatas |
+| Cruzamento evitado | "Sem chave comum, não cruzar" | Transferência entre domínios; os dois achados definiram a arquitetura |
+| Protótipo sem IA | 6 casos pré-processados | LLM ao vivo para qualquer texto, avaliado em amostra aleatória |
+| Política conservadora demais | 77% dos casos para revisão sênior | Sênior só com risco, decisão comercial ou confiança baixa |
+| Afirmação sem checar (Claude) | Disse que 139 clientes tinham vários tickets | Ao checar, cada e-mail repetido tinha um nome diferente: coincidência do gerador. O histórico do cliente saiu dos sinais reais |
+| Estimativa de custo errada (Claude) | Falou em ~US$ 10/mês de AWS | Conta refeita com IPv4 público: ~US$ 17,50 na `t4g.small` ou ~US$ 11,30 na `t4g.micro` |
+| Integração fora do padrão (Claude) | Chamada à Anthropic com HTTP cru e uso forçado de ferramenta | SDK oficial com structured outputs, conferido contra a documentação |
+| Bugs de interface (Claude) | Clique em "Aprovar" perdia o resultado; quebra de linha dentro de string | Estado guardado em sessão; teste automatizado cobre o fluxo |
+| Corte errado nas evidências (Claude) | Exportação misturou UTC e horário de Brasília e cortou mensagens decisivas | Horário de corte corrigido e conferido no arquivo final |
 
 ## O que eu adicionei
 
-- **[CONFIRMAR]** Desconfiar do volume e dos timestamps antes de aceitar qualquer ranking de atraso.
-- **[CONFIRMAR]** Exigir que cada lacuna dos dados fosse explicada em termos que um diretor entendesse.
-- Não aceitar a primeira entrega como pronta e buscar uma segunda opinião de outro agente, como avaliador.
-- Pedir prova antes de aceitar a crítica, e só então decidir reconstruir.
-- Cortar escopo: de 77 documentos e duas soluções para um README, um app e este log.
-- Decidir os limites de custo (assinatura nos testes, API só na publicação) e escolher o modelo.
-- **[COMPLETAR]** Contexto próprio de operação ou suporte que influenciou o desenho, por exemplo por que a fila por risco vem antes da automação.
+- Desconfiar do volume e dos timestamps antes de aceitar qualquer ranking.
+- Criar uma contraprova independente para comparar o trabalho da IA sozinha com o trabalho conduzido.
+- Exigir resposta como empresa real, com fila atual e prevenção.
+- Não aceitar a primeira entrega como pronta: pedir revisão externa e prova antes de reconstruir.
+- Cortar escopo (de 77 documentos para um README, um app, uma apresentação e este log).
+- Definir limites de custo e de publicação, e escolher modelos.
+- **[PENDENTE]** Revisar pessoalmente 20 triagens do LLM na página "Revisão humana" do app (resultado em `outputs/revisao_humana.csv`).
+- **[COMPLETAR]** Contexto próprio de operação ou suporte que influenciou o desenho.
 
 ## Iterações e evidências
 
-- Fase 1: dez versões documentadas (preservadas fora desta pasta, no histórico local).
-- Fase 2: commits desta pasta; resultados em [outputs/](../outputs/); teste em [tests/test_app.py](../tests/test_app.py).
-- **[COMPLETAR]** Screenshots ou export das conversas mais decisivas: a revisão crítica e as escolhas de escopo.
+- Fase 1: mensagens com data e hora em [evidencias/codex](../evidencias/codex/mensagens-do-candidato.md).
+- Fase 2: commits desta pasta e transcrição exportada da sessão do Claude Code.
+- Resultados reproduzíveis em [outputs/](../outputs/) e teste em [tests/test_app.py](../tests/test_app.py).
