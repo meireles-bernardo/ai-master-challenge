@@ -103,20 +103,39 @@ def _openai(ticket: dict) -> dict:
         "text": {"format": {"type": "json_schema", "name": "triage", "schema": SCHEMA, "strict": True}},
     })
     text = next(c["text"] for item in data["output"] if item.get("type") == "message" for c in item["content"] if c.get("type") == "output_text")
-    return json.loads(text)
+    result = json.loads(text)
+    usage = data.get("usage", {})
+    result["_usage"] = {"input_tokens": usage.get("input_tokens"), "output_tokens": usage.get("output_tokens")}
+    return result
 
 
 def _anthropic(ticket: dict) -> dict:
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if not key:
+    import anthropic  # só necessário neste provedor
+
+    if not os.environ.get("ANTHROPIC_API_KEY"):
         raise LLMError("Defina ANTHROPIC_API_KEY.")
-    data = _post("https://api.anthropic.com/v1/messages", {"x-api-key": key, "anthropic-version": "2023-06-01"}, {
-        "model": os.environ.get("LLM_MODEL", "claude-sonnet-5-5"), "max_tokens": 1500,
-        "tools": [{"name": "triage", "description": "Return the ticket triage.", "input_schema": SCHEMA}],
-        "tool_choice": {"type": "tool", "name": "triage"},
-        "messages": [{"role": "user", "content": _prompt(ticket)}],
-    })
-    return next(block["input"] for block in data["content"] if block["type"] == "tool_use")
+    client = anthropic.Anthropic(timeout=float(os.environ.get("LLM_TIMEOUT", "60")))
+    try:
+        # Structured outputs garantem JSON válido no schema; esforço baixo basta para triagem.
+        response = client.messages.create(
+            model=os.environ.get("LLM_MODEL", "claude-haiku-5-5"),
+            max_tokens=4000,
+            output_config={"effort": os.environ.get("LLM_EFFORT", "low"), "format": {"type": "json_schema", "schema": SCHEMA}},
+            messages=[{"role": "user", "content": _prompt(ticket)}],
+        )
+    except anthropic.RateLimitError as exc:
+        raise LLMError("Limite de requisições da Anthropic atingido; tente de novo em instantes.") from exc
+    except anthropic.APIStatusError as exc:
+        raise LLMError(f"Anthropic respondeu {exc.status_code}: {exc.message}") from exc
+    except anthropic.APIConnectionError as exc:
+        raise LLMError("Sem conexão com a API da Anthropic.") from exc
+    if response.stop_reason == "refusal":
+        raise LLMError("O modelo recusou analisar este texto. Encaminhe para triagem humana.")
+    if response.stop_reason == "max_tokens":
+        raise LLMError("Resposta cortada pelo limite de tokens.")
+    result = json.loads(next(b.text for b in response.content if b.type == "text"))
+    result["_usage"] = {"input_tokens": response.usage.input_tokens, "output_tokens": response.usage.output_tokens}
+    return result
 
 
 PROVIDERS = {"codex": _codex, "openai": _openai, "anthropic": _anthropic}

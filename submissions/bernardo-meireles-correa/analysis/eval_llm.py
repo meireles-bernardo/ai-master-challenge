@@ -10,6 +10,7 @@ Uso: LLM_PROVIDER=codex python analysis/eval_llm.py [--n 60] [--workers 3]
 """
 import argparse
 import json
+import os
 import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -77,6 +78,18 @@ def main() -> None:
         "stages": pd.Series([r["decision"]["stage"] for r in ok]).value_counts().to_dict(),
         "human_required_pct": sum(r["decision"]["human_required"] for r in ok) / max(len(ok), 1) * 100,
     }
+    # Custo real por ticket quando o provedor informa tokens (API). Preço do Claude Haiku 5.5 por padrão.
+    usage = [r["llm"].get("_usage") for r in ok if r["llm"].get("_usage")]
+    if usage:
+        price_in = float(os.environ.get("LLM_PRICE_IN_PER_MTOK", "0.10"))
+        price_out = float(os.environ.get("LLM_PRICE_OUT_PER_MTOK", "0.50"))
+        tin = sum(u["input_tokens"] or 0 for u in usage) / len(usage)
+        tout = sum(u["output_tokens"] or 0 for u in usage) / len(usage)
+        summary["cost"] = {"avg_input_tokens": tin, "avg_output_tokens": tout,
+                           "usd_per_ticket": (tin * price_in + tout * price_out) / 1e6,
+                           "price_per_mtok": [price_in, price_out]}
+    else:
+        summary["cost"] = None  # assinatura via Codex não informa tokens; medir com a API
     (OUTPUTS / "llm_eval.json").write_text(json.dumps({"summary": summary, "rows": rows}, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 

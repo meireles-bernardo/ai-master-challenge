@@ -11,6 +11,7 @@ import pandas as pd
 import streamlit as st
 
 import context
+import limits
 import llm
 import policy
 import roi
@@ -44,7 +45,10 @@ def it_router() -> policy.ITRouter:
 
 @st.cache_data(show_spinner=False, max_entries=200)
 def cached_triage(text: str, channel: str, product: str, provider: str) -> dict:
-    return llm.triage({"text": text, "channel": channel, "product": product})
+    # Só roda em cache miss: é aqui que uma chamada paga acontece e entra no teto diário.
+    result = llm.triage({"text": text, "channel": channel, "product": product})
+    limits.record()
+    return result
 
 
 def pct(x: float, digits: int = 1) -> str:
@@ -178,13 +182,19 @@ def page_triage():
     if st.button("Analisar", type="primary", disabled=not text.strip()):
         st.session_state["analysis"] = {"domain": domain, "text": text}
         if domain.startswith("Cliente"):
-            try:
-                with st.spinner("LLM analisando…"):
-                    out = cached_triage(text, st.session_state.get("channel", ""), st.session_state.get("product", ""), provider)
-                st.session_state["analysis"]["llm"] = out
-                st.session_state["draft"] = out["suggested_reply"]
-            except llm.LLMError as exc:
-                st.session_state["analysis"]["error"] = str(exc)
+            seen = st.session_state.setdefault("llm_seen", set())
+            blocked = None if text in seen else limits.check(len(seen))
+            if blocked:
+                st.session_state["analysis"]["error"] = blocked
+            else:
+                try:
+                    with st.spinner("LLM analisando…"):
+                        out = cached_triage(text, st.session_state.get("channel", ""), st.session_state.get("product", ""), provider)
+                    seen.add(text)
+                    st.session_state["analysis"]["llm"] = out
+                    st.session_state["draft"] = out["suggested_reply"]
+                except llm.LLMError as exc:
+                    st.session_state["analysis"]["error"] = str(exc)
     analysis = st.session_state.get("analysis")
     if not analysis or analysis["domain"] != domain:
         return
