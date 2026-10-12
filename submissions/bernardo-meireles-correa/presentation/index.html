@@ -18,12 +18,15 @@
     --rule: #C9D1D8;
     --red: #D7263D;
     --amber: #E9A23B;
+    --night: #17202B;
+    --dim: #45556A;
+    --bg: var(--fog);
     --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
     --text: "Newsreader", Georgia, serif;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--fog); color: var(--ink); font-family: var(--text); font-size: 1.1875rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  body { margin: 0; background: var(--bg); transition: background-color 700ms ease; color: var(--ink); font-family: var(--text); font-size: 1.1875rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
   a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
   a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
@@ -64,6 +67,15 @@
   .button { font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--fog); background: var(--ink); padding: 0.7rem 1.2rem; text-decoration: none; }
   .button:hover { background: #2B3846; }
   .hero .card { transition: opacity 700ms ease; }
+  body.tone-dark { --bg: var(--night); }
+  body.tone-dark .figure { border-bottom-color: rgba(255,255,255,0.08); }
+  body.tone-dark .hero h1, body.tone-dark .hero strong, body.tone-dark .hero .legend { color: #F2F4F6; }
+  body.tone-dark .hero p, body.tone-dark .hero .hint { color: #B4BEC8; }
+  body.tone-dark .quote { background: rgba(255,255,255,0.06); }
+  body.tone-dark .quote p { color: #F2F4F6; }
+  body.tone-dark .quote footer { color: #9AA6B2; }
+  body.tone-dark .button { background: var(--fog); color: var(--night); }
+  .quote .pt { margin-top: 0.35rem; font-style: normal; font-size: 0.95rem; opacity: 0.85; }
   .hero h1 { font-size: clamp(2.4rem, 4.6vw, 4rem); }
   .hero .quote p { font-size: 1.05rem; }
   .hero p { margin-bottom: 0.8rem; }
@@ -75,21 +87,25 @@
   .intro-card .meta span { padding: 0.15rem 0.55rem; background: var(--fog); color: var(--ink); }
   .intro-card .meta .alarm { background: var(--red); color: #fff; }
   .intro-card p { margin: 0; font-size: clamp(1.35rem, 3vw, 2.1rem); line-height: 1.4; color: var(--ink); }
+  .intro-card .kicker { position: absolute; left: 0; top: -2.1rem; font-family: var(--display); font-size: 1.05rem; color: #C9D1D8; }
+  .intro-card .pt { margin-top: 0.8rem; font-size: 1.05rem; color: var(--ink-soft); }
   .intro-card .skip { position: absolute; right: 0.9rem; bottom: 0.7rem; font-family: var(--display); font-size: 0.85rem; color: var(--ink-soft); background: none; border: 0; cursor: pointer; text-decoration: underline; }
   @media (max-width: 820px) {
     body { font-size: 1.0625rem; }
     .story { grid-template-columns: 1fr; }
-    .figure { grid-column: 1; grid-row: 1; height: 52vh; height: 52svh; z-index: 2; background: var(--fog); border-bottom: 1px solid var(--rule); }
+    .figure { grid-column: 1; grid-row: 1; height: 52vh; height: 52svh; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--rule); transition: background-color 700ms ease; }
     .steps { grid-column: 1; grid-row: 2; }
     .step { min-height: 75vh; min-height: 75svh; justify-content: flex-start; padding: 2rem 0 0; }
   }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
-<body class="intro">
+<body class="intro tone-dark">
 <div class="intro-card" role="dialog" aria-label="Ticket de abertura">
+  <span class="kicker">Um ticket real, entre <span data-n="total"></span></span>
   <div class="meta"><span>Ticket <b data-n="hookId"></b></span><span>Critical</span><span class="alarm">nunca respondido</span></div>
   <p data-n="quote"></p>
+  <p class="pt">Tradução: meu GoPro Hero travou e perdi todos os dados. Tem como recuperar?</p>
   <button class="skip" type="button">Pular</button>
 </div>
 <main class="story">
@@ -98,7 +114,7 @@
     <section class="step hero" data-scene="color">
       <div class="card">
         <h1>Um cliente perdeu todos os dados. Ninguém respondeu.</h1>
-        <blockquote class="quote"><p data-n="quote"></p><footer>Ticket <span data-n="hookId"></span>, <span data-n="hookProduct"></span>, prioridade Critical, aberto pelas redes sociais. Nunca respondido.</footer></blockquote>
+        <blockquote class="quote"><p data-n="quote"></p><p class="pt">Tradução: meu GoPro Hero travou e perdi todos os dados. Tem como recuperar?</p><footer>Ticket <span data-n="hookId"></span>, <span data-n="hookProduct"></span>, prioridade Critical, aberto pelas redes sociais. Nunca respondido.</footer></blockquote>
         <p>Ele não é o único: <strong data-n="open"></strong> tickets nunca tiveram resposta, <strong data-n="hookSame"></strong> deles críticos e com perda de dados. Cada ficha ao lado é um ticket real do dataset.</p>
         <ul class="legend">
           <li><i style="background:var(--red)"></i>nunca respondido</li>
@@ -202,7 +218,7 @@
   const N = D.status.length;
   const css = getComputedStyle(document.documentElement);
   const rgb = (v) => { const h = css.getPropertyValue(v).trim().slice(1); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
-  const COLORS = { neutral: rgb("--slip"), o: rgb("--red"), p: rgb("--amber"), c: rgb("--slip"), red: rgb("--red"), amber: rgb("--amber"), slip: rgb("--slip"), ink: rgb("--ink") };
+  const COLORS = { dim: rgb("--dim"), neutral: rgb("--slip"), o: rgb("--red"), p: rgb("--amber"), c: rgb("--slip"), red: rgb("--red"), amber: rgb("--amber"), slip: rgb("--slip"), ink: rgb("--ink") };
   const INK = css.getPropertyValue("--ink").trim(), SOFT = css.getPropertyValue("--ink-soft").trim(), RULE = css.getPropertyValue("--rule").trim();
   const fmt = (n) => n.toLocaleString("pt-BR");
   const pct = (x, d = 0) => (x * 100).toFixed(d).replace(".", ",") + "%";
@@ -226,7 +242,7 @@
     acc: pct(D.classifier.accuracy, 1), itN: fmt(D.classifier.n), auto: auto100, prec: pct(D.classifier.autoPrecision),
     placeholder: `${D.llm.placeholder[0]} de ${D.llm.placeholder[1]}`,
     hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
-    quote: "“" + D.hook.quote + "”", hookId: D.hook.id, hookProduct: D.hook.product, hookSame: D.hook.same,
+    total: fmt(N), quote: "“" + D.hook.quote + "”", hookId: D.hook.id, hookProduct: D.hook.product, hookSame: D.hook.same,
     foundStuck: fmt([...D.status].filter((st, i) => st !== "c" && D.found[i] === "1").length),
     blankStuck: fmt([...D.status].filter((st, i) => st !== "c" && D.blank[i] === "1").length),
     stuck: fmt(byStatus.o + byStatus.p), risky: fmt([...D.status].filter((st, i) => st !== "c" && D.risk[i] === "1").length),
@@ -275,9 +291,13 @@
 
     if (name === "arrive" || name === "color") {
       const f = fit(N, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
-      order.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, name === "arrive" && i !== D.hook.index ? COLORS.neutral : COLORS[D.status[i]]));
-      const h = D.hook.index * K, ring = Math.max(3, f.sh);
-      shapes.push({ x: T[h] - ring, y: T[h + 1] - ring, w: T[h + 2] + ring * 2, h: T[h + 3] + ring * 2, accent: true });
+      // Na abertura a grade fica apagada e a ficha 609 só aparece quando o cartão pousa nela.
+      order.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh,
+        name === "arrive" ? COLORS.dim : COLORS[D.status[i]], name === "arrive" && i === D.hook.index ? 0 : 1));
+      if (name === "color") {
+        const h = D.hook.index * K, ring = Math.max(3, f.sh);
+        shapes.push({ x: T[h] - ring, y: T[h + 1] - ring, w: T[h + 2] + ring * 2, h: T[h + 3] + ring * 2, accent: true });
+      }
     }
 
     if (name === "status") {
@@ -419,6 +439,7 @@
     overlayFrom = overlay; overlay = next;
     duration = instant || reduced ? 0 : (first ? 1300 : 1100);
     t0 = performance.now(); scene = name;
+    document.body.classList.toggle("tone-dark", name === "arrive" || name === "color");
     if (duration) requestAnimationFrame(frame); else frame(t0);
   }
 
@@ -455,7 +476,7 @@
     ctx.globalAlpha = alpha;
     const { big, small } = labelSizes();
     o.shapes.forEach(s => {
-      ctx.strokeStyle = s.accent ? INK : RULE; ctx.lineWidth = s.accent ? 2 : 1.5; ctx.setLineDash(s.dashed ? [6, 5] : []);
+      ctx.strokeStyle = s.accent ? (document.body.classList.contains("tone-dark") ? "#F2F4F6" : INK) : RULE; ctx.lineWidth = s.accent ? 2 : 1.5; ctx.setLineDash(s.dashed ? [6, 5] : []);
       ctx.strokeRect(s.x + 0.5, s.y + 0.5, s.w, s.h);
     });
     ctx.setLineDash([]);
@@ -508,9 +529,11 @@
     steps.forEach(s => io.observe(s));
   }
   function playIntro() {
-    card.animate([{ opacity: 0, transform: "translate(-50%, -46%)" }, { opacity: 1, transform: "translate(-50%, -50%)" }], { duration: 600, easing: "ease-out", fill: "forwards" });
+    // A grade apagada já está na tela desde o primeiro quadro; o cartão surge por cima dela.
+    go("arrive", true);
+    canvas.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, easing: "ease-out" });
+    card.animate([{ opacity: 0, transform: "translate(-50%, -46%)" }, { opacity: 1, transform: "translate(-50%, -50%)" }], { duration: 600, delay: 350, easing: "ease-out", fill: "forwards" });
     introTimers.push(setTimeout(() => {
-      go("arrive");
       const t = layout("arrive").T, h = D.hook.index * K, c = canvas.getBoundingClientRect(), r = card.getBoundingClientRect();
       const tx = c.left + t[h], ty = c.top + t[h + 1], sx = t[h + 2] / r.width, sy = t[h + 3] / r.height;
       card.style.transform = "none"; card.style.left = r.left + "px"; card.style.top = r.top + "px"; card.style.opacity = 1;
@@ -519,14 +542,16 @@
         { transform: `translate(${tx - r.left}px, ${ty - r.top}px) scale(${sx}, ${sy})`, opacity: 0.9, offset: 0.85 },
         { transform: `translate(${tx - r.left}px, ${ty - r.top}px) scale(${sx}, ${sy})`, opacity: 0 },
       ], { duration: 1300, easing: "cubic-bezier(.6,0,.2,1)", fill: "forwards" });
-    }, 2900));
-    introTimers.push(setTimeout(() => go("color"), 4500));
-    introTimers.push(setTimeout(finishIntro, 6200));
+    }, 3400));
+    introTimers.push(setTimeout(() => go("color"), 4600));
+    introTimers.push(setTimeout(finishIntro, 6000));
     ["wheel", "touchstart", "keydown"].forEach(ev => addEventListener(ev, finishIntro, { once: true, passive: true }));
     card.querySelector(".skip").addEventListener("click", finishIntro);
   }
 
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+  // Espera as fontes por no máximo 0,8 s: a abertura não pode ficar parada numa conexão lenta.
+  const fontsOrTimeout = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 800))]);
+  fontsOrTimeout.then(() => {
     // ?cena=status mostra a cena fixa, sem scroll (usado para conferir capturas)
     const fixed = new URLSearchParams(location.search).get("cena");
     if (fixed) { introDone = true; card.style.display = "none"; document.body.classList.remove("intro"); go("arrive", true); go(fixed, true); return; }
