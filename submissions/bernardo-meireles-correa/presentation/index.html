@@ -5,565 +5,598 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A fila do suporte</title>
 <meta name="repo-url" content="">
-<meta name="description" content="O diagnóstico do Challenge 002 contado com os 8.469 tickets reais do dataset.">
+<meta name="description" content="Challenge 002 do AI Master G4: diagnóstico, automação com IA e prova, contados com os 8.469 tickets reais do dataset.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --fog: #E8ECEF;
-    --ink: #17202B;
-    --ink-soft: #4A5663;
+    --night: #121B26;
+    --panel: rgba(18, 27, 38, 0.8);
+    --text: #E9EDF1;
+    --soft: #A9B4BF;
+    --rule: rgba(255, 255, 255, 0.12);
+    --red: #E2334A;
+    --amber: #F0A93C;
     --slip: #B9C3CC;
-    --rule: #C9D1D8;
-    --red: #D7263D;
-    --amber: #E9A23B;
-    --night: #17202B;
+    --bright: #F2F4F6;
     --dim: #45556A;
-    --bg: var(--fog);
     --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
-    --text: "Newsreader", Georgia, serif;
+    --serif: "Newsreader", Georgia, serif;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); transition: background-color 700ms ease; color: var(--ink); font-family: var(--text); font-size: 1.1875rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
-  a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-  a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  body { margin: 0; background: var(--night); color: var(--text); font-family: var(--serif); font-size: 1.15rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  #stage { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+  .no-webgl #stage, .no-webgl .labels, .no-webgl .callout { display: none; }
 
-  .story { display: grid; grid-template-columns: minmax(20rem, 34rem) 1fr; gap: 0 clamp(1.5rem, 4vw, 4rem); padding: 0 clamp(1rem, 4vw, 4rem); }
-  .figure { grid-column: 2; grid-row: 1; position: sticky; top: 0; height: 100vh; height: 100svh; }
-  .figure canvas { width: 100%; height: 100%; display: block; }
-  .steps { grid-column: 1; grid-row: 1; position: relative; z-index: 1; }
+  .labels { position: fixed; inset: 0; pointer-events: none; }
+  .label { position: absolute; transform: translate(-50%, -100%); font-family: var(--display); white-space: nowrap; text-align: center; opacity: 0; transition: opacity 400ms ease; }
+  .label b { display: block; font-size: clamp(1.25rem, 2.1vw, 1.9rem); font-weight: 750; letter-spacing: -0.01em; }
+  .label span { font-size: 0.88rem; color: var(--soft); }
+  .label.row { transform: translate(-100%, -50%); text-align: right; }
+  .label.side { transform: translate(0, -50%); text-align: left; }
+  .label.on { opacity: 1; }
 
+  .callout { position: fixed; z-index: 3; width: min(22rem, 70vw); background: #FFFFFF; color: #17202B; padding: 0.9rem 1rem 0.8rem; border-top: 4px solid var(--red);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35); font-size: 1rem; line-height: 1.4; opacity: 0; transition: opacity 500ms ease; pointer-events: none; }
+  .callout.on { opacity: 1; }
+  .callout .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem; font-family: var(--display); font-size: 0.8rem; }
+  .callout .chips span { background: #E8ECEF; padding: 0.1rem 0.45rem; }
+  .callout .chips .alarm { background: var(--red); color: #fff; }
+  .callout p { margin: 0; font-style: italic; color: #17202B; }
+  .callout .pt { margin-top: 0.35rem; font-style: normal; font-size: 0.88rem; color: #4A5663; }
+  .callout::after { content: ""; position: absolute; left: var(--tip, 50%); bottom: -9px; width: 14px; height: 14px; background: #fff; transform: translateX(-50%) rotate(45deg); }
+  .callout.below::after { bottom: auto; top: -9px; }
+
+  .story { position: relative; z-index: 2; width: min(34rem, 100%); padding: 0 clamp(1rem, 4vw, 3.5rem); }
   .step { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 4rem 0; }
-  .step p, .step ol { margin: 0 0 1rem; max-width: 30rem; color: var(--ink-soft); }
-  .step p strong { color: var(--ink); font-weight: 500; }
-  .step ol { padding-left: 1.4rem; }
-  .step ol li { padding-left: 0.3rem; margin-bottom: 0.55rem; }
-  .step ol li::marker { font-family: var(--display); font-weight: 700; color: var(--ink); }
+  .card { background: var(--panel); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 1.6rem 1.6rem 1.1rem; border: 1px solid var(--rule); }
+  h1, h2 { font-family: var(--display); font-optical-sizing: auto; font-variation-settings: "wdth" 82; letter-spacing: -0.02em; line-height: 0.98; margin: 0 0 1rem; }
+  h1 { font-size: clamp(2.3rem, 4.4vw, 3.8rem); font-weight: 760; }
+  h2 { font-size: clamp(1.9rem, 3.2vw, 2.9rem); font-weight: 720; }
+  p, ol, ul { color: var(--soft); }
+  p { margin: 0 0 0.9rem; }
+  p strong, li strong { color: var(--text); font-weight: 500; }
+  ol { margin: 0 0 1rem; padding-left: 1.3rem; }
+  ol li { margin-bottom: 0.55rem; padding-left: 0.2rem; }
+  ol li::marker { font-family: var(--display); font-weight: 700; color: var(--text); }
+  .answers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 1.1rem 0 1.2rem; padding: 0; list-style: none; }
+  .answers li { border-top: 2px solid var(--text); padding-top: 0.5rem; font-family: var(--display); font-size: 0.92rem; line-height: 1.25; }
+  .answers li b { display: block; font-size: 1.55rem; color: var(--text); font-weight: 750; margin-bottom: 0.2rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin: 0 0 1rem; padding: 0; list-style: none; font-family: var(--display); font-size: 0.95rem; color: var(--text); }
+  .legend li { display: flex; align-items: center; gap: 0.45rem; }
+  .legend i { width: 1rem; height: 0.5rem; display: inline-block; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; align-items: center; font-family: var(--display); margin-top: 1.2rem; }
+  .button { background: var(--text); color: var(--night); padding: 0.65rem 1.1rem; text-decoration: none; font-weight: 650; }
+  a { color: var(--text); text-underline-offset: 0.2em; }
+  a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+  .colophon { font-family: var(--display); font-size: 0.85rem; color: var(--soft); padding: 0 0 5rem; }
 
-  h1, h2 { font-family: var(--display); font-optical-sizing: auto; font-variation-settings: "wdth" 82; letter-spacing: -0.02em; line-height: 0.98; margin: 0 0 1.25rem; color: var(--ink); }
-  h1 { font-size: clamp(2.75rem, 6.2vw, 5.25rem); font-weight: 750; }
-  h2 { font-size: clamp(2rem, 3.6vw, 3.25rem); font-weight: 700; }
-
-  .questions { list-style: none; padding: 0; margin: 0.25rem 0 2rem; font-family: var(--display); font-variation-settings: "wdth" 90; font-size: 1.25rem; line-height: 1.35; }
-  .questions li { padding: 0.55rem 0; border-top: 1px solid var(--rule); }
-  .questions li:last-child { border-bottom: 1px solid var(--rule); }
-
-  .legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; margin: 0.25rem 0 1rem; padding: 0; list-style: none; font-family: var(--display); font-size: 1rem; color: var(--ink); }
-  .legend li { display: flex; align-items: center; gap: 0.5rem; }
-  .legend i { width: 1.1rem; height: 0.55rem; display: inline-block; }
-  .hint, .links { font-family: var(--display); font-size: 1rem; color: var(--ink-soft); }
-  .links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.75rem; }
-  .colophon { font-family: var(--display); font-size: 0.9rem; color: var(--ink-soft); max-width: 30rem; padding: 0 0 4rem; }
-
-  .quote { margin: 0 0 1.25rem; padding: 0.9rem 1rem; border-left: 3px solid var(--red); background: rgba(255,255,255,0.45); }
-  .quote p { margin: 0 0 0.4rem; color: var(--ink); font-style: italic; }
-  .quote footer { font-family: var(--display); font-size: 0.95rem; color: var(--ink-soft); }
-  .sources { margin: 0 0 1rem; padding-left: 1.1rem; max-width: 30rem; color: var(--ink-soft); }
-  .sources li { margin-bottom: 0.5rem; }
-  .sources strong { color: var(--ink); font-weight: 500; }
-  .actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; }
-  .button { font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--fog); background: var(--ink); padding: 0.7rem 1.2rem; text-decoration: none; }
-  .button:hover { background: #2B3846; }
-  .hero .card { transition: opacity 700ms ease; }
-  body.tone-dark { --bg: var(--night); }
-  body.tone-dark .figure { border-bottom-color: rgba(255,255,255,0.08); }
-  body.tone-dark .hero h1, body.tone-dark .hero strong, body.tone-dark .hero .legend { color: #F2F4F6; }
-  body.tone-dark .hero p, body.tone-dark .hero .hint { color: #B4BEC8; }
-  body.tone-dark .quote { background: rgba(255,255,255,0.06); }
-  body.tone-dark .quote p { color: #F2F4F6; }
-  body.tone-dark .quote footer { color: #9AA6B2; }
-  body.tone-dark .button { background: var(--fog); color: var(--night); }
-  .quote .pt { margin-top: 0.35rem; font-style: normal; font-size: 0.95rem; opacity: 0.85; }
-  .hero h1 { font-size: clamp(2.4rem, 4.6vw, 4rem); }
-  .hero .quote p { font-size: 1.05rem; }
-  .hero p { margin-bottom: 0.8rem; }
-  body.intro .hero .card { opacity: 0; }
-  .intro-card { position: fixed; z-index: 10; left: 50%; top: 50%; width: min(46rem, calc(100vw - 2rem)); transform: translate(-50%, -50%);
-    background: #FFFFFF; border-top: 6px solid var(--red); padding: 1.8rem 2rem 1.6rem; box-shadow: 0 18px 50px rgba(23,32,43,0.18);
-    opacity: 0; transform-origin: top left; }
-  .intro-card .meta { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; font-family: var(--display); font-size: 0.95rem; }
-  .intro-card .meta span { padding: 0.15rem 0.55rem; background: var(--fog); color: var(--ink); }
-  .intro-card .meta .alarm { background: var(--red); color: #fff; }
-  .intro-card p { margin: 0; font-size: clamp(1.35rem, 3vw, 2.1rem); line-height: 1.4; color: var(--ink); }
-  .intro-card .kicker { position: absolute; left: 0; top: -2.1rem; font-family: var(--display); font-size: 1.05rem; color: #C9D1D8; }
-  .intro-card .pt { margin-top: 0.8rem; font-size: 1.05rem; color: var(--ink-soft); }
-  .intro-card .skip { position: absolute; right: 0.9rem; bottom: 0.7rem; font-family: var(--display); font-size: 0.85rem; color: var(--ink-soft); background: none; border: 0; cursor: pointer; text-decoration: underline; }
   @media (max-width: 820px) {
-    body { font-size: 1.0625rem; }
-    .story { grid-template-columns: 1fr; }
-    .figure { grid-column: 1; grid-row: 1; height: 52vh; height: 52svh; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--rule); transition: background-color 700ms ease; }
-    .steps { grid-column: 1; grid-row: 2; }
-    .step { min-height: 75vh; min-height: 75svh; justify-content: flex-start; padding: 2rem 0 0; }
+    body { font-size: 1.05rem; }
+    .story { width: 100%; }
+    .step { justify-content: flex-end; padding: 0 0 6vh; min-height: 105vh; }
+    .step.hero { padding-top: 58vh; }
+    .hero .legend { display: none; }
+    .answers li b { font-size: 1.25rem; }
+    .label b { font-size: 1.05rem; }
+    .label span { font-size: 0.72rem; }
   }
-  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .callout, .label { transition: none; } }
 </style>
 </head>
-<body class="intro tone-dark">
-<div class="intro-card" role="dialog" aria-label="Ticket de abertura">
-  <span class="kicker">Um ticket real, entre <span data-n="total"></span></span>
-  <div class="meta"><span>Ticket <b data-n="hookId"></b></span><span>Critical</span><span class="alarm">nunca respondido</span></div>
+<body>
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="labels" id="labels" aria-hidden="true"></div>
+<div class="callout" id="callout" aria-hidden="true">
+  <div class="chips"><span>Ticket <span data-n="hookId"></span></span><span>Critical</span><span class="alarm">nunca respondido</span></div>
   <p data-n="quote"></p>
   <p class="pt">Tradução: meu GoPro Hero travou e perdi todos os dados. Tem como recuperar?</p>
-  <button class="skip" type="button">Pular</button>
 </div>
+
 <main class="story">
-  <div class="figure" aria-hidden="true"><canvas id="slips"></canvas></div>
-  <div class="steps">
-    <section class="step hero" data-scene="color">
-      <div class="card">
-        <h1>Um cliente perdeu todos os dados. Ninguém respondeu.</h1>
-        <blockquote class="quote"><p data-n="quote"></p><p class="pt">Tradução: meu GoPro Hero travou e perdi todos os dados. Tem como recuperar?</p><footer>Ticket <span data-n="hookId"></span>, <span data-n="hookProduct"></span>, prioridade Critical, aberto pelas redes sociais. Nunca respondido.</footer></blockquote>
-        <p>Ele não é o único: <strong data-n="open"></strong> tickets nunca tiveram resposta, <strong data-n="hookSame"></strong> deles críticos e com perda de dados. Cada ficha ao lado é um ticket real do dataset.</p>
-        <ul class="legend">
-          <li><i style="background:var(--red)"></i>nunca respondido</li>
-          <li><i style="background:var(--amber)"></i>esperando o cliente</li>
-          <li><i style="background:var(--slip)"></i>fechado</li>
-        </ul>
-        <p>O diretor perguntou onde perdemos tempo, o que dá para automatizar e se funciona. A resposta começa na fila.</p>
-        <p class="actions"><a class="button" href="#status">Ver a fila</a><span class="hint">ou role a página</span></p>
-      </div>
-    </section>
-    <section class="step" data-scene="status">
-      <div class="card">
-        <h2>Dois terços da fila estão parados</h2>
-        <p><strong data-n="open"></strong> tickets nunca receberam a primeira resposta. Outros <strong data-n="pending"></strong> esperam o cliente mandar algo que faltou.</p>
-        <p>O tempo não se perde num canal ou num tipo de problema. Ele se perde na fila.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="priority">
-      <div class="card">
-        <h2>E a prioridade não muda nada</h2>
-        <p>Separados por prioridade, os grupos ficam quase idênticos. <strong data-n="critPct"></strong> dos tickets <em>Critical</em> estão parados, a mesma proporção dos <em>Low</em>.</p>
-        <p>A fila anda por ordem de chegada, não por risco. Esse é o primeiro conserto, e não precisa de IA.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="csat">
-      <div class="card">
-        <h2>Nada nos dados explica a satisfação</h2>
-        <p>Só os <strong data-n="closed"></strong> tickets fechados têm nota, e as cinco notas aparecem quase na mesma quantidade.</p>
-        <p>Canal, prioridade, tipo, assunto, produto, gênero, idade e tempo de resolução: nenhuma dessas variáveis tem relação com a nota (menor p = <span data-n="minP"></span>). Antes de prometer CSAT, é preciso registrar o que hoje falta: a abertura do ticket, cada mudança de status e o motivo das notas baixas.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="flow">
-      <div class="card">
-        <h2>A IA lê, a regra decide, uma pessoa responde</h2>
-        <ol>
-          <li>O LLM lê o ticket, sugere tipo e prioridade, marca riscos, lista o que falta e escreve um rascunho.</li>
-          <li>Uma regra fixa procura sinais de risco no texto, mesmo que o LLM deixe passar.</li>
-          <li>Reembolso, cancelamento, perda de dados, acesso e casos jurídicos vão para um agente sênior. O resto vai para um agente com o rascunho pronto.</li>
-        </ol>
-        <p>Ao lado estão os <strong data-n="sample"></strong> tickets sorteados para o teste. Nenhum pôde ser respondido sem pedir algo ao cliente, por isso nenhum saiu automático.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="recover">
-      <div class="card">
-        <h2>Antes de perguntar de novo, procurar</h2>
-        <p>Um terço da fila espera o cliente mandar algo que faltou. Parte dessa informação já está em algum lugar.</p>
-        <ul class="sources">
-          <li><strong>No próprio texto:</strong> contatos e trechos de log citados pelo cliente (<span data-n="foundStuck"></span> tickets parados).</li>
-          <li><strong>No cadastro:</strong> produto e data de compra. Todas as compras têm mais de 12 meses, então a conversa sobre garantia já começa respondida.</li>
-          <li><strong>Em branco:</strong> <span data-n="blankStuck"></span> tickets parados chegaram sem a mensagem de erro. Ela pode vir da telemetria do produto.</li>
-          <li><strong>Com integração:</strong> e-mail do suporte, CRM e histórico do cliente. No protótipo essas fontes são simuladas: o app mostra a consulta que faria, não um resultado inventado.</li>
-        </ul>
-        <ul class="legend">
-          <li><i style="background:var(--ink)"></i>achado no texto</li>
-          <li><i style="background:var(--red)"></i>mensagem de erro em branco</li>
-          <li><i style="background:var(--slip)"></i>depende de integração</li>
-        </ul>
-        <p>Regras: só leitura, só o que está ligado ao ticket, o mínimo necessário, cada consulta registrada e nada enviado ao cliente sem uma pessoa.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="proof">
-      <div class="card">
-        <h2>Funciona com dados reais</h2>
-        <p>Nos tickets de TI, o classificador acerta <strong data-n="acc"></strong> dos <span data-n="itN"></span> casos que nunca viu. Quando está confiante, ele encaminha sozinho: <strong data-n="auto"></strong> de cada 100, com <span data-n="prec"></span> de acerto. Os outros vão para uma pessoa.</p>
-        <p>Nos tickets de clientes, o LLM fez a triagem dos <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez, sem deixar passar nenhum caso de risco e pedindo a mensagem de erro que faltava em <span data-n="placeholder"></span> casos.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="roi">
-      <div class="card">
-        <h2>Cerca de <span data-n="hours"></span> horas por mês de volta</h2>
-        <p>Somando triagem, rascunho da primeira resposta e as idas e voltas evitadas, o cenário central libera <strong data-n="hours"></strong> horas por mês, um pouco mais que uma pessoa em tempo integral.</p>
-        <p>A faixa vai de <span data-n="low"></span> a <span data-n="high"></span> horas porque o dataset não registra o tempo do agente. Essas premissas são justamente o que o piloto vai medir.</p>
-      </div>
-    </section>
-    <section class="step" data-scene="next">
-      <div class="card">
-        <h2>Na segunda-feira</h2>
-        <p>A mesma fila de <strong data-n="stuck"></strong> tickets parados, agora em ordem de risco. Os <strong data-n="risky"></strong> com sinais de perda de dados, dinheiro, acesso, cancelamento ou ameaça jurídica vão para o topo.</p>
-        <ul class="legend">
-          <li><i style="background:var(--red)"></i>risco no texto: vai primeiro</li>
-          <li><i style="background:var(--ink)"></i>sem primeira resposta</li>
-          <li><i style="background:var(--slip)"></i>esperando o cliente</li>
-        </ul>
-        <ol>
-          <li>Esta semana, reordenar a fila por risco. Não precisa de IA.</li>
-          <li>Por quatro semanas, rodar a IA em sombra: ela sugere, a pessoa decide e nada é enviado sozinho.</li>
-          <li>Registrar abertura, mudanças de status e motivo das notas baixas.</li>
-          <li>Manter reembolso, cancelamento, perda de dados, acesso e jurídico sempre com uma pessoa.</li>
-          <li>Só depois do piloto, liberar resposta automática para perguntas simples.</li>
-        </ol>
-        <p class="links"><a id="link-app" href="../README.md#como-rodar-2-min">Abrir o protótipo</a><a id="link-repo" href="../README.md">Ler a submissão</a></p>
-      </div>
-    </section>
-    <p class="colophon">Dados: Customer Support Ticket Dataset e IT Service Ticket Classification Dataset (Kaggle, CC0). O Dataset 1 é sintético; as conclusões valem para o desenho do processo, não como desempenho real.</p>
-  </div>
+  <section class="step hero" data-scene="wall">
+    <div class="card">
+      <h1>Um cliente perdeu todos os dados. Ninguém respondeu.</h1>
+      <p>Ele é um dos <strong data-n="open"></strong> tickets sem resposta, entre <strong data-n="total"></strong> analisados. Cada ficha aqui é um ticket real. As três respostas ao diretor:</p>
+      <ul class="answers">
+        <li><b data-n="stuckPct"></b>da fila está parada</li>
+        <li><b>0 de 8</b>variáveis explicam a satisfação</li>
+        <li><b>~<span data-n="hours"></span> h</b>por mês recuperáveis</li>
+      </ul>
+      <ul class="legend">
+        <li><i style="background:var(--red)"></i>nunca respondido</li>
+        <li><i style="background:var(--amber)"></i>esperando o cliente</li>
+        <li><i style="background:var(--slip)"></i>fechado</li>
+      </ul>
+      <p class="actions"><a class="button" href="#towers">Ver a fila</a><a class="link-app" href="../README.md#como-rodar-2-min">Abrir o protótipo</a></p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="towers">
+    <div class="card">
+      <h2>Dois terços da fila estão parados</h2>
+      <p><strong data-n="open"></strong> tickets nunca receberam a primeira resposta. Outros <strong data-n="pending"></strong> esperam o cliente mandar algo que faltou. Só <strong data-n="closed"></strong> foram fechados.</p>
+      <p>Canal, prioridade e tipo não mudam essa proporção. O tempo não se perde num segmento: ele se perde na fila.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="priority">
+    <div class="card">
+      <h2>E a prioridade não muda nada</h2>
+      <p>Separadas por prioridade, as pilhas têm a mesma forma. <strong data-n="critPct"></strong> dos tickets <em>Critical</em> estão parados, como os <em>Low</em>.</p>
+      <p>A fila anda por ordem de chegada, não por risco. O primeiro conserto não precisa de IA.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="csat">
+    <div class="card">
+      <h2>Nada nos dados explica a satisfação</h2>
+      <p>Só os <strong data-n="closed"></strong> tickets fechados têm nota, e as cinco notas aparecem quase na mesma quantidade.</p>
+      <p>Canal, prioridade, tipo, assunto, produto, gênero, idade e tempo de resolução: nenhuma dessas variáveis tem relação com a nota (menor p = <span data-n="minP"></span>). Antes de prometer CSAT, é preciso registrar o que hoje falta: a abertura do ticket, cada mudança de status e o motivo das notas baixas.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="flow">
+    <div class="card">
+      <h2>A IA lê, a regra decide, uma pessoa responde</h2>
+      <ol>
+        <li>O LLM lê o ticket, sugere tipo e prioridade, marca riscos, lista o que falta e escreve um rascunho.</li>
+        <li>Uma regra fixa procura sinais de risco no texto, mesmo que o LLM deixe passar.</li>
+        <li>Reembolso, cancelamento, perda de dados, acesso e casos jurídicos vão para um agente sênior. O resto vai para um agente com o rascunho pronto.</li>
+      </ol>
+      <p>Ao lado, os <strong data-n="sample"></strong> tickets sorteados para o teste. Nenhum pôde ser respondido sem pedir algo ao cliente, por isso a bandeja automática está vazia.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="recover">
+    <div class="card">
+      <h2>Antes de perguntar de novo, procurar</h2>
+      <p>Um terço da fila espera o cliente mandar algo que faltou. Parte dessa informação já está em algum lugar.</p>
+      <ul class="legend">
+        <li><i style="background:var(--bright)"></i>contato ou log citado no texto (<span data-n="foundStuck"></span>)</li>
+        <li><i style="background:var(--red)"></i>mensagem de erro em branco (<span data-n="blankStuck"></span>)</li>
+        <li><i style="background:var(--dim)"></i>depende de integração</li>
+      </ul>
+      <p>O cadastro já traz produto e data de compra: todas as compras têm mais de 12 meses, então a garantia está respondida. E-mail do suporte, CRM e telemetria do produto completariam o resto; no protótipo, essas fontes aparecem simuladas, sem resultado inventado. Tudo somente leitura, só o que é ligado ao ticket, e nada vai ao cliente sem uma pessoa.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="proof">
+    <div class="card">
+      <h2>Funciona com dados reais</h2>
+      <p>Nos tickets de TI, o classificador acerta <strong data-n="acc"></strong> dos <span data-n="itN"></span> casos que nunca viu. Quando está confiante, encaminha sozinho <strong data-n="auto"></strong> de cada 100, com <span data-n="prec"></span> de acerto. Os outros vão para uma pessoa.</p>
+      <ul class="legend">
+        <li><i style="background:var(--bright)"></i>sozinho e certo</li>
+        <li><i style="background:var(--red)"></i>sozinho e errado</li>
+        <li><i style="background:var(--dim)"></i>para uma pessoa</li>
+      </ul>
+      <p>Nos tickets de clientes, o LLM fez a triagem dos <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez, sem deixar passar caso de risco e pedindo a mensagem de erro que faltava em <span data-n="placeholder"></span> casos.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="roi">
+    <div class="card">
+      <h2>Cerca de <span data-n="hours"></span> horas por mês de volta</h2>
+      <p>Cada ficha aqui é uma hora. Triagem, rascunho da primeira resposta e idas e voltas evitadas somam <strong data-n="hours"></strong> horas por mês no cenário central: mais que uma pessoa em tempo integral.</p>
+      <p>A faixa vai de <span data-n="low"></span> a <span data-n="high"></span> horas, porque o dataset não registra o tempo do agente. Essas premissas são o que o piloto vai medir.</p>
+    </div>
+  </section>
+
+  <section class="step" data-scene="next">
+    <div class="card">
+      <h2>Na segunda-feira</h2>
+      <p>A mesma fila de <strong data-n="stuck"></strong> tickets parados, agora em ordem de risco.</p>
+      <ul class="legend">
+        <li><i style="background:var(--red)"></i>risco no texto: vai primeiro (<span data-n="risky"></span>)</li>
+        <li><i style="background:var(--bright)"></i>sem primeira resposta</li>
+        <li><i style="background:var(--dim)"></i>esperando o cliente</li>
+      </ul>
+      <ol>
+        <li>Esta semana, reordenar a fila por risco. Não precisa de IA.</li>
+        <li>Por quatro semanas, IA em sombra: ela sugere, a pessoa decide, nada é enviado sozinho.</li>
+        <li>Registrar abertura, mudanças de status e motivo das notas baixas.</li>
+        <li>Reembolso, cancelamento, perda de dados, acesso e jurídico sempre com uma pessoa.</li>
+        <li>Só depois do piloto, resposta automática para perguntas simples.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="step" data-scene="process">
+    <div class="card">
+      <h2>Como trabalhei com a IA</h2>
+      <p>Dois agentes com papéis diferentes. As decisões ficaram comigo.</p>
+      <ol>
+        <li><strong>Codex construiu a primeira versão:</strong> auditou os dados, achou os 8.469 tickets sintéticos e gerou várias versões de apresentação, que rejeitei até entender o que faltava.</li>
+        <li><strong>Pedi uma contraprova:</strong> uma sessão da IA sozinha, sem as minhas decisões, para comparar com o trabalho que eu conduzia.</li>
+        <li><strong>Claude Code revisou como avaliador cético:</strong> a entrega respondia com ressalvas, não tinha IA rodando e não cruzava os datasets.</li>
+        <li><strong>Exigi prova antes de aceitar a crítica</strong> e reconstruí com escopo enxuto, decidindo base, modelos, custo e direção visual.</li>
+      </ol>
+      <p>Erros corrigidos no caminho: o classificador subiu de 79,0% para 86,5%, o protótipo ganhou IA ao vivo e uma afirmação sobre clientes repetidos caiu ao ser conferida.</p>
+      <p class="actions"><a class="button link-app" href="../README.md#como-rodar-2-min">Abrir o protótipo</a><a class="link-repo" href="../README.md">Ler a submissão</a><a class="link-evidence" href="../evidencias/README.md">Ver as evidências</a></p>
+    </div>
+  </section>
+  <p class="colophon">Dados: Customer Support Ticket Dataset e IT Service Ticket Classification Dataset (Kaggle, CC0). O primeiro é sintético; as conclusões valem para o desenho do processo, não como desempenho real.</p>
 </main>
+
 <script src="data.js"></script>
 <script>
+// Números e links ficam fora do módulo 3D: a página continua legível mesmo sem WebGL ou sem a CDN.
 (() => {
-  const D = window.DATA;
-  const N = D.status.length;
-  const css = getComputedStyle(document.documentElement);
-  const rgb = (v) => { const h = css.getPropertyValue(v).trim().slice(1); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
-  const COLORS = { dim: rgb("--dim"), neutral: rgb("--slip"), o: rgb("--red"), p: rgb("--amber"), c: rgb("--slip"), red: rgb("--red"), amber: rgb("--amber"), slip: rgb("--slip"), ink: rgb("--ink") };
-  const INK = css.getPropertyValue("--ink").trim(), SOFT = css.getPropertyValue("--ink-soft").trim(), RULE = css.getPropertyValue("--rule").trim();
+  const D = window.DATA, N = D.status.length;
   const fmt = (n) => n.toLocaleString("pt-BR");
   const pct = (x, d = 0) => (x * 100).toFixed(d).replace(".", ",") + "%";
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // ---------- números derivados dos dados
-  const count = (s, ch) => [...s].filter(x => x === ch).length;
-  const byStatus = { o: count(D.status, "o"), p: count(D.status, "p"), c: count(D.status, "c") };
-  const PRI = ["C", "H", "M", "L"], PRI_NAME = { C: "Critical", H: "High", M: "Medium", L: "Low" };
-  const priStats = Object.fromEntries(PRI.map(p => {
-    const idx = [...D.priority].map((x, i) => x === p ? i : -1).filter(i => i >= 0);
-    return [p, { n: idx.length, stuckPct: idx.filter(i => D.status[i] !== "c").length / idx.length }];
-  }));
+  const count = (s, c) => [...s].filter(x => x === c).length;
+  const by = { o: count(D.status, "o"), p: count(D.status, "p"), c: count(D.status, "c") };
+  let critN = 0, critStuck = 0;
+  for (let i = 0; i < N; i++) if (D.priority[i] === "C") { critN++; if (D.status[i] !== "c") critStuck++; }
+  const stuckWhere = (flag) => [...D.status].filter((st, i) => st !== "c" && flag[i] === "1").length;
   const auto100 = Math.round(D.classifier.auto * 100);
-  const wrong100 = Math.round(auto100 * (1 - D.classifier.autoPrecision));
-  const stages = { assistido: 0, "julgamento humano": 0, automatizável: 0 };
-  D.llm.rows.forEach(r => stages[r.stage]++);
   const text = {
-    open: fmt(byStatus.o), pending: fmt(byStatus.p), critPct: pct(priStats.C.stuckPct), closed: fmt(byStatus.c),
-    minP: D.csatMinP.toFixed(2).replace(".", ","), sample: D.llm.sample,
+    quote: "“" + D.hook.quote + "”", hookId: D.hook.id, total: fmt(N), open: fmt(by.o), pending: fmt(by.p), closed: fmt(by.c),
+    stuckPct: Math.round((by.o + by.p) / N * 100) + "%", stuck: fmt(by.o + by.p), hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
+    critPct: Math.round(critStuck / critN * 100) + "%", minP: D.csatMinP.toFixed(2).replace(".", ","), sample: D.llm.sample,
     acc: pct(D.classifier.accuracy, 1), itN: fmt(D.classifier.n), auto: auto100, prec: pct(D.classifier.autoPrecision),
     placeholder: `${D.llm.placeholder[0]} de ${D.llm.placeholder[1]}`,
-    hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
-    total: fmt(N), quote: "“" + D.hook.quote + "”", hookId: D.hook.id, hookProduct: D.hook.product, hookSame: D.hook.same,
-    foundStuck: fmt([...D.status].filter((st, i) => st !== "c" && D.found[i] === "1").length),
-    blankStuck: fmt([...D.status].filter((st, i) => st !== "c" && D.blank[i] === "1").length),
-    stuck: fmt(byStatus.o + byStatus.p), risky: fmt([...D.status].filter((st, i) => st !== "c" && D.risk[i] === "1").length),
+    foundStuck: fmt(stuckWhere(D.found)), blankStuck: fmt(stuckWhere(D.blank)), risky: fmt(stuckWhere(D.risk)),
   };
   document.querySelectorAll("[data-n]").forEach(el => el.textContent = text[el.dataset.n]);
-
-  // Hospedado: o protótipo está em /app/ e a submissão no repositório (meta repo-url).
   if (location.protocol !== "file:") {
-    document.getElementById("link-app").href = "/app/";
-    const repo = document.querySelector('meta[name="repo-url"]').content;
-    const link = document.getElementById("link-repo");
-    if (repo) link.href = repo; else link.remove();
+    // Hospedado: o protótipo está em /app/ e a submissão no repositório (meta repo-url).
+    document.querySelectorAll(".link-app").forEach(a => a.href = "/app/");
+    const repo = document.querySelector('meta[name="repo-url"]').content.replace(/\/$/, "");
+    document.querySelectorAll(".link-repo").forEach(a => repo ? a.href = repo : a.remove());
+    document.querySelectorAll(".link-evidence").forEach(a => repo ? a.href = repo + "/tree/main/evidencias" : a.remove());
   }
-
-  // ---------- estado das fichas: x, y, w, h, r, g, b, alpha
-  const K = 8;
-  const cur = new Float32Array(N * K), from = new Float32Array(N * K), to = new Float32Array(N * K);
-  const delay = new Float32Array(N);
-  const canvas = document.getElementById("slips");
-  const ctx = canvas.getContext("2d");
-  let W = 0, H = 0, dpr = 1, t0 = 0, duration = 0, scene = null;
-  let overlay = { labels: [], shapes: [] }, overlayFrom = { labels: [], shapes: [] };
-
-  const order = Array.from({ length: N }, (_, i) => i);
-  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  for (let i = N - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
-
-  function fit(n, w, h, minS = 1, maxS = 40) {
-    for (let s = maxS; s >= minS; s -= 0.25) {
-      const sw = 2 * s, sh = s, g = Math.max(1, s * 0.45);
-      const cols = Math.floor((w + g) / (sw + g)), rows = Math.floor((h + g) / (sh + g));
-      if (cols * rows >= n) return { sw, sh, g, cols, rows };
-    }
-    return { sw: 2 * minS, sh: minS, g: 1, cols: Math.max(1, Math.floor(w / (3 * minS))), rows: Math.floor(h / (2 * minS)) };
-  }
-  const pad = () => ({ l: 8, r: 8, t: Math.max(40, H * 0.08), b: Math.max(24, H * 0.05) });
-  const labelSizes = () => ({ big: Math.round(Math.max(20, Math.min(44, W * 0.045))), small: Math.round(Math.max(12, Math.min(17, W * 0.018))) });
-
-  function put(T, i, x, y, w, h, c, a = 1) { const o = i * K; T[o] = x; T[o + 1] = y; T[o + 2] = w; T[o + 3] = h; T[o + 4] = c[0]; T[o + 5] = c[1]; T[o + 6] = c[2]; T[o + 7] = a; }
-  function hide(T, i) { const o = i * K; for (let k = 0; k < 7; k++) T[o + k] = cur[o + k]; T[o + 7] = 0; }
-
-  // ---------- cenas
-  function layout(name) {
-    const P = pad(), T = new Float32Array(N * K), labels = [], shapes = [];
-    const aw = W - P.l - P.r, ah = H - P.t - P.b, fs = labelSizes();
-
-    if (name === "arrive" || name === "color") {
-      const f = fit(N, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
-      // Na abertura a grade fica apagada e a ficha 609 só aparece quando o cartão pousa nela.
-      order.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh,
-        name === "arrive" ? COLORS.dim : COLORS[D.status[i]], name === "arrive" && i === D.hook.index ? 0 : 1));
-      if (name === "color") {
-        const h = D.hook.index * K, ring = Math.max(3, f.sh);
-        shapes.push({ x: T[h] - ring, y: T[h + 1] - ring, w: T[h + 2] + ring * 2, h: T[h + 3] + ring * 2, accent: true });
-      }
-    }
-
-    if (name === "status") {
-      const groups = ["o", "p", "c"], gap = Math.max(16, W * 0.04), labelH = Math.max(70, H * 0.12);
-      const bw = (aw - gap * 2) / 3, bh = ah - labelH, f = fit(Math.max(...groups.map(g => byStatus[g])), bw, bh);
-      const names = { o: "nunca respondidos", p: "esperando o cliente", c: "fechados" };
-      groups.forEach((g, gi) => {
-        const bx = P.l + gi * (bw + gap), base = P.t + labelH + bh; let k = 0;
-        order.forEach(i => { if (D.status[i] !== g) return; put(T, i, bx + (k % f.cols) * (f.sw + f.g), base - f.sh - Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, COLORS[g]); k++; });
-        labels.push({ x: bx, y: base - Math.ceil(byStatus[g] / f.cols) * (f.sh + f.g) - 14, big: fmt(byStatus[g]), small: names[g], maxW: bw, color: g === "c" ? SOFT : INK });
-      });
-    }
-
-    if (name === "priority") {
-      ctx.font = `400 ${fs.small}px "Bricolage Grotesque", sans-serif`;
-      const labelW = Math.ceil(ctx.measureText("69% parados").width) + 16, gap = Math.max(14, H * 0.035);
-      const bandH = (ah - gap * 3) / 4, f = fit(Math.max(...PRI.map(p => priStats[p].n)), aw - labelW, bandH - 4);
-      const rank = { o: 0, p: 1, c: 2 }, rows = Math.max(1, Math.floor((bandH + f.g) / (f.sh + f.g)));
-      PRI.forEach((p, pi) => {
-        const by = P.t + pi * (bandH + gap), bx = P.l + labelW;
-        order.filter(i => D.priority[i] === p).sort((a, b) => rank[D.status[a]] - rank[D.status[b]])
-          .forEach((i, k) => put(T, i, bx + Math.floor(k / rows) * (f.sw + f.g), by + (k % rows) * (f.sh + f.g), f.sw, f.sh, COLORS[D.status[i]]));
-        labels.push({ x: P.l, y: by + Math.min(bandH, rows * (f.sh + f.g)) / 2 - 6, big: PRI_NAME[p], small: pct(priStats[p].stuckPct) + " parados", color: INK, inline: true });
-      });
-    }
-
-    if (name === "csat") {
-      const gap = Math.max(10, W * 0.025), labelH = Math.max(60, H * 0.1), footH = fs.small + 18;
-      const bw = (aw - gap * 4) / 5, bh = ah - labelH - footH;
-      const counts = [1, 2, 3, 4, 5].map(n => count(D.csat, String(n)));
-      const f = fit(Math.max(...counts), bw, bh);
-      [1, 2, 3, 4, 5].forEach((n, ni) => {
-        const bx = P.l + ni * (bw + gap), base = P.t + labelH + bh; let k = 0;
-        order.forEach(i => { if (D.csat[i] !== String(n)) return; put(T, i, bx + (k % f.cols) * (f.sw + f.g), base - f.sh - Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, COLORS.ink); k++; });
-        labels.push({ x: bx, y: base - Math.ceil(counts[ni] / f.cols) * (f.sh + f.g) - 12, big: fmt(counts[ni]), small: "", color: INK, compact: true });
-        labels.push({ x: bx, y: base + fs.small + 10, big: "", small: `nota ${n}`, color: SOFT, plain: true });
-      });
-      order.forEach(i => { if (D.csat[i] === "0") hide(T, i); });
-    }
-
-    if (name === "flow") {
-      const bins = [["assistido", "agente com o rascunho pronto"], ["julgamento humano", "agente sênior"], ["automatizável", "resposta automática"]];
-      const gap = Math.max(12, W * 0.03), labelH = Math.max(70, H * 0.13), bw = (aw - gap * 2) / 3, bh = Math.min(ah - labelH, bw * 1.25);
-      const f = fit(Math.max(...Object.values(stages), 1), bw - 24, bh - 24, 1, 22);
-      const used = new Set(), top = P.t + labelH + (ah - labelH - bh) / 2;
-      bins.forEach(([stage, label], bi) => {
-        const bx = P.l + bi * (bw + gap), by = top;
-        shapes.push({ x: bx, y: by, w: bw, h: bh, dashed: stages[stage] === 0 });
-        labels.push({ x: bx, y: by - 14, big: String(stages[stage]), small: label, maxW: bw, color: stages[stage] ? INK : SOFT });
-        D.llm.rows.filter(r => r.stage === stage).forEach((r, k) => {
-          put(T, r.i, bx + 12 + (k % f.cols) * (f.sw + f.g), by + 12 + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, stage === "julgamento humano" ? COLORS.red : COLORS.ink);
-          used.add(r.i);
-        });
-      });
-      for (let i = 0; i < N; i++) if (!used.has(i)) hide(T, i);
-    }
-
-    if (name === "recover") {
-      const stuck = order.filter(i => D.status[i] !== "c");
-      const rank = (i) => D.found[i] === "1" ? 0 : D.blank[i] === "1" ? 1 : 2;
-      stuck.sort((a, b) => rank(a) - rank(b));
-      const f = fit(stuck.length, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
-      const col = [COLORS.ink, COLORS.red, COLORS.slip];
-      stuck.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, col[rank(i)]));
-      order.forEach(i => { if (D.status[i] === "c") hide(T, i); });
-    }
-
-    if (name === "proof") {
-      const cols = 10, wide = aw > 420, gw = wide ? aw * 0.55 : aw, gh = wide ? ah * 0.8 : ah * 0.75;
-      const s0 = Math.min(gw / (cols * 2 + (cols - 1) * 0.45), gh / (10 + 9 * 0.45), 24);
-      const f = { sw: 2 * s0, sh: s0, g: s0 * 0.45 };
-      const gridW = cols * (f.sw + f.g) - f.g, gridH = 10 * (f.sh + f.g) - f.g, x0 = P.l, y0 = P.t + (ah - gridH) / 2 - (wide ? 0 : fs.small);
-      const correct = auto100 - wrong100, kinds = [];
-      for (let k = 0; k < 100; k++) kinds.push(k < correct ? "ok" : k < auto100 ? "bad" : "human");
-      const col = { ok: COLORS.ink, bad: COLORS.red, human: COLORS.slip };
-      order.forEach((i, k) => { if (k < 100) put(T, i, x0 + (k % cols) * (f.sw + f.g), y0 + Math.floor(k / cols) * (f.sh + f.g), f.sw, f.sh, col[kinds[k]]); else hide(T, i); });
-      const lx = x0 + gridW + Math.max(16, W * 0.03), maxW = aw - (lx - P.l);
-      const rowsY = (n) => y0 + Math.floor(n / cols) * (f.sh + f.g) + f.sh;
-      if (maxW > 110) {
-        const items = [[rowsY(0), String(correct), "foram sozinhos para a fila certa", INK],
-                       [rowsY(auto100 - 1), String(wrong100), "foram sozinhos para a fila errada", rgbCss(COLORS.red)],
-                       [rowsY(99), String(100 - auto100), "foram para uma pessoa", SOFT]];
-        let lastY = -Infinity;
-        items.forEach(([yy, big, small, color]) => { const y = Math.max(yy + 4, lastY + fs.big + fs.small * 2 + 14); lastY = y; labels.push({ x: lx, y, big, small, maxW, color }); });
-      } else {
-        labels.push({ x: x0, y: y0 + 10 * (f.sh + f.g) + fs.small + 12, big: "", small: `${correct} certos, ${wrong100} errados, ${100 - auto100} para uma pessoa`, color: SOFT, plain: true });
-      }
-    }
-
-    if (name === "roi") {
-      const hours = D.roi.hours.Central, per = D.roi.fteHours, people = Math.ceil(hours / per);
-      const gap = Math.max(16, W * 0.04), labelH = Math.max(50, H * 0.08), footH = fs.small * 2 + 24;
-      const boxW = (aw - gap * (people - 1)) / people, boxH = ah - labelH - footH;
-      let cols = 12, s = 0;
-      for (let c = 4; c <= 24; c++) { const r = Math.ceil(per / c), v = Math.min((boxW - 20) / (c * 2 + (c - 1) * 0.45), (boxH - 20) / (r + (r - 1) * 0.45), 22); if (v > s) { s = v; cols = c; } }
-      const rows = Math.ceil(per / cols), sw = 2 * s, sh = s, g = s * 0.45, realW = cols * (sw + g) - g + 20, realH = rows * (sh + g) - g + 20;
-      const top = P.t + labelH + (ah - labelH - footH - realH) / 2;
-      for (let p = 0; p < people; p++) {
-        const bx = P.l + p * (realW + gap), by = top;
-        shapes.push({ x: bx, y: by, w: realW, h: realH, dashed: true });
-        labels.push({ x: bx, y: by + realH + fs.small + 10, big: "", small: `${p + 1}ª pessoa: ${per} h por mês`, color: SOFT, plain: true });
-      }
-      order.forEach((i, k) => {
-        if (k >= hours) return hide(T, i);
-        const p = Math.floor(k / per), kk = k % per, bx = P.l + p * (realW + gap) + 10, by = top + 10;
-        put(T, i, bx + (kk % cols) * (sw + g), by + Math.floor(kk / cols) * (sh + g), sw, sh, COLORS.ink);
-      });
-      labels.push({ x: P.l, y: top - 14, big: `${hours} h/mês`, small: "", color: INK, compact: true });
-    }
-
-    if (name === "next") {
-      const stuck = order.filter(i => D.status[i] !== "c");
-      const rank = (i) => D.risk[i] === "1" ? 0 : D.status[i] === "o" ? 1 : 2;
-      stuck.sort((a, b) => rank(a) - rank(b));
-      const f = fit(stuck.length, aw, ah), gridW = f.cols * (f.sw + f.g) - f.g, x0 = P.l + (aw - gridW) / 2;
-      const col = [COLORS.red, COLORS.ink, COLORS.slip];
-      stuck.forEach((i, k) => put(T, i, x0 + (k % f.cols) * (f.sw + f.g), P.t + Math.floor(k / f.cols) * (f.sh + f.g), f.sw, f.sh, col[rank(i)]));
-      order.forEach(i => { if (D.status[i] === "c") hide(T, i); });
-    }
-    return { T, labels, shapes };
-  }
-
-  function rgbCss(c) { return `rgb(${c[0]},${c[1]},${c[2]})`; }
-
-  // ---------- transição e desenho
-  function go(name, instant) {
-    if (!W) return;
-    const first = scene === null;
-    const next = layout(name);
-    from.set(cur); to.set(next.T);
-    if (first) for (let i = 0; i < N; i++) { const o = i * K; for (let k = 0; k < K; k++) from[o + k] = to[o + k]; from[o + 1] = -20 - rnd() * H * 0.6; }
-    for (let k = 0; k < N; k++) delay[order[k]] = first ? (k / N) * 900 : name === "color" ? rnd() * 700 : (k / N) * 350;
-    if (first && !instant) {
-      // A ficha do ticket de abertura não cai: ela surge onde o cartão pousa.
-      const h = D.hook.index * K;
-      for (let k = 0; k < 7; k++) from[h + k] = to[h + k];
-      from[h + 7] = 0; delay[D.hook.index] = 1150;
-    }
-    overlayFrom = overlay; overlay = next;
-    duration = instant || reduced ? 0 : (first ? 1300 : 1100);
-    t0 = performance.now(); scene = name;
-    document.body.classList.toggle("tone-dark", name === "arrive" || name === "color");
-    if (duration) requestAnimationFrame(frame); else frame(t0);
-  }
-
-  const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-  function frame(now) {
-    const elapsed = now - t0;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, W, H);
-    drawOverlay(overlayFrom, duration ? 1 - Math.min(1, elapsed / 250) : 0);
-    for (let i = 0; i < N; i++) {
-      const p = duration ? ease(Math.min(1, Math.max(0, (elapsed - delay[i]) / duration))) : 1, o = i * K;
-      for (let k = 0; k < K; k++) cur[o + k] = from[o + k] + (to[o + k] - from[o + k]) * p;
-      const a = cur[o + 7];
-      if (a < 0.02) continue;
-      ctx.globalAlpha = a;
-      ctx.fillStyle = `rgb(${cur[o + 4] | 0},${cur[o + 5] | 0},${cur[o + 6] | 0})`;
-      ctx.fillRect(cur[o], cur[o + 1], cur[o + 2], cur[o + 3]);
-    }
-    ctx.globalAlpha = 1;
-    drawOverlay(overlay, duration ? Math.min(1, Math.max(0, (elapsed - duration * 0.6) / 500)) : 1);
-    if (elapsed < duration + 900) requestAnimationFrame(frame);
-  }
-
-  function wrap(value, maxW) {
-    if (!maxW || ctx.measureText(value).width <= maxW) return [value];
-    const lines = [""];
-    value.split(" ").forEach(w => { const t = (lines[lines.length - 1] + " " + w).trim(); if (ctx.measureText(t).width > maxW && lines[lines.length - 1]) lines.push(w); else lines[lines.length - 1] = t; });
-    return lines;
-  }
-
-  function drawOverlay(o, alpha) {
-    if (alpha <= 0) return;
-    ctx.globalAlpha = alpha;
-    const { big, small } = labelSizes();
-    o.shapes.forEach(s => {
-      ctx.strokeStyle = s.accent ? (document.body.classList.contains("tone-dark") ? "#F2F4F6" : INK) : RULE; ctx.lineWidth = s.accent ? 2 : 1.5; ctx.setLineDash(s.dashed ? [6, 5] : []);
-      ctx.strokeRect(s.x + 0.5, s.y + 0.5, s.w, s.h);
-    });
-    ctx.setLineDash([]);
-    o.labels.forEach(l => {
-      if (l.inline) {
-        ctx.font = `700 ${Math.round(big * 0.6)}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = l.color; ctx.fillText(l.big, l.x, l.y);
-        ctx.font = `400 ${small}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = SOFT; ctx.fillText(l.small, l.x, l.y + small + 6);
-        return;
-      }
-      if (l.plain) { ctx.font = `400 ${small}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = l.color; ctx.fillText(l.small, l.x, l.y); return; }
-      if (l.compact) { ctx.font = `750 ${Math.round(big * 0.75)}px "Bricolage Grotesque", sans-serif`; ctx.fillStyle = l.color; ctx.fillText(l.big, l.x, l.y); return; }
-      ctx.font = `400 ${small}px "Bricolage Grotesque", sans-serif`;
-      const lines = wrap(l.small, l.maxW ? l.maxW - 6 : 0), lh = small + 3;
-      ctx.fillStyle = SOFT;
-      lines.forEach((t, k) => ctx.fillText(t, l.x, l.y - (lines.length - 1 - k) * lh));
-      ctx.font = `750 ${big}px "Bricolage Grotesque", sans-serif`;
-      ctx.fillStyle = l.color; ctx.fillText(l.big, l.x, l.y - (lines.length - 1) * lh - small - 6);
-    });
-    ctx.globalAlpha = 1;
-  }
-
-  function resize() {
-    const r = canvas.getBoundingClientRect();
-    dpr = Math.min(2, window.devicePixelRatio || 1);
-    W = r.width; H = r.height;
-    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-    if (scene) go(scene, true);
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  const steps = [...document.querySelectorAll(".step")];
-  steps.forEach(s => s.id = s.dataset.scene);
-  // No celular o gráfico ocupa a metade de cima; a cena troca quando o texto chega logo abaixo dele.
-  const narrow = matchMedia("(max-width: 820px)").matches;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting && e.target.dataset.scene !== scene) go(e.target.dataset.scene); });
-  }, { rootMargin: narrow ? "-55% 0px -35% 0px" : "-45% 0px -45% 0px" });
-  // Abertura: o ticket 609 aparece, encolhe até a sua ficha e a fila se colore sozinha.
-  const card = document.querySelector(".intro-card");
-  let introDone = false, introTimers = [], flight = null;
-  function finishIntro() {
-    if (introDone) return;
-    introDone = true;
-    introTimers.forEach(clearTimeout);
-    if (flight) flight.cancel();
-    card.style.display = "none";
-    document.body.classList.remove("intro");
-    if (scene !== "color" && window.scrollY < innerHeight * 0.5) go("color", scene === null);
-    steps.forEach(s => io.observe(s));
-  }
-  function playIntro() {
-    // A grade apagada já está na tela desde o primeiro quadro; o cartão surge por cima dela.
-    go("arrive", true);
-    canvas.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, easing: "ease-out" });
-    card.animate([{ opacity: 0, transform: "translate(-50%, -46%)" }, { opacity: 1, transform: "translate(-50%, -50%)" }], { duration: 600, delay: 350, easing: "ease-out", fill: "forwards" });
-    introTimers.push(setTimeout(() => {
-      const t = layout("arrive").T, h = D.hook.index * K, c = canvas.getBoundingClientRect(), r = card.getBoundingClientRect();
-      const tx = c.left + t[h], ty = c.top + t[h + 1], sx = t[h + 2] / r.width, sy = t[h + 3] / r.height;
-      card.style.transform = "none"; card.style.left = r.left + "px"; card.style.top = r.top + "px"; card.style.opacity = 1;
-      flight = card.animate([
-        { transform: "translate(0, 0) scale(1, 1)", opacity: 1 },
-        { transform: `translate(${tx - r.left}px, ${ty - r.top}px) scale(${sx}, ${sy})`, opacity: 0.9, offset: 0.85 },
-        { transform: `translate(${tx - r.left}px, ${ty - r.top}px) scale(${sx}, ${sy})`, opacity: 0 },
-      ], { duration: 1300, easing: "cubic-bezier(.6,0,.2,1)", fill: "forwards" });
-    }, 3400));
-    introTimers.push(setTimeout(() => go("color"), 4600));
-    introTimers.push(setTimeout(finishIntro, 6000));
-    ["wheel", "touchstart", "keydown"].forEach(ev => addEventListener(ev, finishIntro, { once: true, passive: true }));
-    card.querySelector(".skip").addEventListener("click", finishIntro);
-  }
-
-  // Espera as fontes por no máximo 0,8 s: a abertura não pode ficar parada numa conexão lenta.
-  const fontsOrTimeout = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 800))]);
-  fontsOrTimeout.then(() => {
-    // ?cena=status mostra a cena fixa, sem scroll (usado para conferir capturas)
-    const fixed = new URLSearchParams(location.search).get("cena");
-    if (fixed) { introDone = true; card.style.display = "none"; document.body.classList.remove("intro"); go("arrive", true); go(fixed, true); return; }
-    const deep = steps.find(s => "#" + s.id === location.hash && s.id !== "color");
-    if (deep || reduced || window.scrollY > innerHeight * 0.5) {
-      if (deep) deep.scrollIntoView();
-      introDone = true; card.style.display = "none"; document.body.classList.remove("intro");
-      go(deep ? deep.dataset.scene : "color", true);
-      steps.forEach(s => io.observe(s));
-    } else playIntro();
-  });
 })();
+</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from "three";
+
+const D = window.DATA, N = D.status.length, HOOK = D.hook.index;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const quote = "“" + D.hook.quote + "”";
+
+// ---------- renderizador (sem WebGL, a página fica só com o texto)
+const canvas = document.getElementById("stage");
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
+catch (err) { document.body.classList.add("no-webgl"); throw err; }
+renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+const scene = new THREE.Scene();
+const NIGHT = new THREE.Color("#121B26");
+scene.background = NIGHT;
+scene.fog = new THREE.Fog(NIGHT, 70, 260);
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 1000);
+scene.add(new THREE.HemisphereLight(0xdfe7ef, 0x1a2430, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(-60, 120, 160); scene.add(sun);
+
+const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(2, 1, 0.22), new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0.02 }), N);
+mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+scene.add(mesh);
+const C = (h) => new THREE.Color(h);
+const COL = { o: C("#E2334A"), p: C("#F0A93C"), c: C("#B9C3CC"), red: C("#E2334A"), bright: C("#F2F4F6"), dim: C("#45556A"), slip: C("#B9C3CC") };
+
+// ---------- estado por ficha: x y z rx ry rz escala r g b
+const K = 10;
+const cur = new Float32Array(N * K), from = new Float32Array(N * K), to = new Float32Array(N * K), delay = new Float32Array(N);
+const order = Array.from({ length: N }, (_, i) => i);
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+for (let i = N - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+
+const WALL = { cols: 96, sx: 2.25, sy: 1.22 }; WALL.rows = Math.ceil(N / WALL.cols);
+const hookSlot = Math.floor(WALL.rows * 0.42) * WALL.cols + Math.floor(WALL.cols * 0.62);
+{ const k = order.indexOf(HOOK); [order[k], order[hookSlot]] = [order[hookSlot], order[k]]; }
+const slotOf = new Int32Array(N); order.forEach((i, k) => slotOf[i] = k);
+
+function set(T, i, x, y, z, rx, ry, rz, s, c) { const o = i * K; T[o] = x; T[o + 1] = y; T[o + 2] = z; T[o + 3] = rx; T[o + 4] = ry; T[o + 5] = rz; T[o + 6] = s; T[o + 7] = c.r; T[o + 8] = c.g; T[o + 9] = c.b; }
+function wallPos(k) {
+  const col = k % WALL.cols, row = Math.floor(k / WALL.cols);
+  const x = (col - (WALL.cols - 1) / 2) * WALL.sx, y = ((WALL.rows - 1) / 2 - row) * WALL.sy;
+  return [x, y, -0.0016 * x * x];
+}
+// Ficha fora de cena: encolhe no seu lugar da parede.
+function hide(T, i) { const [x, y, z] = wallPos(slotOf[i]); set(T, i, x, y, z, 0, 0, 0, 0, COL.dim); }
+
+const FLAT = -Math.PI / 2, LAYER = 0.3, LBL = {};
+function pile(T, idxs, cx, cz, cols, rows, color) {
+  const per = cols * rows;
+  idxs.forEach((i, k) => {
+    const layer = Math.floor(k / per), cell = k % per;
+    const x = cx + ((cell % cols) - (cols - 1) / 2) * 2.15, z = cz + (Math.floor(cell / cols) - (rows - 1) / 2) * 1.15;
+    set(T, i, x, LAYER * layer + 0.15, z, FLAT, 0, (rnd() - 0.5) * 0.06, 1, color || COL[D.status[i]]);
+  });
+  return LAYER * Math.ceil(idxs.length / per);
+}
+// Grade em pé, de frente para a câmera
+function grid(T, idxs, cols, sx, sy, x0, y0, colorOf) {
+  idxs.forEach((i, k) => set(T, i, x0 + (k % cols) * sx, y0 - Math.floor(k / cols) * sy, 0, 0, 0, 0, 1, colorOf(i, k)));
+}
+
+const stuck = order.filter(i => D.status[i] !== "c");
+const L = {
+  wall() {
+    const T = new Float32Array(N * K);
+    order.forEach((i, k) => { const [x, y, z] = wallPos(k); set(T, i, x, y, z, 0, 0, 0, i === HOOK ? 0 : 1, COL[D.status[i]]); });
+    return T;
+  },
+  process() {
+    const T = new Float32Array(N * K), tint = new THREE.Color();
+    order.forEach((i, k) => { const [x, y, z] = wallPos(k); set(T, i, x, y, z, 0, 0, 0, 1, tint.copy(COL[D.status[i]]).lerp(NIGHT, 0.72)); });
+    return T;
+  },
+  towers() {
+    const T = new Float32Array(N * K);
+    ["o", "p", "c"].forEach((st, gi) => { const x = (gi - 1) * 30; LBL["towers" + st] = [x, pile(T, order.filter(i => D.status[i] === st), x, 0, 6, 6) + 3, 0]; });
+    return T;
+  },
+  priority() {
+    const T = new Float32Array(N * K);
+    ["C", "H", "M", "L"].forEach((p, ri) => ["o", "p", "c"].forEach((st, gi) => {
+      const x = (gi - 1) * 17, z = (ri - 1.5) * 15, top = pile(T, order.filter(i => D.priority[i] === p && D.status[i] === st), x, z, 4, 4);
+      if (st === "c") LBL["pri" + p] = [x + 7, top * 0.5, z];
+    }));
+    return T;
+  },
+  csat() {
+    const T = new Float32Array(N * K);
+    order.forEach(i => { if (D.csat[i] === "0") hide(T, i); });
+    ["1", "2", "3", "4", "5"].forEach((n, gi) => { const x = (gi - 2) * 15; LBL["csat" + n] = [x, pile(T, order.filter(i => D.csat[i] === n), x, 0, 5, 5, COL.slip) + 2.5, 0]; });
+    return T;
+  },
+  flow() {
+    const T = new Float32Array(N * K), used = new Set();
+    const trays = { "assistido": -14, "julgamento humano": 0, "automatizável": 14 };
+    Object.entries(trays).forEach(([stage, tx]) => {
+      D.llm.rows.filter(r => r.stage === stage).forEach((r, k) => {
+        set(T, r.i, tx + ((k % 4) - 1.5) * 2.35, 0.15, -4.6 + Math.floor(k / 4) * 1.3, FLAT, 0, 0, 1, stage === "julgamento humano" ? COL.red : COL.bright);
+        used.add(r.i);
+      });
+    });
+    for (let i = 0; i < N; i++) if (!used.has(i)) hide(T, i);
+    return T;
+  },
+  recover() {
+    const T = new Float32Array(N * K), rank = (i) => D.found[i] === "1" ? 0 : D.blank[i] === "1" ? 1 : 2;
+    const list = [...stuck].sort((a, b) => rank(a) - rank(b)), cols = 76;
+    order.forEach(i => { if (D.status[i] === "c") hide(T, i); });
+    grid(T, list, cols, 2.25, 1.22, -(cols - 1) * 2.25 / 2, 45, (i) => [COL.bright, COL.red, COL.dim][rank(i)]);
+    return T;
+  },
+  next() {
+    const T = new Float32Array(N * K), rank = (i) => D.risk[i] === "1" ? 0 : D.status[i] === "o" ? 1 : 2;
+    const list = [...stuck].sort((a, b) => rank(a) - rank(b)), cols = 76;
+    order.forEach(i => { if (D.status[i] === "c") hide(T, i); });
+    grid(T, list, cols, 2.25, 1.22, -(cols - 1) * 2.25 / 2, 45, (i) => [COL.red, COL.bright, COL.dim][rank(i)]);
+    return T;
+  },
+  proof() {
+    const T = new Float32Array(N * K), auto = Math.round(D.classifier.auto * 100), wrong = Math.round(auto * (1 - D.classifier.autoPrecision));
+    order.forEach((i, k) => { if (k >= 100) hide(T, i); });
+    const kind = (k) => k < auto - wrong ? COL.bright : k < auto ? COL.red : COL.dim;
+    grid(T, order.slice(0, 100), 10, 2.5, 1.4, -11.25, 6.3, (i, k) => kind(k));
+    const rowY = (k) => 6.3 - Math.floor(k / 10) * 1.4;
+    LBL.proofOk = [13, rowY(0), 0]; LBL.proofBad = [13, rowY(auto - 1) - 1.6, 0]; LBL.proofHuman = [13, rowY(99) - 2.4, 0];
+    LBL.proofCounts = [auto - wrong, wrong, 100 - auto];
+    return T;
+  },
+  roi() {
+    const T = new Float32Array(N * K), hours = D.roi.hours.Central, per = D.roi.fteHours, cols = 12, sx = 2.3, sy = 1.25;
+    order.forEach((i, k) => { if (k >= hours) hide(T, i); });
+    order.slice(0, hours).forEach((i, k) => {
+      const person = Math.floor(k / per), kk = k % per, x0 = person === 0 ? -29.5 : 3.5;
+      set(T, i, x0 + (kk % cols) * sx, 8 - Math.floor(kk / cols) * sy, 0, 0, 0, 0, 1, COL.bright);
+    });
+    LBL.roi1 = [-16.85, 10.2, 0]; LBL.roi2 = [16.15, 10.2, 0];
+    return T;
+  },
+};
+const STATES = Object.fromEntries(Object.keys(L).map(k => [k, L[k]()]));
+
+// ---------- câmeras
+const [hx, hy, hz] = wallPos(hookSlot);
+const CAMS = {
+  hookClose: { pos: [hx, hy, hz + 3.2], look: [hx, hy, hz] },
+  wall: { pos: [hx - 34, hy - 8, hz + 62], look: [hx + 6, hy + 2, hz] },
+  process: { pos: [hx - 70, hy - 16, hz + 118], look: [hx, hy, hz] },
+  towers: { pos: [-40, 56, 132], look: [0, 12, 0] },
+  priority: { pos: [16, 96, 98], look: [7, 4, 0] },
+  csat: { pos: [-6, 36, 84], look: [0, 3, 0] },
+  flow: { pos: [4, 56, 48], look: [4, 0, -1.5] },
+  recover: { pos: [-8, 44, 78], look: [0, 33, 0] },
+  next: { pos: [-8, 40, 96], look: [0, 28, 0] },
+  proof: { pos: [8, 0, 72], look: [8, 0, 0] },
+  roi: { pos: [6, 2, 122], look: [6, 0, 0] },
+};
+
+// Em telas estreitas (retrato), a câmera recua na proporção da tela e a cena volta ao centro.
+const MOBILE_CENTER_X = { proof: 4, roi: 0, flow: 0, priority: 2, csat: 0, towers: 0, recover: 0, next: 0 };
+function camFor(name) {
+  const c = CAMS[name];
+  if (innerWidth >= 820 || !(name in MOBILE_CENTER_X)) return c;
+  const factor = Math.min(2.4, Math.max(1, 1.0 / camera.aspect));
+  const look = [MOBILE_CENTER_X[name], c.look[1], c.look[2]];
+  const pos = c.pos.map((v, k) => look[k] + (v - c.look[k] + (k === 0 ? c.look[0] - look[0] : 0)) * factor);
+  return { pos, look };
+}
+
+// Bandejas desenhadas como contorno (fluxo e ROI)
+const trayMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
+const trays = [];
+function tray(sceneName, w, h, d, x, y, z) {
+  const line = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d)), trayMat);
+  line.position.set(x, y, z); line.visible = false; scene.add(line); trays.push({ scene: sceneName, line });
+}
+[-14, 0, 14].forEach(x => tray("flow", 11, 0.8, 12, x, 0.4, -0.05));
+tray("roi", 29.6, 19, 0.6, -16.85, -0.5, 0); tray("roi", 29.6, 19, 0.6, 16.15, -0.5, 0);
+
+// ---------- rótulos HTML projetados da cena
+const fmt = (n) => n.toLocaleString("pt-BR");
+const labelsEl = document.getElementById("labels"), labels = [];
+function label(sceneName, pos, big, small, cls = "") {
+  const el = document.createElement("div"); el.className = "label " + cls; el.innerHTML = `<b>${big}</b><span>${small}</span>`;
+  labelsEl.appendChild(el); labels.push({ scene: sceneName, pos: new THREE.Vector3(...pos), el });
+}
+const cnt = (s, c) => [...s].filter(x => x === c).length;
+const NAMES = { o: "nunca respondidos", p: "esperando o cliente", c: "fechados" };
+["o", "p", "c"].forEach(st => label("towers", LBL["towers" + st], fmt(cnt(D.status, st)), NAMES[st]));
+["C", "H", "M", "L"].forEach(p => {
+  let n = 0, s = 0; for (let i = 0; i < N; i++) if (D.priority[i] === p) { n++; if (D.status[i] !== "c") s++; }
+  label("priority", LBL["pri" + p], { C: "Critical", H: "High", M: "Medium", L: "Low" }[p], Math.round(s / n * 100) + "% parados", "side");
+});
+["1", "2", "3", "4", "5"].forEach(n => label("csat", LBL["csat" + n], fmt(cnt(D.csat, n)), "nota " + n));
+const stages = { "assistido": 0, "julgamento humano": 0, "automatizável": 0 }; D.llm.rows.forEach(r => stages[r.stage]++);
+label("flow", [-14, 0.8, -6.6], stages["assistido"], "agente com rascunho");
+label("flow", [0, 0.8, -6.6], stages["julgamento humano"], "agente sênior");
+label("flow", [14, 0.8, -6.6], stages["automatizável"], "resposta automática");
+label("proof", LBL.proofOk, LBL.proofCounts[0], "foram sozinhos para a fila certa", "side");
+label("proof", LBL.proofBad, LBL.proofCounts[1], "foram sozinhos para a fila errada", "side");
+label("proof", LBL.proofHuman, LBL.proofCounts[2], "foram para uma pessoa", "side");
+label("roi", LBL.roi1, "1ª pessoa", `${D.roi.fteHours} h por mês`);
+label("roi", LBL.roi2, "2ª pessoa", `${D.roi.hours.Central - D.roi.fteHours} h`);
+const callout = document.getElementById("callout");
+
+// ---------- ficha 609 com o texto real, legível de perto
+function hookTexture() {
+  const c = document.createElement("canvas"); c.width = 1024; c.height = 512;
+  const g = c.getContext("2d");
+  g.fillStyle = "#fff"; g.fillRect(0, 0, 1024, 512);
+  g.fillStyle = "#E2334A"; g.fillRect(0, 0, 1024, 22);
+  g.font = "600 34px 'Bricolage Grotesque', sans-serif";
+  const chip = (x, t, bg, fg) => { const w = g.measureText(t).width + 28; g.fillStyle = bg; g.fillRect(x, 52, w, 50); g.fillStyle = fg; g.fillText(t, x + 14, 88); return x + w + 12; };
+  let x = chip(56, "Ticket " + D.hook.id, "#E8ECEF", "#17202B"); x = chip(x, "Critical", "#E8ECEF", "#17202B"); chip(x, "nunca respondido", "#E2334A", "#fff");
+  g.fillStyle = "#17202B"; g.font = "italic 46px 'Newsreader', Georgia, serif";
+  let line = "", y = 175;
+  for (const w of quote.split(" ")) { const t = line ? line + " " + w : w; if (g.measureText(t).width > 900) { g.fillText(line, 56, y); line = w; y += 60; } else line = t; }
+  g.fillText(line, 56, y);
+  g.fillStyle = "#4A5663"; g.font = "34px 'Newsreader', Georgia, serif";
+  g.fillText("Tradução: meu GoPro Hero travou e perdi todos os dados.", 56, y + 78);
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  return tex;
+}
+let hookMesh = null;
+
+// ---------- animação
+let current = null, t0 = 0, dur = 0, settledAt = Infinity, idle = false, calloutOn = false, applyAll = true;
+let camFrom = null, camTo = null, camDur = 0, camT0 = 0;
+const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
+const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), eu = new THREE.Euler(), v = new THREE.Vector3(), sc = new THREE.Vector3(), col = new THREE.Color();
+
+function goState(name, { instant = false, stagger = 550, duration = 1200 } = {}) {
+  from.set(cur); to.set(STATES[name]);
+  for (let k = 0; k < N; k++) delay[order[k]] = (k / N) * stagger;
+  dur = instant || reduced ? 0 : duration; t0 = performance.now(); settledAt = t0 + (dur ? dur + stagger : 0) + 50; current = name;
+  applyAll = true;
+}
+function goCam(name, ms = 1500) {
+  const c = camFor(name);
+  camFrom = { pos: camPos.clone(), look: camLook.clone() };
+  camTo = { pos: new THREE.Vector3(...c.pos), look: new THREE.Vector3(...c.look) };
+  camDur = reduced ? 0 : ms; camT0 = performance.now();
+}
+function applyInstances(now) {
+  if (!applyAll) return;
+  const el = now - t0;
+  for (let i = 0; i < N; i++) {
+    const p = dur ? Math.min(1, Math.max(0, (el - delay[i]) / dur)) : 1, pe = ease(p), o = i * K;
+    for (let k = 0; k < K; k++) cur[o + k] = from[o + k] + (to[o + k] - from[o + k]) * pe;
+    v.set(cur[o], cur[o + 1], cur[o + 2]); eu.set(cur[o + 3], cur[o + 4], cur[o + 5]); q.setFromEuler(eu);
+    const s = cur[o + 6]; sc.set(s, s, s);
+    mesh.setMatrixAt(i, m4.compose(v, q, sc));
+    mesh.setColorAt(i, col.setRGB(cur[o + 7], cur[o + 8], cur[o + 9]));
+  }
+  mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true;
+  if (now > settledAt) applyAll = false;  // parado: não recalcula as 8.469 matrizes a cada quadro
+}
+function updateCamera(now) {
+  if (camTo) {
+    const p = camDur ? Math.min(1, (now - camT0) / camDur) : 1, pe = ease(p);
+    camPos.lerpVectors(camFrom.pos, camTo.pos, pe); camLook.lerpVectors(camFrom.look, camTo.look, pe);
+    if (p >= 1) camTo = null;
+  }
+  const drift = idle && !reduced;
+  camera.position.set(camPos.x + (drift ? Math.sin(now / 2600) * 5 : 0), camPos.y + (drift ? Math.cos(now / 3100) * 2 : 0), camPos.z);
+  camera.lookAt(camLook);
+}
+const tmp = new THREE.Vector3();
+function project(vec) { tmp.copy(vec).project(camera); return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight, tmp.z]; }
+function updateOverlays(now) {
+  const settled = now > settledAt && !camTo;
+  labels.forEach(l => {
+    const [x, y, z] = project(l.pos);
+    l.el.style.left = x + "px"; l.el.style.top = y + "px";
+    l.el.classList.toggle("on", l.scene === current && settled && z < 1);
+  });
+  trays.forEach(t => t.line.visible = t.scene === current);
+  const show = current === "wall" && calloutOn;
+  callout.classList.toggle("on", show);
+  if (show) {
+    const [x, y] = project(new THREE.Vector3(hx, hy, hz));
+    const w = callout.offsetWidth, h = callout.offsetHeight, left = Math.min(innerWidth - w - 12, Math.max(12, x - w / 2)), below = y - h - 22 < 8;
+    callout.classList.toggle("below", below);
+    callout.style.left = left + "px"; callout.style.top = (below ? y + 22 : y - h - 22) + "px";
+    callout.style.setProperty("--tip", (x - left) + "px");
+  }
+  if (hookMesh) hookMesh.visible = current === "wall";
+}
+function frame(now) {
+  applyInstances(now); updateCamera(now);
+  renderer.render(scene, camera); updateOverlays(now);
+  requestAnimationFrame(frame);
+}
+function resize() {
+  const w = innerWidth, h = innerHeight, narrow = w < 820;
+  renderer.setSize(w, h, false); camera.aspect = w / h;
+  // Desktop: cena à direita do painel de texto. Celular: cena na metade de cima.
+  if (narrow) camera.setViewOffset(w, h, 0, h * 0.24, w, h); else camera.setViewOffset(w, h, -w * 0.25, 0, w, h);
+  camera.updateProjectionMatrix();
+  CAMS.hookClose.pos[2] = hz + (narrow ? 7.4 : 3.2);
+  // A câmera mais distante do celular não pode cair dentro da névoa.
+  scene.fog.near = narrow ? 140 : 70; scene.fog.far = narrow ? 560 : 260;
+}
+addEventListener("resize", resize);
+
+// ---------- abertura: de perto no ticket 609, a câmera recua até a parede
+function openIntro() {
+  goState("wall", { instant: true });
+  if (reduced) { camPos.set(...CAMS.wall.pos); camLook.set(...CAMS.wall.look); calloutOn = true; return; }
+  camPos.set(...CAMS.hookClose.pos); camLook.set(...CAMS.hookClose.look);
+  setTimeout(() => { if (current === "wall") goCam("wall", 1700); }, 900);
+  setTimeout(() => { calloutOn = current === "wall"; idle = current === "wall"; }, 2600);
+}
+
+// ---------- scroll
+const steps = [...document.querySelectorAll(".step")];
+steps.forEach(s => s.id = s.dataset.scene);
+const io = new IntersectionObserver(entries => entries.forEach(en => {
+  if (!en.isIntersecting) return;
+  const name = en.target.dataset.scene;
+  if (name === current) return;
+  idle = name === "wall" || name === "process"; calloutOn = name === "wall";
+  goState(name, { stagger: name === "wall" || name === "process" ? 300 : 600 });
+  goCam(name);
+}), { rootMargin: matchMedia("(max-width: 820px)").matches ? "-55% 0px -35% 0px" : "-45% 0px -45% 0px" });
+
+const fontsReady = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 700))]);
+fontsReady.then(() => {
+  hookMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), new THREE.MeshBasicMaterial({ map: hookTexture(), fog: false }));
+  hookMesh.position.set(hx, hy, hz + 0.12); scene.add(hookMesh);
+  resize();
+  // ?cena=towers abre direto numa cena (usado para conferir capturas)
+  const fixed = new URLSearchParams(location.search).get("cena");
+  if (fixed && STATES[fixed]) {
+    goState(fixed, { instant: true }); camPos.set(...camFor(fixed).pos); camLook.set(...camFor(fixed).look);
+    document.getElementById(fixed).scrollIntoView();
+    requestAnimationFrame(frame);
+    return;  // cena fixa: sem observar o scroll
+  }
+  openIntro();
+  requestAnimationFrame(frame);
+  setTimeout(() => steps.forEach(s => io.observe(s)), 600);
+});
 </script>
 </body>
 </html>
