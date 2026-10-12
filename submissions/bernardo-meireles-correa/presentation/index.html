@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A fila do suporte</title>
+<meta name="repo-url" content="">
 <meta name="description" content="O diagnóstico do Challenge 002 contado com os 8.469 tickets reais do dataset.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -188,7 +189,7 @@
           <li>Manter reembolso, cancelamento, perda de dados, acesso e jurídico sempre com uma pessoa.</li>
           <li>Só depois do piloto, liberar resposta automática para perguntas simples.</li>
         </ol>
-        <p class="links"><a href="../README.md">Ler a submissão</a><a href="../README.md#como-rodar-2-min">Rodar o protótipo</a></p>
+        <p class="links"><a id="link-app" href="../README.md#como-rodar-2-min">Abrir o protótipo</a><a id="link-repo" href="../README.md">Ler a submissão</a></p>
       </div>
     </section>
     <p class="colophon">Dados: Customer Support Ticket Dataset e IT Service Ticket Classification Dataset (Kaggle, CC0). O Dataset 1 é sintético; as conclusões valem para o desenho do processo, não como desempenho real.</p>
@@ -231,6 +232,14 @@
     stuck: fmt(byStatus.o + byStatus.p), risky: fmt([...D.status].filter((st, i) => st !== "c" && D.risk[i] === "1").length),
   };
   document.querySelectorAll("[data-n]").forEach(el => el.textContent = text[el.dataset.n]);
+
+  // Hospedado: o protótipo está em /app/ e a submissão no repositório (meta repo-url).
+  if (location.protocol !== "file:") {
+    document.getElementById("link-app").href = "/app/";
+    const repo = document.querySelector('meta[name="repo-url"]').content;
+    const link = document.getElementById("link-repo");
+    if (repo) link.href = repo; else link.remove();
+  }
 
   // ---------- estado das fichas: x, y, w, h, r, g, b, alpha
   const K = 8;

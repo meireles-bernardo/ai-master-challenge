@@ -1,0 +1,38 @@
+# Produção numa única EC2: Caddy (HTTPS automático) na frente, app Streamlit atrás.
+# Subir com deploy/start.sh, que busca a chave da API no SSM antes do compose.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+      - ${SECRETS_ENV_FILE:-/run/g4-support/secrets.env}
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - app-state:/srv/app/local-state
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    expose: ["8501"]
+
+  caddy:
+    image: caddy:2.8.4
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?defina DOMAIN no .env}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./presentation:/srv/presentation:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  app-state:
+  caddy-data:
+  caddy-config:

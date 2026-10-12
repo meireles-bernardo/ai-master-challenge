@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+**/__pycache__
+data/
+local-state/
+tests/
+presentation/
+infra/
+deploy/
+process-log/
+evidencias/
+.env
+*.md
