@@ -20,7 +20,7 @@ O protótipo roda em dados reais. Um classificador treinado nos 47.837 tickets d
 
 **Recomendação principal:** atender a fila por risco, não por ordem de chegada. Colocar IA em modo sombra na triagem e na primeira resposta, e instrumentar a operação antes de prometer ganhos de CSAT.
 
-**Comece pela [apresentação de 2 minutos](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (o Three.js vai junto; offline, só as fontes caem para as do sistema): os 8.469 tickets reais viram fichas 3D e contam o diagnóstico, a solução, a prova e como trabalhei com a IA. Depois rode o protótipo.
+**Comece pela [apresentação de 2 minutos](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (Three.js e fontes vão junto, em `presentation/vendor/`): os 8.469 tickets reais viram fichas 3D e contam o diagnóstico, a solução, a prova e como trabalhei com a IA. Depois rode o protótipo.
 
 ---
 
