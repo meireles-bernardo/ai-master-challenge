@@ -37,6 +37,7 @@
   .label.side { transform: translate(0, -50%); text-align: left; }
   .label.side b { display: inline; font-size: clamp(1.05rem, 1.5vw, 1.4rem); margin-right: 0.45rem; }
   .label.side span { font-size: 0.85rem; }
+  .label.accent b { color: var(--red); }
   .label.on { opacity: 1; }
 
   .callout { position: fixed; z-index: 3; width: min(22rem, 70vw); background: #FFFFFF; color: #17202B; padding: 0.9rem 1rem 0.8rem; border-top: 4px solid var(--red);
@@ -341,13 +342,16 @@ const L = {
     ["C", "H", "M", "L"].forEach((p, ri) => ["o", "p", "c"].forEach((st, gi) => {
       const x = (gi - 1) * 17, z = (ri - 1.5) * 15, top = pile(T, order.filter(i => D.priority[i] === p && D.status[i] === st), x, z, 4, 4);
       if (st === "c") LBL["pri" + p] = [x + 7, top * 0.5, z];
+      if (p === "C") LBL.priCTop = Math.max(LBL.priCTop || 0, top);
     }));
     return T;
   },
   csat() {
     const T = new Float32Array(N * K);
     order.forEach(i => { if (D.csat[i] === "0") hide(T, i); });
-    ["1", "2", "3", "4", "5"].forEach((n, gi) => { const x = (gi - 2) * 15; LBL["csat" + n] = [x, pile(T, order.filter(i => D.csat[i] === n), x, 0, 5, 5, COL.slip) + 2.5, 0]; });
+    // Uma cor por nota, do vermelho (1) ao claro (5): alturas iguais mostram que nada explica a nota.
+    const NOTE = { 1: C("#E2334A"), 2: C("#EC6B3F"), 3: C("#F0A93C"), 4: C("#E8D9A6"), 5: C("#F2F4F6") };
+    ["1", "2", "3", "4", "5"].forEach((n, gi) => { const x = (gi - 2) * 15; LBL["csat" + n] = [x, pile(T, order.filter(i => D.csat[i] === n), x, 0, 5, 5, NOTE[n]) + 2.5, 0]; });
     return T;
   },
   flow() {
@@ -469,6 +473,8 @@ function tray(sceneName, w, h, d, x, y, z) {
 }
 [-14, 0, 14].forEach(x => tray("flow", 11, 0.8, 12, x, 0.4, -0.05));
 tray("roi", 29.6, 19, 0.6, -16.85, -0.5, 0); tray("roi", 29.6, 19, 0.6, 16.15, -0.5, 0);
+// Contorno da fileira Critical: até a prioridade mais alta está parada na mesma proporção.
+tray("priority", 45, LBL.priCTop + 1.5, 7.5, 0, (LBL.priCTop + 1.5) / 2, -22.5);
 
 // ---------- rótulos HTML projetados da cena
 const fmt = (n) => n.toLocaleString("pt-BR");
@@ -482,7 +488,7 @@ const NAMES = { o: "nunca respondidos", p: "esperando o cliente", c: "fechados" 
 ["o", "p", "c"].forEach(st => label("towers", LBL["towers" + st], fmt(cnt(D.status, st)), NAMES[st]));
 ["C", "H", "M", "L"].forEach(p => {
   let n = 0, s = 0; for (let i = 0; i < N; i++) if (D.priority[i] === p) { n++; if (D.status[i] !== "c") s++; }
-  label("priority", LBL["pri" + p], { C: "Critical", H: "High", M: "Medium", L: "Low" }[p], Math.round(s / n * 100) + "% parados", "side");
+  label("priority", LBL["pri" + p], { C: "Critical", H: "High", M: "Medium", L: "Low" }[p], Math.round(s / n * 100) + "% parados", p === "C" ? "side accent" : "side");
 });
 ["1", "2", "3", "4", "5"].forEach(n => label("csat", LBL["csat" + n], fmt(cnt(D.csat, n)), "nota " + n));
 const stages = { "assistido": 0, "julgamento humano": 0, "automatizável": 0 }; D.llm.rows.forEach(r => stages[r.stage]++);
