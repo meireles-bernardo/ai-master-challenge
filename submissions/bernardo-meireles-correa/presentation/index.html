@@ -35,6 +35,8 @@
   .label span { font-size: 0.88rem; color: var(--soft); }
   .label.row { transform: translate(-100%, -50%); text-align: right; }
   .label.side { transform: translate(0, -50%); text-align: left; }
+  .label.side b { display: inline; font-size: clamp(1.05rem, 1.5vw, 1.4rem); margin-right: 0.45rem; }
+  .label.side span { font-size: 0.85rem; }
   .label.on { opacity: 1; }
 
   .callout { position: fixed; z-index: 3; width: min(22rem, 70vw); background: #FFFFFF; color: #17202B; padding: 0.9rem 1rem 0.8rem; border-top: 4px solid var(--red);
@@ -413,15 +415,49 @@ const CAMS = {
   roi: { pos: [6, 2, 122], look: [6, 0, 0] },
 };
 
-// Em telas estreitas (retrato), a câmera recua na proporção da tela e a cena volta ao centro.
-const MOBILE_CENTER_X = { proof: 4, roi: 0, flow: 0, priority: 2, csat: 0, towers: 0, recover: 0, next: 0 };
-function camFor(name) {
-  const c = CAMS[name];
-  if (innerWidth >= 820 || !(name in MOBILE_CENTER_X)) return c;
-  const factor = Math.min(2.4, Math.max(1, 1.0 / camera.aspect));
-  const look = [MOBILE_CENTER_X[name], c.look[1], c.look[2]];
-  const pos = c.pos.map((v, k) => look[k] + (v - c.look[k] + (k === 0 ? c.look[0] - look[0] : 0)) * factor);
-  return { pos, look };
+// Enquadramento adaptativo: cada cena tem uma caixa (fichas + espaço dos rótulos) e a câmera
+// recua e se recentra até a caixa caber na área livre da tela, em qualquer tamanho de janela.
+const BOXES = {
+  towers: [[-37, 0, -4], [37, 30, 4]],
+  priority: [[-21, 0, -27], [34, 16, 27]],
+  csat: [[-37, 0, -3], [37, 13, 3]],
+  flow: [[-20, 0, -8], [20, 3, 6]],
+  proof: [[-12.5, -8, 0], [30, 8.5, 0]],
+  roi: [[-32, -10, 0], [31.5, 13.5, 0]],
+};
+function freeRect() {
+  const W = innerWidth, H = innerHeight;
+  if (W < 820) return { l: 12, r: W - 12, t: 16, b: H * 0.5 };
+  const panel = document.querySelector(".story").getBoundingClientRect().right;
+  return { l: panel + 24, r: W - 36, t: 64, b: H - 40 };
+}
+const tmpCam = new THREE.PerspectiveCamera(), corner = new THREE.Vector3();
+function projectBox(cam, [a, b]) {
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (let k = 0; k < 8; k++) {
+    corner.set(k & 1 ? b[0] : a[0], k & 2 ? b[1] : a[1], k & 4 ? b[2] : a[2]).project(cam);
+    const x = (corner.x + 1) / 2 * innerWidth, y = (1 - corner.y) / 2 * innerHeight;
+    x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+  }
+  return [x0, x1, y0, y1];
+}
+function fitCam(name) {
+  const base = CAMS[name], box = BOXES[name];
+  if (!box) return base;
+  const R = freeRect(), look = new THREE.Vector3(...base.look), dir = new THREE.Vector3(...base.pos).sub(look);
+  tmpCam.copy(camera); tmpCam.updateProjectionMatrix();
+  const place = (s) => { tmpCam.position.copy(look).addScaledVector(dir, s); tmpCam.lookAt(look); tmpCam.updateMatrixWorld(); return projectBox(tmpCam, box); };
+  let s = 1;
+  for (let iter = 0; iter < 3; iter++) {
+    let lo = 0.3, hi = 6;
+    for (let k = 0; k < 20; k++) { const m = (lo + hi) / 2, [x0, x1, y0, y1] = place(m); if (x0 >= R.l && x1 <= R.r && y0 >= R.t && y1 <= R.b) hi = m; else lo = m; }
+    s = hi;
+    const [x0, x1, y0, y1] = place(s), perPx = 2 * dir.length() * s * Math.tan(THREE.MathUtils.degToRad(tmpCam.fov / 2)) / innerHeight;
+    const right = new THREE.Vector3().setFromMatrixColumn(tmpCam.matrixWorld, 0), up = new THREE.Vector3().setFromMatrixColumn(tmpCam.matrixWorld, 1);
+    look.addScaledVector(right, ((x0 + x1) / 2 - (R.l + R.r) / 2) * perPx).addScaledVector(up, -((y0 + y1) / 2 - (R.t + R.b) / 2) * perPx);  // tela cresce para baixo
+  }
+  place(s);
+  return { pos: tmpCam.position.toArray(), look: look.toArray() };
 }
 
 // Bandejas desenhadas como contorno (fluxo e ROI)
@@ -494,7 +530,7 @@ function goState(name, { instant = false, stagger = 550, duration = 1200 } = {})
   applyAll = true;
 }
 function goCam(name, ms = 1500) {
-  const c = camFor(name);
+  const c = fitCam(name);
   camFrom = { pos: camPos.clone(), look: camLook.clone() };
   camTo = { pos: new THREE.Vector3(...c.pos), look: new THREE.Vector3(...c.look) };
   camDur = reduced ? 0 : ms; camT0 = performance.now();
@@ -552,9 +588,11 @@ function frame(now) {
 function resize() {
   const w = innerWidth, h = innerHeight, narrow = w < 820;
   renderer.setSize(w, h, false); camera.aspect = w / h;
-  // Desktop: cena à direita do painel de texto. Celular: cena na metade de cima.
-  if (narrow) camera.setViewOffset(w, h, 0, h * 0.24, w, h); else camera.setViewOffset(w, h, -w * 0.25, 0, w, h);
+  // O centro da projeção vai para o centro da área livre (à direita do painel; no celular, metade de cima).
+  const R = freeRect();
+  camera.setViewOffset(w, h, w / 2 - (R.l + R.r) / 2, h / 2 - (R.t + R.b) / 2, w, h);
   camera.updateProjectionMatrix();
+  if (current && BOXES[current] && !camTo) { const fc = fitCam(current); camPos.set(...fc.pos); camLook.set(...fc.look); }
   CAMS.hookClose.pos[2] = hz + (narrow ? 7.4 : 3.2);
   // A câmera mais distante do celular não pode cair dentro da névoa.
   scene.fog.near = narrow ? 140 : 70; scene.fog.far = narrow ? 560 : 260;
@@ -590,7 +628,7 @@ fontsReady.then(() => {
   // ?cena=towers abre direto numa cena (usado para conferir capturas)
   const fixed = new URLSearchParams(location.search).get("cena");
   if (fixed && STATES[fixed]) {
-    goState(fixed, { instant: true }); camPos.set(...camFor(fixed).pos); camLook.set(...camFor(fixed).look);
+    goState(fixed, { instant: true }); const fc = fitCam(fixed); camPos.set(...fc.pos); camLook.set(...fc.look);
     document.getElementById(fixed).scrollIntoView();
     requestAnimationFrame(frame);
     return;  // cena fixa: sem observar o scroll
