@@ -82,7 +82,7 @@ Para reproduzir tudo a partir dos ZIPs do Kaggle (ver [data/README.md](data/READ
 - *Fila priorizada*: os 5.700 tickets reordenados por risco.
 - *Evidências*.
 - *ROI*: premissas ajustáveis.
-- *Revisão humana*: triagens do LLM avaliadas por uma pessoa.
+- *Revisão das triagens*: 20 triagens do LLM revisadas por dois revisores de IA independentes (Claude e Codex).
 
 **Fluxo proposto**
 
@@ -128,7 +128,7 @@ Regras de uso (LGPD): somente leitura, só conversas ligadas ao ticket ou ao cli
 
 - O Dataset 1 é sintético. As conclusões de **processo** (fila, prioridade ignorada, falta de instrumentação) orientam o desenho, mas os tempos e o CSAT absolutos não descrevem uma operação real.
 - O ROI depende de minutos assumidos, porque o dataset não registra esforço. Capacidade liberada não vira caixa automaticamente.
-- A avaliação do LLM usa verificações automáticas em 60 tickets, mais a revisão humana de 20 deles (página *Revisão humana*). Não é um gabarito independente.
+- A avaliação do LLM usa verificações automáticas em 60 tickets e a revisão de 20 deles por dois revisores de IA (Claude e, sem ver a revisão do Claude, o Codex). Os dois discordaram do LLM nos mesmos três pontos: o tipo de 1 ticket e a prioridade de 2. **Nenhuma pessoa revisou as triagens**; isso é o primeiro passo do piloto.
 - Custo do LLM: com os preços do Claude Haiku 5.5 (US$ 0,10 e 0,50 por milhão de tokens de entrada e saída), a estimativa fica abaixo de US$ 0,001 por ticket; o ROI usa US$ 0,01 por cautela. O valor medido sai de `analysis/eval_llm.py` quando rodado com a API.
 - O classificador de TI vale para aquela organização e em inglês. Não há integração com helpdesk, autenticação nem envio real.
 
@@ -155,7 +155,7 @@ Resumo abaixo; a narrativa completa, com as versões anteriores e as decisões, 
 2. Dez versões de protótipo e apresentação, com críticas minhas a cada rodada.
 3. Revisão externa com o Claude Code. A conclusão foi que a entrega tinha virado um tratado de ressalvas, com 77 documentos e 87 mil palavras, sem responder às perguntas do diretor e sem IA generativa rodando.
 4. Reconstrução enxuta: testes estatísticos, classificador com split limpo e limiar calibrado, LLM com política determinística, app, avaliação em amostra aleatória e apresentação.
-5. Gancho com um ticket real, recuperação de contexto, revisão humana das triagens e deploy na AWS preparado com boas práticas.
+5. Gancho com um ticket real, recuperação de contexto, revisão das triagens por dois revisores de IA e deploy na AWS preparado com boas práticas.
 
 ### Onde a IA errou e como corrigi
 
@@ -184,7 +184,7 @@ Detalhes, com data e hora das minhas mensagens, em [process-log/README.md](proce
 - [x] Git history: um commit por etapa da reconstrução
 - [x] Resultados reproduzíveis: [diagnóstico](outputs/diagnostico.json), [classificador](outputs/classifier_metrics.json), [erros do modelo](outputs/classifier_errors.csv), [avaliação do LLM](outputs/llm_eval.json)
 - [x] Narrativa escrita: [process-log/README.md](process-log/README.md)
-- [ ] Revisão humana de 20 triagens: `outputs/revisao_humana.csv` (pendente)
+- [x] Revisão de 20 triagens por dois revisores de IA: [Claude](outputs/revisao_claude.csv), [Codex](outputs/revisao_codex.csv), [resumo](outputs/revisao_resumo.json)
 
 ---
 

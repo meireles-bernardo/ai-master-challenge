@@ -1,6 +1,6 @@
 # Process Log — Como usei IA
 
-> **Rascunho para minha revisão.** As decisões citadas vêm das minhas mensagens nas sessões ([integra](../evidencias/codex/mensagens-do-candidato.md), [linha do tempo](../evidencias/README.md)). Antes do PR, falta completar o trecho marcado **[COMPLETAR]**.
+> Narrativa redigida com o Claude Code a partir das minhas mensagens registradas nas sessões ([íntegra](../evidencias/codex/mensagens-do-candidato.md), [linha do tempo](../evidencias/README.md)). Cada decisão atribuída a mim tem data e hora nesses registros.
 
 ## Ferramentas e por quê
 
@@ -53,8 +53,7 @@ O resultado dessa fase foi uma auditoria de dados correta, mas 77 documentos e 8
 - Não aceitar a primeira entrega como pronta: pedir revisão externa e prova antes de reconstruir.
 - Cortar escopo (de 77 documentos para um README, um app, uma apresentação e este log).
 - Definir limites de custo e de publicação, e escolher modelos.
-- **[PENDENTE]** Revisar pessoalmente 20 triagens do LLM na página "Revisão humana" do app (resultado em `outputs/revisao_humana.csv`).
-- **[COMPLETAR]** Contexto próprio de operação ou suporte que influenciou o desenho.
+- Na reta final, sem tempo para revisar as triagens eu mesmo, pedi uma revisão por IA com segunda opinião do Codex, registrada como revisão por IA e não como minha.
 
 ## Iterações e evidências
 

@@ -370,12 +370,42 @@ def load_review() -> pd.DataFrame:
     return pd.DataFrame(columns=REVIEW_FIELDS)
 
 
+def ai_reviews():
+    """Revisão das 20 triagens por dois revisores de IA (Claude e Codex), lado a lado."""
+    summary = load_json("revisao_resumo.json")
+    if not summary:
+        return
+    st.subheader("Revisão por dois revisores de IA")
+    st.markdown("Nenhuma pessoa revisou estas triagens. O Claude revisou primeiro; o Codex deu uma segunda opinião "
+                "com as mesmas regras, **sem ver a revisão do Claude**. Onde os dois discordam do LLM ao mesmo tempo, "
+                "o erro é mais provável.")
+    agree = summary["concordancia_entre_revisores"]
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Tipo: Claude / Codex", f"{summary['claude']['tipo']} / {summary['codex']['tipo']}")
+    c2.metric("Prioridade: Claude / Codex", f"{summary['claude']['prioridade']} / {summary['codex']['prioridade']}")
+    c3.metric("Riscos: Claude / Codex", f"{summary['claude']['riscos']} / {summary['codex']['riscos']}")
+    c4.metric("Revisores concordam entre si", f"{sum(agree.values())} de {4 * summary['tickets']}")
+    both = summary["discordancias_de_ambos"]
+    st.markdown(f"Os dois discordaram do LLM nos mesmos pontos: tipo do ticket {', '.join(map(str, both['tipo'])) or 'nenhum'}; "
+                f"prioridade dos tickets {', '.join(map(str, both['prioridade'])) or 'nenhum'}. Nenhum rascunho prometeu reembolso, "
+                "cancelamento ou recuperação.")
+    tables = {}
+    for who in ("claude", "codex"):
+        path = OUT / f"revisao_{who}.csv"
+        if path.exists():
+            tables[who] = pd.read_csv(path, dtype={"comentario": str}).fillna("")
+    if len(tables) == 2:
+        merged = tables["claude"].merge(tables["codex"], on="ticket_id", suffixes=(" (Claude)", " (Codex)"))
+        st.dataframe(merged, hide_index=True, width="stretch", height=380)
+
+
 def page_review():
-    st.title("Revisão humana do LLM")
+    st.title("Revisão das triagens")
     rows = [r for r in EVAL.get("rows", []) if r.get("llm")][:REVIEW_SAMPLE]
+    ai_reviews()
     done = load_review()
-    st.markdown(f"As primeiras {len(rows)} triagens da amostra aleatória de {EVAL['summary']['sample']} tickets, revisadas por uma pessoa. "
-                "As verificações automáticas da página *Evidências* não substituem esse julgamento.")
+    st.subheader("Revisão humana")
+    st.markdown(f"Formulário para uma pessoa revisar as mesmas {len(rows)} triagens. Ainda não foi usado nesta entrega.")
     if len(done):
         agree = {c: (done[c] == "concordo").mean() for c in ["tipo", "prioridade", "riscos"]}
         c1, c2, c3, c4 = st.columns(4)
@@ -383,9 +413,6 @@ def page_review():
         c2.metric("Concorda com o tipo", pct(agree["tipo"], 0))
         c3.metric("Concorda com a prioridade", pct(agree["prioridade"], 0))
         c4.metric("Concorda com os riscos", pct(agree["riscos"], 0))
-        st.bar_chart(done["rascunho"].value_counts(), horizontal=True, height=150)
-    else:
-        st.info("Nenhuma triagem revisada ainda.")
 
     if os.environ.get("ENABLE_REVIEW") != "1":
         if len(done):
