@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A fila do suporte</title>
 <meta name="repo-url" content="">
-<meta name="description" content="Challenge 002 do AI Master G4: diagnóstico, automação com IA e prova, contados com os 8.469 tickets reais do dataset.">
+<meta name="description" content="Challenge 002 do AI Master G4: diagnóstico, automação com IA e prova, contados com os 8.469 registros do dataset.">
 <!-- Fontes embutidas (OFL) em vendor/fonts.css: a página não depende de internet. -->
 <link rel="stylesheet" href="vendor/fonts.css">
 <style>
@@ -101,10 +101,10 @@
   <section class="step hero" data-scene="wall">
     <div class="card">
       <h1>Um cliente perdeu todos os dados. Ninguém respondeu.</h1>
-      <p>Ele é um dos <strong data-n="open"></strong> tickets sem resposta, entre <strong data-n="total"></strong> analisados. Cada ficha aqui é um ticket real. As três respostas ao diretor:</p>
+      <p>Ele é um dos <strong data-n="open"></strong> tickets sem resposta, entre <strong data-n="total"></strong> analisados. Cada ficha aqui é um registro do dataset (sintético). As três respostas ao diretor:</p>
       <ul class="answers">
         <li><b data-n="stuckPct"></b>da fila está parada</li>
-        <li><b>0 de 8</b>variáveis explicam a satisfação</li>
+        <li><b>0 de 8</b>variáveis com relação detectável com a nota</li>
         <li><b>~<span data-n="hours"></span> h</b>por mês recuperáveis</li>
       </ul>
       <ul class="legend">
@@ -128,15 +128,15 @@
     <div class="card">
       <h2>E a prioridade não muda nada</h2>
       <p>Separadas por prioridade, as pilhas têm a mesma forma. <strong data-n="critPct"></strong> dos tickets <em>Critical</em> estão parados, como os <em>Low</em>.</p>
-      <p>A fila anda por ordem de chegada, não por risco. O primeiro conserto não precisa de IA.</p>
+      <p>Nada indica que a fila seja atendida por risco. O primeiro conserto não precisa de IA.</p>
     </div>
   </section>
 
   <section class="step" data-scene="csat">
     <div class="card">
-      <h2>Nada nos dados explica a satisfação</h2>
+      <h2>Nenhuma variável testada explica a satisfação</h2>
       <p>Só os <strong data-n="closed"></strong> tickets fechados têm nota, e as cinco notas aparecem quase na mesma quantidade.</p>
-      <p>Canal, prioridade, tipo, assunto, produto, gênero, idade e tempo de resolução: nenhuma dessas variáveis tem relação com a nota (menor p = <span data-n="minP"></span>). Antes de prometer CSAT, é preciso registrar o que hoje falta: a abertura do ticket, cada mudança de status e o motivo das notas baixas.</p>
+      <p>Canal, prioridade, tipo, assunto, produto, gênero, idade e tempo de resolução: nenhuma tem relação estatisticamente detectável com a nota (menor p = <span data-n="minP"></span>). Antes de prometer CSAT, é preciso registrar o que hoje falta: a abertura do ticket, cada mudança de status e o motivo das notas baixas.</p>
     </div>
   </section>
 
@@ -161,7 +161,7 @@
         <li><i style="background:var(--red)"></i>mensagem de erro em branco (<span data-n="blankStuck"></span>)</li>
         <li><i style="background:var(--dim)"></i>depende de integração</li>
       </ul>
-      <p>O cadastro já traz produto e data de compra: todas as compras têm mais de 12 meses, então a garantia está respondida. E-mail do suporte, CRM e telemetria do produto completariam o resto; no protótipo, essas fontes aparecem simuladas, sem resultado inventado. Tudo somente leitura, só o que é ligado ao ticket, e nada vai ao cliente sem uma pessoa.</p>
+      <p>O cadastro já traz produto e data de compra: todas as compras têm mais de 12 meses, então, numa garantia de 12 meses (premissa a confirmar), a conversa já começa respondida. E-mail do suporte, CRM e telemetria do produto completariam o resto; no protótipo, essas fontes aparecem simuladas, sem resultado inventado. Antes de conectar fontes reais: somente leitura, só o que é ligado ao ticket, cada consulta registrada e nada vai ao cliente sem uma pessoa.</p>
     </div>
   </section>
 
@@ -174,7 +174,7 @@
         <li><i style="background:var(--red)"></i>sozinho e errado</li>
         <li><i style="background:var(--dim)"></i>para uma pessoa</li>
       </ul>
-      <p>Nos tickets de clientes, o LLM fez a triagem dos <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez, sem deixar passar caso de risco e pedindo a mensagem de erro que faltava em <span data-n="placeholder"></span> casos.</p>
+      <p>Nos tickets de clientes, o LLM fez a triagem dos <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez, marcando todos os riscos que a regra de palavras-chave também encontrou e pedindo a mensagem de erro que faltava em <span data-n="placeholder"></span> casos.</p>
     </div>
   </section>
 
@@ -349,7 +349,7 @@ const L = {
   csat() {
     const T = new Float32Array(N * K);
     order.forEach(i => { if (D.csat[i] === "0") hide(T, i); });
-    // Uma cor por nota, do vermelho (1) ao claro (5): alturas iguais mostram que nada explica a nota.
+    // Uma cor por nota, do vermelho (1) ao claro (5): alturas iguais mostram que nenhuma variável testada explica a nota.
     const NOTE = { 1: C("#E2334A"), 2: C("#EC6B3F"), 3: C("#F0A93C"), 4: C("#E8D9A6"), 5: C("#F2F4F6") };
     ["1", "2", "3", "4", "5"].forEach((n, gi) => { const x = (gi - 2) * 15; LBL["csat" + n] = [x, pile(T, order.filter(i => D.csat[i] === n), x, 0, 5, 5, NOTE[n]) + 2.5, 0]; });
     return T;

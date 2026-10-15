@@ -13,14 +13,14 @@
 Respondi às três perguntas do diretor com testes estatísticos, não com médias soltas.
 
 1. **O tempo se perde na fila, e não num canal ou tipo específico.** 67% dos tickets estão parados: 2.819 nunca tiveram primeira resposta e 2.881 esperam o cliente. Um ticket *Critical* tem a mesma chance de estar parado que um *Low*.
-2. **Nenhuma variável explica a satisfação.** As notas de 1 a 5 aparecem em proporções iguais, e nenhuma das 8 variáveis testadas tem associação (menor p = 0,15).
+2. **Nenhuma variável testada mostra relação com a satisfação.** As notas de 1 a 5 aparecem em proporções iguais, e nenhuma das 8 variáveis testadas tem associação estatisticamente detectável (menor p = 0,15). Isso não prova que não haja efeito; mostra que estes dados não dão uma alavanca.
 3. **Dá para recuperar cerca de 212 h/mês (≈1,3 pessoa) no cenário central**, com IA na triagem, no rascunho da primeira resposta e na coleta de dados, sempre com revisão humana.
 
-O protótipo roda em dados reais. Um classificador treinado nos 47.837 tickets de TI roteia sozinho 74% dos casos com 95% de precisão. Um LLM faz a triagem dos tickets de clientes: numa amostra aleatória de 60, não fez nenhuma promessa indevida e não deixou passar nenhum caso de risco.
+O protótipo roda sobre os registros dos datasets, não sobre exemplos escolhidos. Um classificador treinado nos 47.837 tickets de TI roteia sozinho 74% dos casos com 95% de precisão. Um LLM faz a triagem dos tickets de clientes: numa amostra aleatória de 60, não fez nenhuma promessa indevida, e nenhum dos 11 casos que a regra de palavras-chave marcou como risco ficou sem marcação do LLM.
 
-**Recomendação principal:** atender a fila por risco, não por ordem de chegada. Colocar IA em modo sombra na triagem e na primeira resposta, e instrumentar a operação antes de prometer ganhos de CSAT.
+**Recomendação principal:** atender a fila por risco: hoje a prioridade declarada não muda a proporção de tickets parados. Colocar IA em modo sombra na triagem e na primeira resposta, e instrumentar a operação antes de prometer ganhos de CSAT.
 
-**Comece pela [apresentação de 2 minutos](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (Three.js e fontes vão junto, em `presentation/vendor/`): os 8.469 tickets reais viram fichas 3D e contam o diagnóstico, a solução, a prova e como trabalhei com a IA. Depois rode o protótipo.
+**Comece pela [apresentação de 2 minutos](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (Three.js e fontes vão junto, em `presentation/vendor/`): os 8.469 registros do dataset viram fichas 3D e contam o diagnóstico, a solução, a prova e como trabalhei com a IA. Depois rode o protótipo.
 
 ---
 
@@ -63,7 +63,7 @@ Para reproduzir tudo a partir dos ZIPs do Kaggle (ver [data/README.md](data/READ
 | Onde o fluxo trava? | Na fila, igual em todos os segmentos | 5.700 tickets (67%) não fechados; a proporção de status é a mesma por canal, prioridade e tipo (V de Cramér ≤ 0,03) |
 | Quais combinações são piores? | Nenhuma, estatisticamente | 80 combinações com 8 a 28 tickets cada; Kruskal-Wallis p = 0,46; a "pior" surge por acaso em 13% das permutações |
 | A prioridade funciona? | Não | 1.403 dos 2.129 *Critical* (66%) estão parados, como os *Low* |
-| O que impacta a satisfação? | Nada que esteja nos dados | CSAT 2,99; notas 553/549/580/543/544; canal p = 0,47, prioridade p = 0,40, tipo p = 0,26, tempo ρ = 0,02 |
+| O que impacta a satisfação? | Nenhuma relação detectável nas 8 variáveis testadas | CSAT 2,99; notas 553/549/580/543/544; canal p = 0,47, prioridade p = 0,40, tipo p = 0,26, tempo ρ = 0,02 |
 | Quanto se desperdiça? | 112 a 279 h/mês recuperáveis, 212 no cenário central | Premissas explícitas e editáveis no app (página ROI); o dataset não registra o esforço do agente |
 
 **Automação (os dois datasets)**
@@ -74,11 +74,11 @@ Para reproduzir tudo a partir dos ZIPs do Kaggle (ver [data/README.md](data/READ
 | Limiar de confiança | 74% roteados sozinhos com 95,0% de precisão; 26% vão para triagem humana |
 | Cruzamento 1 | Aplicado aos tickets de clientes, o classificador de TI passaria 61% com confiança alta, em categorias absurdas. A confiança não detecta texto de outro domínio, então o roteador é escolhido pela origem do ticket |
 | Cruzamento 2 | O texto de clientes prevê tipo, assunto e prioridade no nível do acaso (19,8% contra 20,7% no tipo). Não dá para treinar com esses rótulos, o que justifica o LLM zero-shot |
-| Triagem por LLM (60 tickets sorteados) | 60/60 processados; 0 promessas proibidas; 0 riscos perdidos; 5 de 5 mensagens de erro em branco pedidas ao cliente; 31 casos assistidos e 29 com revisão sênior |
+| Triagem por LLM (60 tickets sorteados) | 60/60 processados; 0 promessas proibidas; 0 dos 11 riscos apontados pela regra ficaram sem marcação do LLM; 5 de 5 mensagens de erro em branco pedidas ao cliente; 31 casos assistidos e 29 com revisão sênior |
 
 **Protótipo (Streamlit, 6 páginas):**
 - *Resposta ao diretor*.
-- *Triagem ao vivo*: aceita qualquer texto ou sorteia tickets reais, mostra o contexto recuperado e deixa o agente aprovar, editar ou rejeitar o rascunho.
+- *Triagem ao vivo*: aceita qualquer texto ou sorteia registros dos datasets, mostra o contexto recuperado e deixa o agente aprovar, editar ou rejeitar o rascunho.
 - *Fila priorizada*: os 5.700 tickets reordenados por risco.
 - *Evidências*.
 - *ROI*: premissas ajustáveis.
@@ -100,13 +100,13 @@ ticket entra → origem? ─ TI ──────→ classificador ─ confian�
 | Fonte | Nesta base | No protótipo |
 |---|---|---|
 | O próprio texto | Contatos e trechos de log citados (145 tickets) | Extraídos e mostrados ao agente |
-| Cadastro | Produto e data de compra; todas as compras têm mais de 12 meses (fora da garantia) | Mostrados ao agente |
+| Cadastro | Produto e data de compra; todas as compras têm mais de 12 meses (fora de uma garantia de 12 meses, que é premissa minha; a política real precisa ser confirmada) | Mostrados ao agente |
 | Campos em branco | 472 tickets sem a mensagem de erro | Sinalizados; a telemetria do produto poderia supri-la |
 | E-mail do suporte, CRM, histórico do cliente | Não existem no dataset | **Simulados:** o app mostra a consulta que faria, nunca um resultado inventado |
 
-Regras de uso (LGPD): somente leitura, só conversas ligadas ao ticket ou ao cliente, mínimo necessário, cada consulta registrada e nada enviado sem uma pessoa aprovar.
+Regras exigidas antes de conectar fontes reais (LGPD): somente leitura, só conversas ligadas ao ticket ou ao cliente, mínimo necessário, cada consulta registrada e nada enviado sem uma pessoa aprovar. **Hoje elas são requisitos de desenho, não controles implementados**: as fontes do protótipo são simuladas, então não há autorização nem auditoria de consultas para testar.
 
-**Segurança do LLM num site público.** O texto do ticket é tratado como dado, nunca como instrução. O LLM não tem ferramentas nem acesso a sistemas; a saída tem schema fixo (structured outputs); quem decide o destino é a regra determinística, que também procura riscos por palavra-chave, mesmo que o modelo seja manipulado. Recusas do modelo viram triagem humana. Custos: limite por visita, teto diário e teto de gasto no provedor.
+**Segurança do LLM num site público.** O texto do ticket é dado não confiável, e o LLM pode ser influenciado por ele: no ticket 4716, o rascunho repetiu um pedido que veio do próprio texto (dar crédito a @joeyclay). Por isso o desenho não depende de o LLM resistir a isso. O LLM não tem ferramentas nem acesso a sistemas; a saída tem schema fixo (structured outputs); quem decide o destino é a regra determinística, que também procura riscos por palavra-chave, mesmo que o modelo seja manipulado. Recusas do modelo viram triagem humana. Custos: limite por visita, teto diário e teto de gasto no provedor.
 
 ### Recomendações
 
@@ -117,7 +117,7 @@ Regras de uso (LGPD): somente leitura, só conversas ligadas ao ticket ou ao cli
    |---|---|---|
    | Minutos poupados por ticket (medidos) | ≥ 2 min | < 1 min |
    | Rascunhos enviados com no máximo pequenas edições | ≥ 70% | < 40% |
-   | Casos de risco que a IA deixou passar | 0 | qualquer um sem a regra pegar |
+   | Casos de risco que a IA deixou passar (com gabarito humano) | 0 | qualquer um sem a regra pegar |
    | Recontato do cliente em 7 dias | igual ou menor que antes | maior que antes |
    | Custo de LLM por ticket | < US$ 0,01 | — |
 3. **Instrumentar:** registrar a abertura do ticket, cada mudança de status e o motivo de cada nota baixa. Sem isso, nenhum SLA ou ganho de CSAT é demonstrável.
@@ -159,7 +159,8 @@ Resumo abaixo; a narrativa completa, com as versões anteriores e as decisões, 
 
 ### Onde a IA errou e como corrigi
 
-- **Paralisia por ressalvas:** a IA tratou "dados sintéticos" como motivo para não responder. Reescrevi: dado sem sinal é um achado ("nada explica o CSAT") e vira recomendação (instrumentar).
+- **Paralisia por ressalvas:** a IA tratou "dados sintéticos" como motivo para não responder. Reescrevi: dado sem sinal é um achado (nenhuma relação detectável com o CSAT) e vira recomendação (instrumentar).
+- **Afirmações fortes demais, apontadas pela revisão do Codex:** "nenhum risco perdido", "o texto nunca é tratado como instrução", "a fila anda por ordem de chegada". Reescrevi cada uma para dizer só o que foi medido; o teto diário de chamadas passou a ser reservado antes da chamada.
 - **Classificador fraco:** a primeira versão (Naive Bayes feito à mão) teve 79,0%. Um baseline de 8 linhas deu 86,7%, e a versão final teve 86,5% no holdout limpo.
 - **Recusa em cruzar os datasets:** a IA evitou o cruzamento por falta de chave. O cruzamento por transferência mostrou dois fatos que mudaram o desenho.
 - **Protótipo sem IA:** havia 6 casos pré-processados e a API estava "adiada". Agora o app aceita qualquer texto e o LLM roda ao vivo.

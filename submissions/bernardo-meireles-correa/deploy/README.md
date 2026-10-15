@@ -17,7 +17,7 @@ Internet ─HTTPS─▶ Caddy  ── /      → apresentação estática
 Chave da Anthropic ─▶ SSM Parameter Store (SecureString) ─▶ lida no boot pelo papel IAM da instância
 ```
 
-Sem SSH: o acesso ao servidor é pelo SSM Session Manager. IMDSv2 obrigatório, disco criptografado, security group só com 80/443, e o papel IAM só lê o parâmetro da chave.
+Sem SSH: o acesso ao servidor é pelo SSM Session Manager. IMDSv2 obrigatório, disco criptografado e security group só com 80/443. O papel IAM pode ler apenas o parâmetro da chave (`ssm:GetParameter`) e usar `kms:Decrypt` somente em chamadas feitas pelo SSM na região (condição `kms:ViaService`), o que cobre a chave padrão `aws/ssm`; para restringir a uma chave KMS específica, crie o parâmetro com uma chave própria e troque o `Resource`.
 
 ## Quem faz o quê
 

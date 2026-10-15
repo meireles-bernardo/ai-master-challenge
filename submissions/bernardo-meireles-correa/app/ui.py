@@ -45,10 +45,10 @@ def it_router() -> policy.ITRouter:
 
 @st.cache_data(show_spinner=False, max_entries=200)
 def cached_triage(text: str, channel: str, product: str, provider: str) -> dict:
-    # Só roda em cache miss: é aqui que uma chamada paga acontece e entra no teto diário.
-    result = llm.triage({"text": text, "channel": channel, "product": product})
-    limits.record()
-    return result
+    # Só roda em cache miss: a chamada paga só acontece se couber no teto diário.
+    if not limits.reserve():
+        raise llm.LLMError(f"O teto diário de {limits.PER_DAY} análises desta instalação foi atingido. Volte amanhã.")
+    return llm.triage({"text": text, "channel": channel, "product": product})
 
 
 def pct(x: float, digits: int = 1) -> str:
@@ -87,7 +87,7 @@ def page_director():
                   help="Menor p-valor entre todas as variáveis testadas.")
         st.markdown(f"CSAT médio **{str(s['mean']).replace('.', ',')}** com notas 1–5 em proporções iguais. "
                     f"Nenhuma das {len(s['tests'])} variáveis testadas (canal, prioridade, tipo, assunto, produto, gênero, idade, tempo) tem associação (menor p = {dec(s['min_p'])}). "
-                    "Não existe alavanca de CSAT nesses dados; o primeiro passo é medir.")
+                    "Isso não prova ausência de efeito, mas estes dados não dão uma alavanca de CSAT; o primeiro passo é medir.")
     with c3:
         st.metric("3 · Quanto dá para recuperar", f"~{num(central['total_hours_month'])} h/mês",
                   help="Cenário central; premissas editáveis na página ROI.")
@@ -111,7 +111,7 @@ def page_director():
         st.markdown(f"Um ticket **Critical** tem a mesma chance de estar parado que um **Low**: "
                     f"{num(b['critical_not_closed'])} de {num(b['critical_total'])} críticos não estão fechados "
                     f"(V de Cramér {dec(b['by_dimension']['Ticket Priority']['cramers_v'])}, quase zero). "
-                    "A fila é atendida por ordem de chegada, não por risco.")
+                    "Nada indica que a fila seja atendida por risco.")
     with right:
         st.subheader("As \"piores combinações\" são ruído")
         worst = pd.DataFrame(r["worst_combinations"])
@@ -159,11 +159,11 @@ def log_decision(row: dict):
 def page_triage():
     st.title("Triagem ao vivo")
     provider = llm.provider_name()
-    st.caption(f"Provedor de LLM: **{provider}**. Qualquer texto funciona; os botões sorteiam tickets reais dos datasets.")
+    st.caption(f"Provedor de LLM: **{provider}**. Qualquer texto funciona; os botões sorteiam registros dos datasets.")
     domain = st.radio("Origem do ticket", ["Cliente (produto)", "Interno (TI)"], horizontal=True)
     tickets, it_sample = load_tickets(), load_it_sample()
 
-    if st.button("🎲 Sortear ticket real"):
+    if st.button("🎲 Sortear ticket do dataset"):
         if domain.startswith("Cliente"):
             row = tickets.iloc[random.randrange(len(tickets))]
             st.session_state.update(text=row["Description (display)"], channel=row["Ticket Channel"],
@@ -256,7 +256,7 @@ def context_panel(text: str):
             st.markdown("**Fontes que dependem de integração**")
             st.caption("Simulado: o dataset não tem essas fontes. Mostramos a consulta que seria feita, não um resultado.")
             st.markdown("\n".join(f"- *{src}:* {query}" for src, query in ctx.queries))
-        st.caption("Regras: " + " ".join(context.PRIVACY_RULES))
+        st.caption("Regras exigidas antes de conectar fontes reais (ainda não implementadas, pois as fontes são simuladas): " + " ".join(context.PRIVACY_RULES))
 
 
 def page_queue():
@@ -313,7 +313,7 @@ def page_evidence():
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Tickets avaliados", f"{s['succeeded']}/{s['sample']}", help=f"Amostra aleatória, semente {s['seed']}.")
     c2.metric("Promessas proibidas", len(s["forbidden_promises"]), help="Rascunhos que prometem reembolso, cancelamento, crédito ou recuperação.")
-    c3.metric("Risco perdido pelo LLM", len(s["rule_risk_missed_by_llm"]), help="Casos pegos pela regra de segurança, que cobre o LLM.")
+    c3.metric("Riscos da regra sem marcação do LLM", f"{len(s['rule_risk_missed_by_llm'])} de {s['rule_risk_tickets']}", help="Compara só com o que a regra de palavras-chave encontra; não é gabarito humano.")
     c4.metric("Exigiram humano", pct(s["human_required_pct"] / 100, 0))
     st.markdown(f"""
 - Mensagem de erro em branco detectada e pedida ao cliente: **{s['error_placeholder_flagged_missing']} de {s['error_placeholder_tickets']}** tickets com `{{error_message}}`.

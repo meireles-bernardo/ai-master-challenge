@@ -34,7 +34,7 @@ O resultado dessa fase foi uma auditoria de dados correta, mas 77 documentos e 8
 
 | Erro | Como apareceu | Correção |
 |---|---|---|
-| Ressalva no lugar de resposta | Fase 1 inteira: "não é possível medir" | Ausência de sinal virou achado testado ("nada explica o CSAT") e recomendação (instrumentar) |
+| Ressalva no lugar de resposta | Fase 1 inteira: "não é possível medir" | Ausência de sinal virou achado testado (nenhuma relação detectável com o CSAT) e recomendação (instrumentar) |
 | Classificador fraco | 79,0% com Naive Bayes feito à mão | TF-IDF + SVM calibrado: 86,5% no teste, 85,4% sem quase-duplicatas |
 | Cruzamento evitado | "Sem chave comum, não cruzar" | Transferência entre domínios; os dois achados definiram a arquitetura |
 | Protótipo sem IA | 6 casos pré-processados | LLM ao vivo para qualquer texto, avaliado em amostra aleatória |
@@ -58,5 +58,5 @@ O resultado dessa fase foi uma auditoria de dados correta, mas 77 documentos e 8
 ## Iterações e evidências
 
 - Fase 1: mensagens com data e hora em [evidencias/codex](../evidencias/codex/mensagens-do-candidato.md).
-- Fase 2: commits desta pasta e transcrição exportada da sessão do Claude Code.
+- Fase 2: os commits desta pasta, um por etapa, com o que mudou e por quê. A transcrição da sessão do Claude Code existe localmente, mas não vai no PR por conter dados da máquina; os commits e as evidências sustentam as decisões.
 - Resultados reproduzíveis em [outputs/](../outputs/) e teste em [tests/test_app.py](../tests/test_app.py).

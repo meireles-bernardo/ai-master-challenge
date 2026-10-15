@@ -4,7 +4,7 @@ Separa o que é sinal real, extraído do próprio ticket, do que depende de uma
 integração que não existe no dataset. Para as fontes simuladas, mostramos a
 consulta que seria feita, nunca um resultado inventado.
 
-Regras de uso (LGPD): somente leitura, só conversas ligadas ao ticket ou ao
+Regras exigidas antes de conectar fontes reais (LGPD; hoje são requisitos, não controles): somente leitura, só conversas ligadas ao ticket ou ao
 cliente, mínimo necessário, cada consulta registrada, nada enviado sem uma pessoa.
 """
 import re
@@ -51,7 +51,7 @@ def recover(text: str, product: str | None = None, purchase_date: str | None = N
         bought = date.fromisoformat(str(purchase_date)[:10])
         age = months_between(bought, REFERENCE_DATE)
         status = "fora" if age > WARRANTY_MONTHS else "dentro"
-        ctx.found.append(("Cadastro: compra", f"{bought.strftime('%d/%m/%Y')}, há {age} meses ({status} da garantia de {WARRANTY_MONTHS} meses)"))
+        ctx.found.append(("Cadastro: compra", f"{bought.strftime('%d/%m/%Y')}, há {age} meses ({status} de uma garantia de {WARRANTY_MONTHS} meses, premissa a confirmar)"))
 
     if "{error_message}" in text:
         ctx.missing.append("mensagem de erro (o campo chegou em branco)")

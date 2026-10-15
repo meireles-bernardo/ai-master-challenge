@@ -2,7 +2,8 @@
 
 Três camadas: limite por sessão do navegador, teto diário da instalação
 (contador em disco) e o teto de gasto configurado no painel do provedor.
-Respostas repetidas saem do cache e não contam.
+Respostas repetidas saem do cache e não contam. O teto diário é reservado antes
+da chamada; a trava vale para o processo único do Streamlit.
 """
 import json
 import os
@@ -34,11 +35,12 @@ def check(session_calls: int) -> str | None:
     if session_calls >= PER_SESSION:
         return f"Limite de {PER_SESSION} análises por visita atingido. Recarregue mais tarde ou rode o app localmente."
     if used_today() >= PER_DAY:
-        return f"O teto diário de {PER_DAY} análises desta instalação foi atingido. Volta amanhã."
+        return f"O teto diário de {PER_DAY} análises desta instalação foi atingido. Volte amanhã."
     return None
 
 
-def record() -> None:
+def reserve() -> bool:
+    """Reserva uma chamada no teto diário antes de chamar o provedor (verificação e soma juntas, sob trava)."""
     with _lock:
         STATE.mkdir(parents=True, exist_ok=True)
         today = date.today().isoformat()
@@ -46,5 +48,8 @@ def record() -> None:
             data = json.loads(_path().read_text(encoding="utf-8"))
         except (FileNotFoundError, json.JSONDecodeError):
             data = {}
-        data = {today: int(data.get(today, 0)) + 1}  # guarda só o dia corrente
-        _path().write_text(json.dumps(data), encoding="utf-8")
+        used = int(data.get(today, 0))
+        if used >= PER_DAY:
+            return False
+        _path().write_text(json.dumps({today: used + 1}), encoding="utf-8")  # guarda só o dia corrente
+        return True
