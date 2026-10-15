@@ -23,6 +23,8 @@ jobs:
           LLM_PROVIDER: "off"
           ENABLE_REVIEW: "1"
           REVIEW_FILE: ${{ runner.temp }}/review.csv
+      - name: Verificações da entrega (links, números, dados, segredos)
+        run: python tests/check_delivery.py
       - name: CloudFormation
         run: cfn-lint infra/cloudformation.yaml
       - name: Nenhum segredo versionado
