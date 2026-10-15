@@ -27,6 +27,10 @@ Sem SSH: o acesso ao servidor é pelo SSM Session Manager. IMDSv2 obrigatório, 
 | Criar o registro A no Cloudflare | Dono do domínio |
 | Template, scripts, compose, verificação | Já estão neste repositório |
 
+## Atalho
+
+Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOMINIO -RepoUrl https://github.com/USUARIO/REPO.git -RepoSubdir submissions/seu-nome` faz os passos 2 a 4: sobe a stack, mostra o IP para o Cloudflare, espera o DNS e confere a apresentação e o app por HTTPS.
+
 ## Passo a passo
 
 1. **Chave da Anthropic, criada no console da Anthropic com teto de gasto de US$ 10.** Grave direto no SSM. A chave não passa por arquivo nem por chat; o comando pede o valor sem ecoar:
