@@ -108,6 +108,17 @@ Regras exigidas antes de conectar fontes reais (LGPD): somente leitura, só conv
 
 **Segurança do LLM num site público.** O texto do ticket é dado não confiável, e o LLM pode ser influenciado por ele: no ticket 4716, o rascunho repetiu um pedido que veio do próprio texto (dar crédito a @joeyclay). Por isso o desenho não depende de o LLM resistir a isso. O LLM não tem ferramentas nem acesso a sistemas; a saída tem schema fixo (structured outputs); quem decide o destino é a regra determinística, que também procura riscos por palavra-chave, mesmo que o modelo seja manipulado. Recusas do modelo viram triagem humana. Custos: limite por visita, teto diário e teto de gasto no provedor.
 
+**Scan de segurança antes de publicar** (19/10, repetido na CI a cada push):
+
+| Verificação | Ferramenta | Resultado |
+|---|---|---|
+| Segredos no histórico Git e nos arquivos | Gitleaks 8.21 | Nenhum |
+| Dados pessoais e da máquina (e-mail, caminhos, IDs, IPs, telefones, CPF, tokens) | Varredura própria | Um caminho local nas mensagens exportadas, omitido; o resto são falsos positivos (hash, e-mail sintético do dataset) |
+| Dependências Python | pip-audit | Nenhuma vulnerabilidade conhecida |
+| Código Python | Bandit | 7 avisos, nenhum explorável (chamada ao Codex sem shell, URL fixa, sorteio não criptográfico) |
+| Imagem Docker | Trivy 0.57 | 0 críticas; 44 altas em pacotes do Debian 13 sem correção publicada, em ferramentas que o app não usa e que exigem privilégios que o contêiner não tem |
+| Stack em produção local (Caddy + app) | Testes HTTP | HTTPS com redirecionamento, cabeçalhos de segurança, `.env`, scripts e `.git` não servidos (404) |
+
 ### Recomendações
 
 1. **Esta semana:** reordenar a fila por risco (perda de dados, dinheiro, acesso, cancelamento, jurídico) e primeiro contato. A regra roda sem IA e já está no protótipo.

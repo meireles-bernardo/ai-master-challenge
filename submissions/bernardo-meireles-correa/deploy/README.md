@@ -70,8 +70,14 @@ Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOM
 - No app: até `LLM_MAX_CALLS_PER_SESSION` análises por visita e `LLM_MAX_CALLS_PER_DAY` por dia; respostas repetidas saem do cache.
 - Na AWS: recomenda-se um alerta de orçamento (AWS Budgets) em US$ 15/mês.
 
+## Riscos aceitos
+
+- A imagem base (python:3.12-slim, Debian 13) tem vulnerabilidades altas sem correção publicada em pacotes como `util-linux` e `mount`. O app não usa essas ferramentas e o contêiner roda sem root, com filesystem somente leitura, sem capabilities e sem escalada de privilégio. A CI reconstrói e roda o Trivy a cada push e falha se surgir uma vulnerabilidade crítica com correção.
+- O LLM pode ser influenciado pelo texto do ticket; por isso não tem ferramentas, a saída tem schema fixo, a regra decide o destino e nenhum rascunho sai sem uma pessoa.
+
 ## O que já foi validado e o que não
 
 - `cfn-lint` passa no template, e `bash -n` no script.
 - A CI (`.github/workflows/ci.yml`) constrói a imagem e checa o healthcheck do contêiner a cada push.
-- **Não validado ainda:** a criação real da stack, a emissão do certificado e a chamada à API da Anthropic. Isso só acontece no primeiro deploy, que depende do domínio e da chave.
+- A imagem e a stack completa (Caddy + app, com o volume de estado) rodaram localmente no Docker em 19/10, com as mesmas restrições de produção.
+- **Não validado ainda:** a criação real da stack, a emissão do certificado público e a chamada à API da Anthropic. Isso só acontece no primeiro deploy, que depende do domínio e da chave.
