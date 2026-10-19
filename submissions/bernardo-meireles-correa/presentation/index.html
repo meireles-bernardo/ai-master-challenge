@@ -124,7 +124,7 @@
         <li><i style="background:var(--amber)"></i>esperando o cliente</li>
         <li><i style="background:var(--slip)"></i>fechado</li>
       </ul>
-      <p class="actions"><a class="button" href="#towers">Ver a fila</a><a class="link-app" href="../README.md#como-rodar-2-min">Testar o protótipo</a></p>
+      <p class="actions"><a class="button" href="#towers">Ver a fila</a><a class="link-app" href="../README.md#como-rodar-2-min">Triagem de tickets</a></p>
     </div>
   </section>
 
@@ -238,7 +238,7 @@
         <li><strong>Exigi prova antes de aceitar a crítica</strong> e reconstruí com escopo enxuto, decidindo base, modelos, custo e direção visual.</li>
       </ol>
       <p>Erros corrigidos no caminho: o classificador subiu de 79,0% para 86,5%, o protótipo ganhou IA ao vivo e uma afirmação sobre clientes repetidos caiu ao ser conferida.</p>
-      <p class="actions"><a class="button link-app" href="../README.md#como-rodar-2-min">Testar o protótipo</a><a class="link-repo" href="../README.md">Ler a submissão</a><a class="link-evidence" href="../evidencias/README.md">Ver as evidências</a></p>
+      <p class="actions"><a class="button link-app" href="../README.md#como-rodar-2-min">Triagem de tickets</a><a class="link-repo" href="../README.md">Ler a submissão</a><a class="link-evidence" href="../evidencias/README.md">Ver as evidências</a></p>
     </div>
   </section>
   <p class="colophon">Dados: Customer Support Ticket Dataset e IT Service Ticket Classification Dataset (Kaggle, CC0). O primeiro é sintético; as conclusões valem para o desenho do processo, não como desempenho real.</p>
@@ -276,11 +276,27 @@
   document.getElementById("guide").innerHTML = tree("Tickets de clientes (LLM)", G.customer) + tree("Tickets de TI (classificador)", G.it);
   if (location.protocol !== "file:") {
     // Hospedado: o protótipo está em /app/ e a submissão no repositório (meta repo-url).
-    document.querySelectorAll(".link-app").forEach(a => a.href = "/app/");
+    document.querySelectorAll(".link-app").forEach(a => a.href = "/app/triagem");
     const repo = document.querySelector('meta[name="repo-url"]').content.replace(/\/$/, "");
     document.querySelectorAll(".link-repo").forEach(a => repo ? a.href = repo : a.remove());
     document.querySelectorAll(".link-evidence").forEach(a => repo ? a.href = repo + "/tree/main/evidencias" : a.remove());
   }
+  // Ir à triagem: a página desce até o fim (as cenas passam) e só então abre o protótipo.
+  // Ctrl/Shift/clique do meio e movimento reduzido seguem o link na hora.
+  document.querySelectorAll(".link-app").forEach(a => a.addEventListener("click", (e) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const end = document.documentElement.scrollHeight - innerHeight;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || scrollY >= end - 4) return;
+    e.preventDefault();
+    const start = scrollY, t0 = performance.now(), dur = 2600, root = document.documentElement;
+    root.style.scrollBehavior = "auto";
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur), k = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      scrollTo(0, start + (end - start) * k);
+      if (p < 1) requestAnimationFrame(step); else setTimeout(() => { location.href = a.href; }, 450);
+    };
+    requestAnimationFrame(step);
+  }));
 })();
 </script>
 <script src="vendor/three-src.js"></script>
