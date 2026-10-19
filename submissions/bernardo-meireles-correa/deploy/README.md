@@ -47,6 +47,8 @@ Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOM
 
    Se o código estiver dentro da pasta de submissão do fork, use `RepoSubdir=submissions/seu-nome`.
 
+   **Antes de ter domínio e repositório público:** `Domain=:80` serve só por HTTP no Elastic IP, e `RepoUrl` aceita um link pré-assinado (expira em 1 h) para um `git bundle` num bucket S3 privado. Foi assim que a primeira versão subiu. O bundle é apagado do bucket assim que a VM clona. Depois, com o domínio, troque `DOMAIN` no `.env` da instância e reinicie o serviço.
+
 3. **DNS no Cloudflare:** registro `A` de `suporte` para o `PublicIp` do output da stack, com **proxy desligado (DNS only)**, para o Caddy emitir o certificado Let's Encrypt.
 
    ```bash
@@ -80,4 +82,5 @@ Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOM
 - `cfn-lint` passa no template, e `bash -n` no script.
 - A CI (`.github/workflows/ci.yml`) constrói a imagem e checa o healthcheck do contêiner a cada push.
 - A imagem e a stack completa (Caddy + app, com o volume de estado) rodaram localmente no Docker em 19/10, com as mesmas restrições de produção.
-- **Não validado ainda:** a criação real da stack, a emissão do certificado público e a chamada à API da Anthropic. Isso só acontece no primeiro deploy, que depende do domínio e da chave.
+- Em 19/10 a stack foi criada de verdade em us-east-1 (`t4g.small` com Elastic IP). A apresentação e o app responderam pelo IP público, com os arquivos internos dando 404. Uma chamada real ao Claude Haiku 5.5, feita de dentro do contêiner, levou 7,9 s (1.111 tokens de entrada e 495 de saída).
+- **Não validado ainda:** a emissão do certificado público, que depende do domínio.
