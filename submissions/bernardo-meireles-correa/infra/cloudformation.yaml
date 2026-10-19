@@ -7,10 +7,10 @@ Description: >
 Parameters:
   Domain:
     Type: String
-    Description: Domínio público, ex. suporte.seudominio.com (registro A no Cloudflare, proxy desligado)
+    Description: Domínio público, ex. suporte.seudominio.com (registro A no Cloudflare, proxy desligado). Use ":80" para servir só por HTTP no IP antes de ter o domínio.
   RepoUrl:
     Type: String
-    Description: URL HTTPS do repositório Git com esta pasta
+    Description: URL HTTPS do repositório Git com esta pasta, ou link pré-assinado de um git bundle no S3
   RepoBranch:
     Type: String
     Default: main
@@ -99,7 +99,13 @@ Resources:
           systemctl enable --now docker
           useradd --system --create-home --groups docker g4 || true
           echo 'g4 ALL=(root) NOPASSWD: /usr/bin/install' > /etc/sudoers.d/g4
-          sudo -u g4 git clone --branch ${RepoBranch} ${RepoUrl} /home/g4/repo
+          # RepoUrl pode ser um repositório Git ou um link pré-assinado para um git bundle (antes do push)
+          case "${RepoUrl}" in
+            *.bundle*) curl -fsSL "${RepoUrl}" -o /tmp/repo.bundle
+                       sudo -u g4 git clone --branch ${RepoBranch} /tmp/repo.bundle /home/g4/repo
+                       rm -f /tmp/repo.bundle ;;
+            *) sudo -u g4 git clone --branch ${RepoBranch} ${RepoUrl} /home/g4/repo ;;
+          esac
           APP=/home/g4/repo/${RepoSubdir}
           sudo -u g4 cp $APP/.env.example $APP/.env
           sudo -u g4 sed -i "s|^DOMAIN=.*|DOMAIN=${Domain}|; s|^ANTHROPIC_KEY_PARAMETER=.*|ANTHROPIC_KEY_PARAMETER=${AnthropicKeyParameter}|" $APP/.env
