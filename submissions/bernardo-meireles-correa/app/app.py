@@ -1,15 +1,17 @@
-"""Copiloto de Suporte: diagnóstico, triagem com IA e fila priorizada.
+"""Copiloto de Suporte: painel da operação, triagem com IA, fila por risco e validação.
 
 Rodar: streamlit run app/app.py
 """
 import streamlit as st
 
-st.set_page_config(page_title="Copiloto de Suporte", page_icon="🎧", layout="wide")
-st.navigation([
-    st.Page("views/diretor.py", title="Resposta ao diretor", default=True),
-    st.Page("views/triagem.py", title="Triagem ao vivo"),
-    st.Page("views/fila.py", title="Fila priorizada"),
-    st.Page("views/evidencias.py", title="Evidências"),
-    st.Page("views/retorno.py", title="ROI"),
-    st.Page("views/revisao.py", title="Revisão das triagens"),
-]).run()
+st.set_page_config(page_title="Copiloto de Suporte", page_icon=":material/support_agent:", layout="wide")
+page = st.navigation([
+    st.Page("views/painel.py", title="Painel da operação", icon=":material/dashboard:", default=True),
+    st.Page("views/triagem.py", title="Triagem", icon=":material/bolt:"),
+    st.Page("views/fila.py", title="Fila", icon=":material/list:"),
+    st.Page("views/validacao.py", title="Como validamos", icon=":material/fact_check:"),
+])
+with st.sidebar:
+    st.caption("Copiloto de Suporte · Challenge 002, AI Master G4")
+    st.caption("Dados sintéticos do Kaggle. Nada é enviado a clientes.")
+page.run()

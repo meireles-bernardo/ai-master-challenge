@@ -12,6 +12,7 @@ COPY requirements.txt .
 RUN pip install --no-compile -r requirements.txt
 
 # Só o necessário para rodar: código, modelo e resultados. Dados brutos e testes ficam fora.
+COPY .streamlit/ .streamlit/
 COPY app/ app/
 COPY models/ models/
 COPY outputs/ outputs/

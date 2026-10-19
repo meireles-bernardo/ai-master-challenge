@@ -64,7 +64,7 @@ Para reproduzir tudo a partir dos ZIPs do Kaggle (ver [data/README.md](data/READ
 | Quais combinações são piores? | Nenhuma, estatisticamente | 80 combinações com 8 a 28 tickets cada; Kruskal-Wallis p = 0,46; a "pior" surge por acaso em 13% das permutações |
 | A prioridade funciona? | Não | 1.403 dos 2.129 *Critical* (66%) estão parados, como os *Low* |
 | O que impacta a satisfação? | Nenhuma relação detectável nas 8 variáveis testadas | CSAT 2,99; notas 553/549/580/543/544; canal p = 0,47, prioridade p = 0,40, tipo p = 0,26, tempo ρ = 0,02 |
-| Quanto se desperdiça? | 112 a 279 h/mês recuperáveis, 212 no cenário central | Premissas explícitas e editáveis no app (página ROI); o dataset não registra o esforço do agente |
+| Quanto se desperdiça? | 112 a 279 h/mês recuperáveis, 212 no cenário central | Premissas explícitas e editáveis no app (Como validamos → Retorno estimado); o dataset não registra o esforço do agente |
 
 **Automação (os dois datasets)**
 
@@ -76,13 +76,11 @@ Para reproduzir tudo a partir dos ZIPs do Kaggle (ver [data/README.md](data/READ
 | Cruzamento 2 | O texto de clientes prevê tipo, assunto e prioridade no nível do acaso (19,8% contra 20,7% no tipo). Não dá para treinar com esses rótulos, o que justifica o LLM zero-shot |
 | Triagem por LLM (60 tickets sorteados) | 60/60 processados; 0 promessas proibidas; 0 dos 11 riscos apontados pela regra ficaram sem marcação do LLM; 5 de 5 mensagens de erro em branco pedidas ao cliente; 31 casos assistidos e 29 com revisão sênior |
 
-**Protótipo (Streamlit, 6 páginas):**
-- *Resposta ao diretor*.
-- *Triagem ao vivo*: aceita qualquer texto ou sorteia registros dos datasets, mostra o contexto recuperado e deixa o agente aprovar, editar ou rejeitar o rascunho.
-- *Fila priorizada*: os 5.700 tickets reordenados por risco.
-- *Evidências*.
-- *ROI*: premissas ajustáveis.
-- *Revisão das triagens*: 20 triagens do LLM revisadas por dois revisores de IA independentes (Claude e Codex).
+**Protótipo (Streamlit, 4 páginas):**
+- *Painel da operação*: indicadores da fila, situação por prioridade e por canal, satisfação e o topo da fila já reordenada.
+- *Triagem*: aceita qualquer texto ou sorteia registros dos datasets. Mostra primeiro o destino e o próximo passo, depois o que pedir ao cliente e o rascunho para aprovar, editar ou rejeitar. Ao lado, um mapa de próximos passos acende o caminho que o ticket percorreu nas regras, com quem age e por quê.
+- *Fila*: os 5.700 tickets parados reordenados por risco, com filtros.
+- *Como validamos*: classificador de TI, triagem por LLM, revisão das 20 triagens por dois revisores de IA (Claude e Codex) e retorno estimado com premissas ajustáveis.
 
 **Fluxo proposto**
 

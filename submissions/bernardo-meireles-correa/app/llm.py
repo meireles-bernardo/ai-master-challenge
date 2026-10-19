@@ -59,6 +59,17 @@ def provider_name() -> str:
     return os.environ.get("LLM_PROVIDER", "codex" if shutil.which("codex") else "off").lower()
 
 
+def model_label() -> str:
+    """Nome legível do modelo em uso, para a interface."""
+    provider = provider_name()
+    if provider == "anthropic":
+        model = os.environ.get("LLM_MODEL", "claude-haiku-5-5")
+        return {"claude-haiku-5-5": "Claude Haiku 5.5"}.get(model, model)
+    if provider == "codex":
+        return os.environ.get("LLM_CODEX_MODEL", "gpt-6-sol") + " (Codex)"
+    return os.environ.get("LLM_MODEL", provider)
+
+
 def _prompt(ticket: dict) -> str:
     meta = {k: ticket.get(k) for k in ("channel", "product") if ticket.get(k)}
     return f"{INSTRUCTIONS}\n\nTicket metadata: {json.dumps(meta, ensure_ascii=False)}\nTicket text:\n<<<\n{ticket['text']}\n>>>"

@@ -21,15 +21,15 @@ def fresh() -> AppTest:
 
 def main() -> None:
     at = fresh()
-    assert "Diretor" in at.title[0].value
-    for page in ["evidencias", "fila", "retorno", "revisao"]:
+    assert at.title[0].value == "Painel da operação", at.title[0].value
+    for page in ["fila", "validacao"]:
         at.switch_page(f"views/{page}.py").run()
         assert not at.exception, (page, at.exception)
         print(f"ok  {page}: {at.title[0].value}")
 
     if os.environ.get("ENABLE_REVIEW") == "1":
-        at.switch_page("views/revisao.py").run()
-        at.button[0].click().run()  # salva a revisão do primeiro ticket com os valores padrão
+        at.switch_page("views/validacao.py").run()
+        next(b for b in at.button if b.label == "Salvar revisão").click().run()  # salva a revisão do primeiro ticket com os valores padrão
         assert not at.exception, at.exception
         assert Path(os.environ["REVIEW_FILE"]).exists(), "revisão não foi salva"
         print("ok  revisão humana salva em", os.environ["REVIEW_FILE"])
@@ -40,10 +40,11 @@ def main() -> None:
     assert at.text_area[0].value, "sorteio não preencheu o texto"
     at.button[1].click().run()
     assert not at.exception, at.exception
-    label = next(m for m in at.metric if m.label == "Categoria")
-    print(f"ok  triagem TI: {label.value} ({label.delta})")
+    label = next(m for m in at.metric if m.label == "Categoria sugerida")
+    assert any("este ticket" in h.proto.body for h in at.get("html")), "mapa sem o caminho do ticket"
+    print(f"ok  triagem TI: {label.value} ({label.delta}), caminho aceso no mapa")
 
-    at.radio[0].set_value("Cliente (produto)").run()
+    at.radio[0].set_value("Cliente").run()
     at.button[0].click().run()
     at.button[1].click().run()
     assert not at.exception, at.exception
@@ -55,10 +56,11 @@ def main() -> None:
         return
     if at.error:
         sys.exit(f"LLM falhou: {at.error[0].value}")
-    print("ok  triagem cliente:", [(m.label, m.value) for m in at.metric])
-    print("    destino:", (at.warning or at.success)[0].value.splitlines()[0])
+    bodies = [h.proto.body for h in at.get("html")]
+    assert any('class="decision' in b for b in bodies) and any("este ticket" in b for b in bodies), "sem destino ou caminho no mapa"
+    print("ok  triagem cliente com destino e caminho no mapa")
     print("    rascunho:", at.text_area[1].value[:140])
-    next(b for b in at.button if b.label == "Aprovado").click().run()
+    next(b for b in at.button if b.label == "Aprovar").click().run()
     assert not at.exception, at.exception
     assert (ROOT / "local-state" / "decisoes.csv").exists()
     print("ok  decisão registrada em local-state/decisoes.csv")
