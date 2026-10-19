@@ -34,7 +34,7 @@ python -m venv .venv
 .venv/Scripts/streamlit run app/app.py             # abre http://localhost:8501
 ```
 
-Ou acesse a versão hospedada: **[endereço após o deploy]**. O deploy na AWS (EC2, Docker Compose, Caddy com HTTPS, chave no SSM, sem SSH) está descrito em [deploy/README.md](deploy/README.md).
+Ou acesse a versão hospedada: **https://g4.bernardomeirelescorrea.com.br** (apresentação) e **https://g4.bernardomeirelescorrea.com.br/app/** (protótipo). O deploy na AWS (EC2, Docker Compose, Caddy com HTTPS, chave no SSM, sem SSH) está descrito em [deploy/README.md](deploy/README.md).
 
 O modelo e os resultados já vêm no repositório. A triagem de clientes usa um LLM configurado por `LLM_PROVIDER`:
 

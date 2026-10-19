@@ -49,7 +49,7 @@ Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOM
 
    **Antes de ter domínio e repositório público:** `Domain=:80` serve só por HTTP no Elastic IP, e `RepoUrl` aceita um link pré-assinado (expira em 1 h) para um `git bundle` num bucket S3 privado. Foi assim que a primeira versão subiu. O bundle é apagado do bucket assim que a VM clona. Depois, com o domínio, troque `DOMAIN` no `.env` da instância e reinicie o serviço.
 
-3. **DNS no Cloudflare:** registro `A` de `suporte` para o `PublicIp` do output da stack, com **proxy desligado (DNS only)**, para o Caddy emitir o certificado Let's Encrypt.
+3. **DNS no Cloudflare:** registro `A` de `suporte` para o `PublicIp` do output da stack. Funciona com o proxy desligado (DNS only) ou ligado; ligado, use o modo SSL **Full (strict)**. O Caddy emite o certificado Let's Encrypt pelo desafio HTTP-01 na porta 80, que o Cloudflare repassa à VM.
 
    ```bash
    aws cloudformation describe-stacks --stack-name g4-support --query "Stacks[0].Outputs"
@@ -83,4 +83,5 @@ Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOM
 - A CI (`.github/workflows/ci.yml`) constrói a imagem e checa o healthcheck do contêiner a cada push.
 - A imagem e a stack completa (Caddy + app, com o volume de estado) rodaram localmente no Docker em 19/10, com as mesmas restrições de produção.
 - Em 19/10 a stack foi criada de verdade em us-east-1 (`t4g.small` com Elastic IP). A apresentação e o app responderam pelo IP público, com os arquivos internos dando 404. Uma chamada real ao Claude Haiku 5.5, feita de dentro do contêiner, levou 7,9 s (1.111 tokens de entrada e 495 de saída).
-- **Não validado ainda:** a emissão do certificado público, que depende do domínio.
+- Em 19/10 o domínio `g4.bernardomeirelescorrea.com.br` passou a apontar para a VM, com o proxy do Cloudflare ligado. O Caddy obteve o certificado Let's Encrypt pelo desafio HTTP-01 através do proxy. HTTP redireciona para HTTPS (308), os cabeçalhos de segurança chegam ao navegador, os arquivos internos dão 404 e o app (WebSocket) funciona pelo proxy.
+- **Ajuste recomendado no Cloudflare:** versão mínima de TLS 1.2 (o padrão da borda ainda aceita TLS 1.0).

@@ -7,7 +7,7 @@ Description: >
 Parameters:
   Domain:
     Type: String
-    Description: Domínio público, ex. suporte.seudominio.com (registro A no Cloudflare, proxy desligado). Use ":80" para servir só por HTTP no IP antes de ter o domínio.
+    Description: Domínio público, ex. suporte.seudominio.com (registro A no Cloudflare; com proxy ligado, SSL em Full (strict)). Use ":80" para servir só por HTTP no IP antes de ter o domínio.
   RepoUrl:
     Type: String
     Description: URL HTTPS do repositório Git com esta pasta, ou link pré-assinado de um git bundle no S3
@@ -136,7 +136,7 @@ Resources:
 
 Outputs:
   PublicIp:
-    Description: Criar no Cloudflare um registro A de Domain para este IP (proxy desligado)
+    Description: Criar no Cloudflare um registro A de Domain para este IP (com proxy ligado, SSL em Full (strict))
     Value: !Ref PublicIp
   Url:
     Value: !Sub "https://${Domain}"
