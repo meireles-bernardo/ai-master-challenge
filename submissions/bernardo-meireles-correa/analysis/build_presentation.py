@@ -13,6 +13,7 @@ from common import OUTPUTS, ROOT
 
 sys.path.insert(0, str(ROOT / "app"))
 import context  # noqa: E402
+import guide  # noqa: E402
 import policy  # noqa: E402
 import roi  # noqa: E402
 
@@ -52,6 +53,10 @@ def main() -> None:
                  "product": hook["Product Purchased"], "channel": hook["Ticket Channel"], "same": len(same)},
         "found": "".join("1" if c.found else "0" for c in ctx),
         "blank": "".join("1" if any("erro" in m for m in c.missing) else "0" for c in ctx),
+        # Mapa de próximos passos: o mesmo conteúdo que o app mostra na triagem (app/guide.py).
+        "guide": {"customer": {"questions": guide.CUSTOMER_QUESTIONS, "last": guide.CUSTOMER_LAST},
+                  "it": {"questions": guide.it_questions(clf["gate"]["threshold"]), "last": guide.IT_LAST},
+                  "destinations": guide.DESTINATIONS},
     }
     out = ROOT / "presentation" / "data.js"
     out.parent.mkdir(exist_ok=True)

@@ -164,13 +164,13 @@ def status_share_chart(dimension: str, labels: dict, order: list[str], descripti
     share["Situação"] = share["Situação"].map(STATUS_PT)
     share["%"] = share["%"] / 100
     share["_o"] = share["Situação"].map({s: i for i, s in enumerate(STATUS_PT.values())})
-    return (alt.Chart(share, description=description).mark_bar(height=22).encode(
+    return (alt.Chart(share, description=description).mark_bar(size=20).encode(
         x=alt.X("%:Q", stack="normalize", axis=alt.Axis(format="%", title=None, grid=False)),
         y=alt.Y("grupo:N", sort=[labels[o] for o in order], title=None, axis=alt.Axis(labelOverlap=False, labelFontSize=13)),
         color=alt.Color("Situação:N", scale=STATUS_COLORS, legend=alt.Legend(orient="bottom", title=None, labelFontSize=13)),
         order=alt.Order("_o:Q"),
         tooltip=[alt.Tooltip("grupo:N", title="Grupo"), "Situação:N", alt.Tooltip("%:Q", format=".0%")])
-        .properties(height=190))
+        .properties(height=alt.Step(34)))
 
 
 # --------------------------------------------------------------------------- painel
@@ -201,7 +201,7 @@ def page_dashboard():
         st.subheader("Nem o canal")
         st.altair_chart(status_share_chart("Ticket Channel", CHANNEL_PT, ["Email", "Phone", "Chat", "Social media"],
                                            "Situação dos tickets por canal: proporções quase iguais em todos."), width="stretch")
-        st.html('<p class="chart-note">O tempo não se perde num segmento. Ele se perde na fila.</p>')
+        st.html('<p class="chart-note">O problema é a fila inteira, e não um segmento dela.</p>')
 
     st.subheader("Topo da fila")
     top = queue.head(10)
