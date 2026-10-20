@@ -538,9 +538,9 @@ def section_classifier():
 - **100% seria sinal de vazamento**, não de qualidade.
 - **O que importa na operação é o acerto do que vai sozinho.** O limiar troca automação por acerto, e a escolha é do negócio:
 """)
-        st.dataframe(pd.DataFrame([{"Meta de acerto": pct(c["target"], 0), "Vão sozinhos": pct(c["test_coverage"], 0),
+        st.table(pd.DataFrame([{"Meta de acerto": pct(c["target"], 0), "Vão sozinhos": pct(c["test_coverage"], 0),
                                     "Acerto medido no teste": pct(c["test_precision"]), "Vão para uma pessoa": pct(1 - c["test_coverage"], 0)}
-                                   for c in CURVE["curve"]]), hide_index=True)
+                                   for c in CURVE["curve"]]).set_index("Meta de acerto"))
         st.caption("O protótipo opera na meta de 95%. Subir para 99% manda metade dos tickets para uma pessoa.")
     labels = [IT_PT.get(x, x) for x in t["labels"]]
     cm = pd.DataFrame(t["confusion_matrix"], index=labels, columns=labels).reset_index(names="Real").melt("Real", var_name="Previsto", value_name="Tickets")

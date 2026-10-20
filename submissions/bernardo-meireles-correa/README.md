@@ -72,9 +72,10 @@ Para reproduzir tudo a partir dos ZIPs do Kaggle (ver [data/README.md](data/READ
 |---|---|
 | Classificador de TI (TF-IDF + SVM calibrado) | 86,5% de acurácia em 9.568 tickets não vistos; 85,4% sem quase-duplicatas; linha de base 28,5% |
 | Limiar de confiança | 74% roteados sozinhos com 95,0% de precisão; 26% vão para triagem humana |
+| Por que não 99% | 3,9% dos textos quase idênticos têm rótulos diferentes no próprio dataset, então o teto fica perto de 96%. O que se ajusta é o limiar: 99% de meta dá 98,8% de acerto medido, mas só 49% vão sozinhos ([`analysis/classifier_curve.py`](analysis/classifier_curve.py)) |
 | Cruzamento 1 | Aplicado aos tickets de clientes, o classificador de TI passaria 61% com confiança alta, em categorias absurdas. A confiança não detecta texto de outro domínio, então o roteador é escolhido pela origem do ticket |
 | Cruzamento 2 | O texto de clientes prevê tipo, assunto e prioridade no nível do acaso (19,8% contra 20,7% no tipo). Não dá para treinar com esses rótulos, o que justifica o LLM zero-shot |
-| Triagem por LLM (60 tickets sorteados) | 60/60 processados; 0 promessas proibidas; 0 dos 11 riscos apontados pela regra ficaram sem marcação do LLM; 5 de 5 mensagens de erro em branco pedidas ao cliente; 31 casos assistidos e 29 com revisão sênior |
+| Triagem por LLM (60 tickets sorteados) | Rodada com o modelo de produção (Claude Haiku 5.5, pela API): 60/60 processados; 0 promessas proibidas; 0 dos 11 riscos apontados pela regra ficaram sem marcação do LLM; 5 de 5 mensagens de erro em branco pedidas ao cliente; 30 casos assistidos e 30 com revisão sênior; US$ 0,0004 por ticket. Clareza do ticket: 13 alta, 38 média, 9 baixa (o texto sintético costuma permitir mais de uma leitura). A rodada anterior, com `gpt-6-sol`, está em `outputs/llm_eval_v1_codex.json` e é a base das 20 revisões por IA |
 
 **Protótipo (Streamlit, 4 páginas):**
 - *Painel da operação*: indicadores da fila, situação por prioridade e por canal, satisfação e o topo da fila já reordenada.
