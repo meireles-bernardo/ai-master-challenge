@@ -1,26 +1,26 @@
-# Visual do protótipo alinhado com a apresentação (mesma paleta e mesma fonte de títulos).
+# Visual do protótipo alinhado com o dossiê (mesmo papel, mesma tinta, mesma fonte de títulos).
 [server]
 enableStaticServing = true
 
+[client]
+toolbarMode = "minimal"
+showSidebarNavigation = false
+
 [theme]
-base = "dark"
-backgroundColor = "#121B26"
-secondaryBackgroundColor = "#1A2532"
-textColor = "#E9EDF1"
-primaryColor = "#F0A93C"
-linkColor = "#F5C77E"
-borderColor = "#2C3A4A"
+base = "light"
+backgroundColor = "#F5F2EA"
+secondaryBackgroundColor = "#EDE8DD"
+textColor = "#1B2128"
+primaryColor = "#1B2128"
+linkColor = "#B3261E"
+borderColor = "#D8D1C2"
 showWidgetBorder = true
 baseRadius = "small"
 headingFont = "Bricolage Grotesque, sans-serif"
 font = "sans-serif"
-chartCategoricalColors = ["#E2334A", "#F0A93C", "#B9C3CC", "#6FA3C7", "#8FBF8F"]
+chartCategoricalColors = ["#C9372C", "#B7791F", "#7E8893", "#1B2128", "#5F6C78"]
 
 [[theme.fontFaces]]
 family = "Bricolage Grotesque"
 url = "app/static/fonts/BricolageGrotesque.woff2"
 weight = "400 800"
-
-[theme.sidebar]
-backgroundColor = "#0E151E"
-secondaryBackgroundColor = "#1A2532"

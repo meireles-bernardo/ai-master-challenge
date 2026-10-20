@@ -20,7 +20,7 @@ O protótipo roda sobre os registros dos datasets, não sobre exemplos escolhido
 
 **Recomendação principal:** atender a fila por risco: hoje a prioridade declarada não muda a proporção de tickets parados. Colocar IA em modo sombra na triagem e na primeira resposta, e instrumentar a operação antes de prometer ganhos de CSAT.
 
-**Comece pela [apresentação de 2 minutos](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (Three.js e fontes vão junto, em `presentation/vendor/`): os 8.469 registros do dataset viram fichas 3D e contam o diagnóstico, a solução, a prova e como trabalhei com a IA. Depois rode o protótipo.
+**Comece pelo [Dossiê 002](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (Three.js e fontes vão junto, em `presentation/vendor/`). A capa dá o veredito sobre o suporte em uma frase; depois vêm cinco provas (cada uma com o dado, a fonte e o que fazer), o plano com o mapa de próximos passos e os anexos de método e de como trabalhei com a IA. O site e o protótipo usam a mesma moldura e a mesma navegação, então qualquer página se explica sozinha. Depois rode o protótipo.
 
 ---
 

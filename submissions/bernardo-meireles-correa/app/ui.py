@@ -31,45 +31,85 @@ STATUS_PT = {"Open": "Sem resposta", "Pending Customer Response": "Esperando o c
 IT_PT = {"Access": "Acesso", "Administrative rights": "Direitos de administrador", "HR Support": "RH", "Hardware": "Hardware",
          "Internal Project": "Projeto interno", "Miscellaneous": "Diversos", "Purchase": "Compra", "Storage": "Armazenamento"}
 CONFIDENCE_PT = {"high": "alta", "medium": "média", "low": "baixa"}
-STATUS_COLORS = alt.Scale(domain=list(STATUS_PT.values()), range=["#E2334A", "#F0A93C", "#7D8A97"])
+STATUS_HEX = ["#C9372C", "#B7791F", "#7E8893"]
+STATUS_COLORS = alt.Scale(domain=list(STATUS_PT.values()), range=STATUS_HEX)
 
 STYLE = """
 <style>
+  header[data-testid="stHeader"] { display: none; }
+  [data-testid="stMainBlockContainer"] { padding-top: 0.5rem; }
+  [data-testid="stMetricDelta"], [data-testid="stMetricDelta"] * { color: #2E3640 !important; }
+  [data-testid="stMetricDelta"] { background: #E7E1D3 !important; }
+  [data-testid="stCaptionContainer"] { opacity: 1 !important; }
+  [data-testid="stCaptionContainer"], [data-testid="stCaptionContainer"] * { color: #59626D !important; }
   h1 { letter-spacing: -0.02em; }
-  .lede { color: #C9D2DA; font-size: 1.05rem; max-width: 46rem; margin: -0.4rem 0 1.2rem; }
-  .chart-note { color: #A9B4BF; font-size: 0.92rem; margin: -0.3rem 0 0.8rem; }
-  .decision { background: #1A2532; border: 1px solid #2C3A4A; border-left: 6px solid; border-radius: 4px; padding: 0.9rem 1.1rem; margin: 0.3rem 0 1rem; }
-  .decision .eyebrow, .gmap .eyebrow { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #A9B4BF; margin: 0; }
-  .decision h3 { font-size: 1.35rem; margin: 0.15rem 0 0.5rem; padding: 0; }
-  .decision ul { margin: 0 0 0.6rem 1.1rem; padding: 0; color: #C9D2DA; }
-  .decision p { margin: 0.2rem 0 0; color: #E9EDF1; }
-  .decision p span { color: #A9B4BF; }
-  .tone-red { border-left-color: #FF6B7D !important; }
-  .tone-amber { border-left-color: #F0A93C !important; }
-  .tone-light { border-left-color: #E9EDF1 !important; }
-  .tone-dim { border-left-color: #7D8A97 !important; }
+  .frame { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1.2rem; border-bottom: 1px solid #D8D1C2; padding: 0.6rem 0 0.7rem; margin: 0 0 1.4rem; }
+  .frame .brand { font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; color: #1B2128; font-weight: 600; white-space: nowrap; }
+  .frame .brand b { color: #B3261E; }
+  .frame nav { display: flex; gap: 1.1rem; overflow-x: auto; margin-left: auto; scrollbar-width: none; }
+  .frame nav a { text-decoration: none; color: #59626D; white-space: nowrap; padding: 0.2rem 0; font-size: 0.95rem; }
+  .frame nav a:hover, .frame nav a[aria-current] { color: #1B2128; box-shadow: inset 0 -2px 0 #1B2128; }
+  .frame a:focus-visible { outline: 3px solid #D99A2B; outline-offset: 3px; }
+  .kicker { font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: #B3261E; margin: 0 0 0.2rem; }
+  .lede { color: #3B444E; font-size: 1.05rem; max-width: 46rem; margin: -0.4rem 0 1.2rem; }
+  .chart-note { color: #59626D; font-size: 0.92rem; margin: -0.3rem 0 0.8rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin: -0.4rem 0 0.6rem; padding: 0; list-style: none; font-size: 0.88rem; color: #59626D; }
+  .legend li { display: flex; align-items: center; gap: 0.35rem; }
+  .legend i { width: 0.8rem; height: 0.8rem; display: inline-block; }
+  .base-note { color: #59626D; font-size: 0.85rem; border-top: 1px solid #D8D1C2; padding-top: 0.8rem; margin-top: 2rem; }
+  .decision { background: #FFFDF8; border: 1px solid #D8D1C2; border-left: 6px solid; border-radius: 4px; padding: 0.9rem 1.1rem; margin: 0.3rem 0 1rem; }
+  .decision .eyebrow, .gmap .eyebrow { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #59626D; margin: 0; }
+  .decision h3 { font-size: 1.35rem; margin: 0.15rem 0 0.5rem; padding: 0; color: #1B2128; }
+  .decision ul { margin: 0 0 0.6rem 1.1rem; padding: 0; color: #2E3640; }
+  .decision p { margin: 0.2rem 0 0; color: #1B2128; }
+  .decision p span { color: #59626D; }
+  .tone-red { border-left-color: #C9372C !important; }
+  .tone-amber { border-left-color: #B7791F !important; }
+  .tone-light { border-left-color: #1B2128 !important; }
+  .tone-dim { border-left-color: #7E8893 !important; }
   .facts { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin: 0 0 0.8rem; }
-  .facts dt { font-size: 0.8rem; color: #A9B4BF; }
-  .facts dd { margin: 0; font-size: 1.15rem; font-weight: 600; color: #E9EDF1; }
+  .facts dt { font-size: 0.8rem; color: #59626D; }
+  .facts dd { margin: 0; font-size: 1.15rem; font-weight: 600; color: #1B2128; }
   .top3 { list-style: none; padding: 0; margin: 0.3rem 0 0; }
-  .top3 li { display: grid; grid-template-columns: 11rem 1fr 3rem; gap: 0.6rem; align-items: center; margin: 0.25rem 0; color: #E9EDF1; }
-  .top3 .bar { background: #24384D; height: 0.6rem; border-radius: 2px; }
-  .top3 .bar i { display: block; height: 100%; background: #F0A93C; border-radius: 2px; }
-  p.eyebrow { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #A9B4BF; margin: 0; }
+  .top3 li { display: grid; grid-template-columns: minmax(7rem, 11rem) 1fr 3rem; gap: 0.6rem; align-items: center; margin: 0.25rem 0; color: #1B2128; }
+  .top3 .bar { background: #E7E1D3; height: 0.6rem; border-radius: 2px; }
+  .top3 .bar i { display: block; height: 100%; background: #1B2128; border-radius: 2px; }
+  p.eyebrow { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: #59626D; margin: 0; }
   .gmap ol { list-style: none; margin: 0.4rem 0 0; padding: 0; }
   .gmap li { margin: 0; }
-  .gq { background: #1A2532; border: 1px solid #2C3A4A; border-radius: 4px; padding: 0.5rem 0.7rem; font-weight: 600; color: #E9EDF1; }
-  .gbranch { margin: 0 0 0 1rem; padding: 0.35rem 0 0.35rem 0.9rem; border-left: 2px solid #2C3A4A; }
-  .glabel { font-size: 0.8rem; color: #A9B4BF; margin: 0; }
-  .gdest { background: #151F2B; border: 1px solid #2C3A4A; border-left: 5px solid; border-radius: 4px; padding: 0.45rem 0.7rem; margin: 0.2rem 0 0; }
-  .gdest b { display: block; color: #E9EDF1; }
-  .gdest p { margin: 0.15rem 0 0; font-size: 0.86rem; color: #B8C2CC; line-height: 1.4; }
-  .gdest p span { color: #E9EDF1; font-weight: 600; }
-  .gmap .on > .gq, .gdest.on { background: #22364A; border-color: #F0A93C; }
+  .gq { background: #FFFDF8; border: 1px solid #D8D1C2; border-radius: 4px; padding: 0.5rem 0.7rem; font-weight: 600; color: #1B2128; }
+  .gbranch { margin: 0 0 0 1rem; padding: 0.35rem 0 0.35rem 0.9rem; border-left: 2px solid #D8D1C2; }
+  .glabel { font-size: 0.8rem; color: #59626D; margin: 0; }
+  .gdest { background: #FFFDF8; border: 1px solid #D8D1C2; border-left: 5px solid; border-radius: 4px; padding: 0.45rem 0.7rem; margin: 0.2rem 0 0; }
+  .gdest b { display: block; color: #1B2128; }
+  .gdest p { margin: 0.15rem 0 0; font-size: 0.86rem; color: #3B444E; line-height: 1.4; }
+  .gdest p span { color: #1B2128; font-weight: 600; }
+  .gmap .on > .gq, .gdest.on { background: #FFF3D9; border-color: #B7791F; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .tag { display: inline-block; font-size: 0.74rem; font-weight: 700; background: #F0A93C; color: #121B26; padding: 0 0.4rem; border-radius: 3px; margin-left: 0.35rem; vertical-align: 1px; }
+  .tag { display: inline-block; font-size: 0.74rem; font-weight: 700; background: #D99A2B; color: #1B2128; padding: 0 0.4rem; border-radius: 3px; margin-left: 0.35rem; vertical-align: 1px; }
 </style>
 """
+
+# Moldura comum com o dossiê: mesma marca e mesma navegação em todas as páginas.
+NAV = [("Resumo", "/", None), ("Provas", "/#provas", None), ("Plano", "/#plano", None), ("Painel", "/app/", "painel"),
+       ("Triagem", "/app/triagem", "triagem"), ("Fila", "/app/fila", "fila"), ("Método", "/app/validacao", "validacao")]
+
+
+def frame(current: str, kicker: str, title: str, lede: str):
+    links = "".join(f'<a href="{href}"{" aria-current=\"page\"" if key == current else ""}>{label}</a>' for label, href, key in NAV)
+    st.html(STYLE + f'<header class="frame"><a class="brand" href="/"><b>Dossiê 002</b> · Suporte ao cliente</a>'
+            f'<nav aria-label="Seções do dossiê e do protótipo">{links}</nav></header><p class="kicker">{kicker}</p>')
+    st.title(title)
+    st.html(f'<p class="lede">{lede}</p>')
+
+
+def base_note():
+    st.html('<p class="base-note">Base: dataset público e sintético do Challenge 002 do AI Master G4 (Kaggle). '
+            "Nada aqui é dado de uma empresa real, e nada é enviado a clientes.</p>")
+
+
+def legend(items: list[tuple[str, str]]) -> str:
+    return '<ul class="legend">' + "".join(f'<li><i style="background:{c}"></i>{t}</li>' for c, t in items) + "</ul>"
 
 
 def style():
@@ -167,7 +207,7 @@ def status_share_chart(dimension: str, labels: dict, order: list[str], descripti
     return (alt.Chart(share, description=description).mark_bar(size=20).encode(
         x=alt.X("%:Q", stack="normalize", axis=alt.Axis(format="%", title=None, grid=False)),
         y=alt.Y("grupo:N", sort=[labels[o] for o in order], title=None, axis=alt.Axis(labelOverlap=False, labelFontSize=13)),
-        color=alt.Color("Situação:N", scale=STATUS_COLORS, legend=alt.Legend(orient="bottom", title=None, labelFontSize=13)),
+        color=alt.Color("Situação:N", scale=STATUS_COLORS, legend=None),
         order=alt.Order("_o:Q"),
         tooltip=[alt.Tooltip("grupo:N", title="Grupo"), "Situação:N", alt.Tooltip("%:Q", format=".0%")])
         .properties(height=alt.Step(34)))
@@ -175,32 +215,33 @@ def status_share_chart(dimension: str, labels: dict, order: list[str], descripti
 
 # --------------------------------------------------------------------------- painel
 def page_dashboard():
-    style()
     b = DIAG["backlog"]
     queue = prioritized_queue()
     central = roi.estimate(roi.SCENARIOS["Central"])
-    st.title("Painel da operação")
-    st.html(f'<p class="lede">{num(b["total"])} tickets do dataset de suporte ao cliente. A fila abaixo já está na ordem '
-            "que a regra de risco propõe para segunda-feira.</p>")
+    frame("painel", "Provas 01 e 02 com os dados completos", "Painel da operação",
+          f"A fila de suporte como um gestor veria na segunda-feira: {num(b['total'])} tickets, o que está parado, o que tem risco "
+          "e o que atender primeiro. Mostra as Provas 01 e 02 do dossiê com os dados completos.")
 
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Parados", num(b["not_closed"]), f"{pct(b['not_closed'] / b['total'], 0)} da base", delta_color="off", delta_arrow="off", border=True)
     k2.metric("Nunca respondidos", num(b["open_without_first_response"]), border=True)
     k3.metric("Com risco no texto", num(queue["_risco"].sum()), "vão para o topo", delta_color="off", delta_arrow="off", border=True)
     k4.metric("Horas recuperáveis", f"~{num(central['total_hours_month'])} h/mês", "cenário central", delta_color="off", delta_arrow="off", border=True,
-              help="Premissas na página Como validamos. O dataset não registra o tempo do agente; o piloto mede.")
+              help="Premissas na página Método. O dataset não registra o tempo do agente; o piloto mede.")
 
     a, b_ = st.columns([1, 1], gap="large")
     with a:
         st.subheader("Prioridade não muda nada")
         st.altair_chart(status_share_chart("Ticket Priority", PRIORITY_PT, ["Critical", "High", "Medium", "Low"],
                                            "Situação dos tickets por prioridade: proporções quase iguais em todas."), width="stretch")
+        st.html(legend(list(zip(STATUS_HEX, STATUS_PT.values()))))
         st.html(f'<p class="chart-note">{num(b["critical_not_closed"])} dos {num(b["critical_total"])} tickets críticos estão parados, '
                 "a mesma proporção dos de prioridade baixa.</p>")
     with b_:
         st.subheader("Nem o canal")
         st.altair_chart(status_share_chart("Ticket Channel", CHANNEL_PT, ["Email", "Phone", "Chat", "Social media"],
                                            "Situação dos tickets por canal: proporções quase iguais em todos."), width="stretch")
+        st.html(legend(list(zip(STATUS_HEX, STATUS_PT.values()))))
         st.html('<p class="chart-note">O problema é a fila inteira, e não um segmento dela.</p>')
 
     st.subheader("Topo da fila")
@@ -219,7 +260,7 @@ def page_dashboard():
         csat.columns = ["Nota", "Tickets"]
         chart = alt.Chart(csat, description="Distribuição das notas de satisfação de 1 a 5: quantidades quase iguais.").mark_bar().encode(
             x=alt.X("Nota:O", axis=alt.Axis(labelAngle=0)), y=alt.Y("Tickets:Q", title=None),
-            color=alt.Color("Nota:O", scale=alt.Scale(range=["#E2334A", "#EC6B3F", "#F0A93C", "#E8D9A6", "#F2F4F6"]), legend=None),
+            color=alt.Color("Nota:O", scale=alt.Scale(range=["#C9372C", "#C4622A", "#B7791F", "#8C7A45", "#5F6C78"]), legend=None),
             tooltip=["Nota", "Tickets"]).properties(height=200)
         st.altair_chart(chart, width="stretch")
         s = DIAG["satisfaction"]
@@ -234,7 +275,7 @@ def page_dashboard():
             f"3. **Pedir o que falta no primeiro contato:** {num(b['status']['Pending Customer Response'])} tickets esperam o cliente.\n"
             "4. **Registrar** abertura, mudanças de situação e motivo das notas baixas.\n"
             "5. **Sempre com uma pessoa:** reembolso, cancelamento, perda de dados, acesso e jurídico.")
-    st.caption("Dataset sintético (Kaggle, CC0): vale para o desenho do processo, não como desempenho real.")
+    base_note()
 
 
 # --------------------------------------------------------------------------- triagem
@@ -285,10 +326,9 @@ def log_decision(row: dict):
 
 
 def page_triage():
-    style()
-    st.title("Triagem")
-    st.html('<p class="lede">Cole um ticket ou sorteie um dos datasets. A IA sugere, uma regra fixa decide o destino '
-            "e uma pessoa aprova o que for para o cliente.</p>")
+    frame("triagem", "Prova 05 em ação", "Triagem de tickets",
+          "Cole um ticket ou sorteie um dos datasets. A IA sugere tipo, prioridade e rascunho, uma regra fixa decide o destino "
+          "e uma pessoa aprova o que for para o cliente. Ao lado, o mapa mostra o caminho que o ticket percorreu.")
     tickets, it_sample = load_tickets(), load_it_sample()
 
     c1, c2 = st.columns([2, 1], vertical_alignment="bottom")
@@ -342,6 +382,7 @@ def page_triage():
             st.html(guide_map("it" if is_it else "customer", None, threshold))
         with result_col:
             st.info("O resultado aparece aqui: destino, próximo passo, o que pedir ao cliente e um rascunho para aprovar.", icon=":material/info:")
+        base_note()
         return
     text = analysis["text"]
 
@@ -361,6 +402,7 @@ def page_triage():
             st.html(f'<p class="eyebrow">Três categorias mais prováveis</p><ol class="top3">{bars}</ol>')
         with map_col:
             st.html(guide_map("it", dest, threshold))
+        base_note()
         return
 
     if "error" in analysis:
@@ -371,6 +413,7 @@ def page_triage():
             context_panel(text)
         with map_col:
             st.html(guide_map("customer", "fallback"))
+        base_note()
         return
 
     out = analysis["llm"]
@@ -397,6 +440,7 @@ def page_triage():
         context_panel(text)
     with map_col:
         st.html(guide_map("customer", dest))
+    base_note()
 
 
 def context_panel(text: str):
@@ -421,12 +465,11 @@ def context_panel(text: str):
 
 # --------------------------------------------------------------------------- fila
 def page_queue():
-    style()
     q = prioritized_queue()
-    st.title("Fila")
-    st.html('<p class="lede">Os tickets parados na ordem proposta: primeiro os que têm risco no texto '
-            "(perda de dados, dinheiro, acesso, cancelamento, jurídico), depois os que nunca tiveram resposta, "
-            "e por fim a prioridade declarada.</p>")
+    frame("fila", "Prova 02 corrigida", "Fila em ordem de risco",
+          "Os tickets parados, na ordem que o dossiê propõe: primeiro os que têm risco no texto "
+          "(perda de dados, dinheiro, acesso, cancelamento, jurídico), depois os que nunca tiveram resposta "
+          "e por fim a prioridade declarada. Hoje a prioridade declarada não muda nada na fila.")
     k1, k2, k3 = st.columns(3)
     k1.metric("Parados", num(len(q)), border=True)
     k2.metric("Com risco no texto", num(q["_risco"].sum()), border=True)
@@ -438,6 +481,7 @@ def page_queue():
     st.caption(f"{num(len(view))} tickets")
     st.dataframe(view.drop(columns=["_risco", "_sem_resposta"]), hide_index=True, width="stretch", height=560,
                  column_config={"Descrição": st.column_config.TextColumn(width="large")})
+    base_note()
 
 
 # --------------------------------------------------------------------------- como validamos
@@ -454,9 +498,8 @@ def load_review() -> pd.DataFrame:
 
 
 def page_validation():
-    style()
-    st.title("Como validamos")
-    st.html('<p class="lede">O que foi medido, com que método e onde os números param de valer.</p>')
+    frame("validacao", "Anexo de método", "Como validamos",
+          "Como cada número do dossiê foi medido, com que método e onde ele para de valer.")
     it, cust, review, money = st.tabs(["Classificador de TI", "Triagem por LLM", "Revisão das triagens", "Retorno estimado"])
     with it:
         section_classifier()
@@ -466,6 +509,7 @@ def page_validation():
         section_review()
     with money:
         section_roi()
+    base_note()
 
 
 def section_classifier():

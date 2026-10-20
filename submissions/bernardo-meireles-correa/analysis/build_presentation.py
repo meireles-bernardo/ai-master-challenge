@@ -42,6 +42,7 @@ def main() -> None:
         "csat": "".join(tickets["Customer Satisfaction Rating"].fillna(0).astype(int).astype(str)),
         "risk": "".join("1" if policy.keyword_risks(t) else "0" for t in tickets["Description (display)"]),
         "csatMinP": diag["satisfaction"]["min_p"],
+        "itTotal": clf["source"]["rows"],
         "classifier": {"accuracy": clf["test"]["accuracy"], "n": clf["test"]["n"], "auto": clf["test"]["auto_coverage"],
                        "autoPrecision": clf["test"]["auto_precision"]},
         "llm": {"sample": llm["summary"]["sample"], "promises": len(llm["summary"]["forbidden_promises"]),

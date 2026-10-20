@@ -30,6 +30,8 @@ As versões feitas com o Codex não estavam em Git, então não há commits anti
 | 12/10 | Pedi gancho mais forte, deploy real na AWS com boas práticas e recuperação de informações faltantes | Abertura com o ticket 609, deploy pronto e painel de contexto |
 | 12/10 | Pedi site mais impressionante, com 3D, pensado para o avaliador; escolhi a abertura A entre três | Apresentação 3D com Three.js e capítulo "Como trabalhei com a IA" |
 | 15/10 | Sem tempo para validar, pedi que o Claude fizesse os testes e usasse o Codex como segunda opinião | Revisão das 20 triagens por dois revisores de IA, registrada como revisão por IA |
+| 19/10 | Pedi para o protótipo abrir num painel, não na "Resposta ao diretor", um mapa de próximos passos depois da triagem, revisão WCAG e textos menos "AI-like" | Painel da operação, triagem com mapa que acende o caminho do ticket, página Método |
+| 19/10 | Pelo celular: "esse site é sobre o quê?", elementos sobrepostos e quebrando no scroll. Propus o formato de dossiê, que se entende em qualquer ordem | Dossiê 002: capa com veredito, cinco provas, plano e anexos; mesma moldura no site e no app; 3D só na capa do desktop |
 
 ## O que a revisão do Codex apontou e o que mudou
 
