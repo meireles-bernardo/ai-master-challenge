@@ -14,6 +14,7 @@
 |---|---|---|
 | **Dossiê** (3 min de leitura) | **https://g4.bernardomeirelescorrea.com.br** | A capa dá o veredito sobre o suporte; as cinco provas trazem o dado, a fonte e o que fazer; o plano mostra para onde cada ticket vai |
 | **Protótipo no ar** | **https://g4.bernardomeirelescorrea.com.br/app/triagem** | Sorteie um ticket e clique em *Analisar*: a IA responde em poucos segundos e o mapa ao lado acende o destino. *Painel*, *Fila* e *Método* estão no menu do topo |
+| **Vídeo** (76 s) | [`presentation/video/demo-dossie-002.mp4`](presentation/video/demo-dossie-002.mp4), também em https://g4.bernardomeirelescorrea.com.br/video/demo-dossie-002.mp4 | Dossiê, uma triagem real com o mapa e a fila, narrados. [Como foi feito](evidencias/video/README.md) |
 | **Rodar localmente** | `cd submissions/bernardo-meireles-correa` e os três comandos de [Como rodar](#como-rodar-2-min) | Sem chave de API tudo funciona, menos a triagem de clientes por LLM. O dossiê também abre direto do arquivo `presentation/index.html`, sem internet |
 
 O site fica no ar durante a avaliação. Base: os datasets públicos do desafio; o de clientes é sintético.
