@@ -76,6 +76,7 @@ def main() -> None:
         "type_agreement_with_label": sum(r["llm"]["ticket_type"] == r["label_type"] for r in ok) / max(len(ok), 1),
         "priority_agreement_with_label": sum(r["llm"]["priority"] == r["label_priority"] for r in ok) / max(len(ok), 1),
         "stages": pd.Series([r["decision"]["stage"] for r in ok]).value_counts().to_dict(),
+        "clarity": pd.Series([r["llm"]["confidence"] for r in ok]).value_counts().to_dict(),
         "human_required_pct": sum(r["decision"]["human_required"] for r in ok) / max(len(ok), 1) * 100,
     }
     # Custo real por ticket quando o provedor informa tokens (API). Preço do Claude Haiku 5.5 por padrão.

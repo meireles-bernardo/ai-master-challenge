@@ -106,6 +106,10 @@
   .pair h4 { font-family: var(--display); font-size: 1rem; margin: 0 0 0.5rem; }
   .grid100 { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; max-width: 18rem; }
   .grid100 i { aspect-ratio: 2 / 1; display: block; }
+  .curve { border-collapse: collapse; font-family: var(--display); font-size: 0.95rem; margin: 0.2rem 0 1rem; min-width: min(100%, 24rem); }
+  .curve th, .curve td { text-align: left; padding: 0.3rem 1.2rem 0.3rem 0; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+  .curve th { font-weight: 600; color: var(--muted); font-size: 0.85rem; }
+  .curve tr.now td { font-weight: 700; }
   .tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; font-family: var(--display); font-size: 0.9rem; }
   .tray div { border: 1px solid var(--rule); padding: 0.5rem 0.6rem; background: var(--paper); }
   .tray b { display: block; font-size: 1.6rem; }
@@ -244,6 +248,11 @@
         <div>
           <h3 id="p5">A IA foi testada antes de ser proposta</h3>
           <p>Nos tickets de TI, um classificador treinado acerta <strong data-n="acc"></strong> dos <span data-n="itN"></span> casos que nunca viu. Quando está confiante, encaminha sozinho <strong data-n="auto"></strong> de cada 100, com <span data-n="prec"></span> de acerto. Nos tickets de clientes, um LLM fez a triagem de <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez.</p>
+          <p><strong>Por que não 99%?</strong> Os próprios rótulos do dataset têm ruído: <span data-n="noise"></span> dos textos quase idênticos aparecem com categorias diferentes, então o teto fica perto de <span data-n="ceiling"></span>. O que importa é o acerto do que vai sozinho, e esse limiar é uma escolha do negócio:</p>
+          <table class="curve">
+            <thead><tr><th scope="col">Meta</th><th scope="col">Vão sozinhos</th><th scope="col">Acerto medido</th></tr></thead>
+            <tbody id="curve"></tbody>
+          </table>
           <div class="pair">
             <div><h4>100 tickets de TI</h4><div class="grid100" role="img" id="c5a"></div><ul class="legend" id="l5a"></ul></div>
             <div><h4><span data-n="sample"></span> tickets de clientes</h4><div class="tray" role="img" id="c5b"></div></div>
@@ -339,6 +348,7 @@
     stuckPct: Math.round(stuck / N * 100) + "%", hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
     critPct: Math.round((byPri.C.o + byPri.C.p) / byPri.C.n * 100) + "%", minP: D.csatMinP.toFixed(2).replace(".", ","), sample: D.llm.sample,
     acc: pct(D.classifier.accuracy, 1), itN: fmt(D.classifier.n), auto, prec: pct(D.classifier.autoPrecision),
+    noise: pct(D.noise, 1), ceiling: pct(1 - D.noise, 0),
   };
   document.querySelectorAll("[data-n]").forEach(el => el.textContent = text[el.dataset.n]);
 
@@ -370,6 +380,9 @@
   const stages = { "assistido": 0, "julgamento humano": 0, "automatizável": 0 }; D.llm.rows.forEach(r => stages[r.stage]++);
   set("c5b", `<div><b>${stages["assistido"]}</b>agente com rascunho</div><div><b>${stages["julgamento humano"]}</b>agente sênior</div><div><b>${stages["automatizável"]}</b>resposta automática</div>`,
       `Destino dos ${D.llm.sample} tickets de clientes: ${stages["assistido"]} para agente com rascunho, ${stages["julgamento humano"]} para agente sênior, ${stages["automatizável"]} para resposta automática.`);
+
+  document.getElementById("curve").innerHTML = D.curve.map(([t, cov, prec]) =>
+    `<tr class="${t === 0.95 ? "now" : ""}"><td>${pct(t)}${t === 0.95 ? " (no protótipo)" : ""}</td><td>${pct(cov)}</td><td>${pct(prec, 1)}</td></tr>`).join("");
 
   // Mapa de próximos passos (mesmo conteúdo de app/guide.py)
   const G = D.guide, esc = (t) => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);

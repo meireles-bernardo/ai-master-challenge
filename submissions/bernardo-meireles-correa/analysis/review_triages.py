@@ -34,7 +34,7 @@ Seja crítico: concordar com tudo sem motivo é uma revisão ruim."""
 
 
 def triages() -> list[dict]:
-    rows = [r for r in json.loads((OUTPUTS / "llm_eval.json").read_text(encoding="utf-8"))["rows"] if r.get("llm")][:N]
+    rows = [r for r in json.loads((OUTPUTS / "llm_eval_v1_codex.json").read_text(encoding="utf-8"))["rows"] if r.get("llm")][:N]
     return [{"ticket_id": r["ticket_id"], "texto": r["text"], "tipo": r["llm"]["ticket_type"], "prioridade": r["llm"]["priority"],
              "riscos": r["llm"]["risk_flags"], "pedir_ao_cliente": r["llm"]["missing_information"], "rascunho": r["llm"]["suggested_reply"]} for r in rows]
 

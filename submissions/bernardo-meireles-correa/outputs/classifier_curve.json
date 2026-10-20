@@ -1,0 +1,34 @@
+{
+  "test_accuracy": 0.8652801003344481,
+  "curve": [
+    {
+      "target": 0.95,
+      "threshold": 0.745,
+      "test_coverage": 0.7425794314381271,
+      "test_precision": 0.9503166783954962
+    },
+    {
+      "target": 0.97,
+      "threshold": 0.83,
+      "test_coverage": 0.6428720735785953,
+      "test_precision": 0.9731750934807348
+    },
+    {
+      "target": 0.98,
+      "threshold": 0.865,
+      "test_coverage": 0.5827759197324415,
+      "test_precision": 0.9815279770444764
+    },
+    {
+      "target": 0.99,
+      "threshold": 0.91,
+      "test_coverage": 0.49247491638795987,
+      "test_precision": 0.9876910016977929
+    }
+  ],
+  "label_noise": {
+    "near_duplicates": 544,
+    "other_label_share": 0.03860294117647059,
+    "model_accuracy_on_near_duplicates": 0.9522058823529411
+  }
+}

@@ -10,8 +10,8 @@ IT_THRESHOLD_FALLBACK = 0.745
 # Cada pergunta leva a um destino (sim) ou à próxima pergunta (não).
 CUSTOMER_QUESTIONS = [
     ("A IA respondeu?", "fallback", False),
-    ("Tem risco no texto, é reembolso ou cancelamento, ou a confiança é baixa?", "senior", True),
-    ("Falta informação ou a confiança é média?", "assisted", True),
+    ("Tem risco no texto, é reembolso ou cancelamento, ou o ticket está confuso?", "senior", True),
+    ("Falta informação ou o ticket permite mais de uma leitura?", "assisted", True),
 ]
 CUSTOMER_LAST = "auto"
 

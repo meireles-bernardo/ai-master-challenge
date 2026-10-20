@@ -35,7 +35,8 @@ SCHEMA = {
         "missing_information": {"type": "array", "items": {"type": "string"},
                                 "description": "Dados que o agente precisa pedir antes de resolver (em português)."},
         "suggested_reply": {"type": "string", "description": "Rascunho de resposta ao cliente, no idioma do ticket."},
-        "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
+        "confidence": {"type": "string", "enum": ["high", "medium", "low"],
+                       "description": "Clareza do ticket: o texto deixa claro o tipo e a prioridade?"},
     },
 }
 
@@ -47,6 +48,9 @@ Rules:
   information, and never promise refunds, cancellations, credits or data recovery.
 - Priority: Critical = service down, data loss or security; High = blocked user or money involved; Medium = degraded;
   Low = question or how-to.
+- confidence measures how clear the ticket is, not how sure you feel: high = the text makes the type and the priority
+  unambiguous; medium = the text supports more than one reasonable type or priority; low = you cannot tell what the
+  customer wants (contradictory, off-topic or mostly template filler). Missing details alone do not lower it.
 - Write summary_pt, priority_reason_pt and missing_information in Brazilian Portuguese.
 Return only the JSON object."""
 

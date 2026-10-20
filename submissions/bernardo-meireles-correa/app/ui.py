@@ -30,7 +30,7 @@ CHANNEL_PT = {"Email": "E-mail", "Phone": "Telefone", "Chat": "Chat", "Social me
 STATUS_PT = {"Open": "Sem resposta", "Pending Customer Response": "Esperando o cliente", "Closed": "Fechado"}
 IT_PT = {"Access": "Acesso", "Administrative rights": "Direitos de administrador", "HR Support": "RH", "Hardware": "Hardware",
          "Internal Project": "Projeto interno", "Miscellaneous": "Diversos", "Purchase": "Compra", "Storage": "Armazenamento"}
-CONFIDENCE_PT = {"high": "alta", "medium": "média", "low": "baixa"}
+CLARITY_PT = {"high": "alta", "medium": "média", "low": "baixa"}
 STATUS_HEX = ["#C9372C", "#B7791F", "#7E8893"]
 STATUS_COLORS = alt.Scale(domain=list(STATUS_PT.values()), range=STATUS_HEX)
 
@@ -173,7 +173,10 @@ def esc(s) -> str:
 
 DIAG = load_json("diagnostico.json")
 CLF = load_json("classifier_metrics.json")
+CURVE = load_json("classifier_curve.json")
 EVAL = load_json("llm_eval.json")
+# As 20 revisões por IA foram feitas sobre a rodada anterior (gpt-6-sol, antes do critério de clareza).
+EVAL_V1 = load_json("llm_eval_v1_codex.json")
 
 
 @st.cache_data
@@ -363,7 +366,7 @@ def page_triage():
                 st.session_state["analysis"]["error"] = blocked
             else:
                 try:
-                    with st.spinner(f"{llm.model_label()} analisando o ticket…"):
+                    with st.spinner("Analisando o ticket…"):
                         out = cached_triage(text, st.session_state.get("channel", ""), st.session_state.get("product", ""), llm.provider_name())
                     seen.add(text)
                     st.session_state["analysis"]["llm"] = out
@@ -422,8 +425,10 @@ def page_triage():
     with result_col:
         st.html(decision_html(dest, decision.reasons))
         facts = [("Tipo", TYPE_PT.get(out["ticket_type"], out["ticket_type"])), ("Prioridade", PRIORITY_PT.get(out["priority"], out["priority"])),
-                 ("Confiança da IA", CONFIDENCE_PT[out["confidence"]])]
-        st.html('<dl class="facts">' + "".join(f"<div><dt>{k}</dt><dd>{esc(v)}</dd></div>" for k, v in facts) + "</dl>")
+                 ("Clareza do ticket", CLARITY_PT[out["confidence"]])]
+        st.html('<dl class="facts">' + "".join(f"<div><dt>{k}</dt><dd>{esc(v)}</dd></div>" for k, v in facts) + "</dl>"
+                '<p class="chart-note">Clareza: o texto deixa claro o tipo e a prioridade? Média quer dizer que há mais de uma leitura '
+                "plausível; baixa, que não dá para saber o que o cliente quer. Não mede se a IA “sabe” resolver.</p>")
         st.markdown(f"**Resumo.** {out['summary_pt']}  \n**Por que essa prioridade.** {out['priority_reason_pt']}")
         if out["missing_information"]:
             st.markdown("**Pedir ao cliente**\n" + "\n".join(f"- {m}" for m in out["missing_information"]))
@@ -435,7 +440,7 @@ def page_triage():
                               "action": action, "destination": decision.destination, "llm_type": out["ticket_type"],
                               "llm_priority": out["priority"], "draft": draft})
                 st.toast(f"Decisão registrada: {action}. Nada foi enviado ao cliente.")
-        st.caption(f"Analisado por {llm.model_label()} em {dec(out['_seconds'], 1)} s. Nada é enviado ao cliente: "
+        st.caption(f"Analisado em {dec(out['_seconds'], 1)} s. Nada é enviado ao cliente: "
                    "cada decisão fica registrada para o piloto medir acertos.")
         context_panel(text)
     with map_col:
@@ -525,6 +530,18 @@ def section_classifier():
 - **Comparação:** chutar sempre a categoria mais comum acerta {pct(t['majority_baseline_accuracy'])}.
 - **Vazamento:** o risco real são textos quase iguais entre treino e teste. Sem eles ({num(t['strict_subset']['n'])} de {num(t['n'])}), o acerto fica em {pct(t['strict_subset']['accuracy'])}.
 """)
+    if CURVE:
+        nz = CURVE["label_noise"]
+        st.markdown(f"""
+**Por que não 99% no geral**
+- **Os próprios rótulos têm ruído.** Dos {num(nz['near_duplicates'])} tickets do teste quase idênticos a um do treino, {pct(nz['other_label_share'])} têm outra categoria. Nem um modelo perfeito acertaria os dois, então o teto deste dataset fica perto de {pct(1 - nz['other_label_share'], 0)}. Nesses casos o modelo já acerta {pct(nz['model_accuracy_on_near_duplicates'])}.
+- **100% seria sinal de vazamento**, não de qualidade.
+- **O que importa na operação é o acerto do que vai sozinho.** O limiar troca automação por acerto, e a escolha é do negócio:
+""")
+        st.dataframe(pd.DataFrame([{"Meta de acerto": pct(c["target"], 0), "Vão sozinhos": pct(c["test_coverage"], 0),
+                                    "Acerto medido no teste": pct(c["test_precision"]), "Vão para uma pessoa": pct(1 - c["test_coverage"], 0)}
+                                   for c in CURVE["curve"]]), hide_index=True)
+        st.caption("O protótipo opera na meta de 95%. Subir para 99% manda metade dos tickets para uma pessoa.")
     labels = [IT_PT.get(x, x) for x in t["labels"]]
     cm = pd.DataFrame(t["confusion_matrix"], index=labels, columns=labels).reset_index(names="Real").melt("Real", var_name="Previsto", value_name="Tickets")
     st.html('<p class="eyebrow">Categoria real × categoria prevista, no teste</p>')
@@ -572,11 +589,12 @@ def section_llm():
 
 def section_review():
     summary = load_json("revisao_resumo.json")
-    rows = [r for r in EVAL.get("rows", []) if r.get("llm")][:REVIEW_SAMPLE]
+    rows = [r for r in EVAL_V1.get("rows", []) if r.get("llm")][:REVIEW_SAMPLE]
     if summary:
         st.markdown("Nenhuma pessoa revisou estas triagens. Dois revisores de IA leram as mesmas 20, com as mesmas regras: "
                     "o Claude primeiro e o Codex depois, **sem ver a revisão do Claude**. Quando os dois discordam do LLM, "
-                    "o erro é mais provável.")
+                    "o erro é mais provável. As revisões são da rodada anterior da avaliação (gpt-6-sol pelo Codex, antes do "
+                    "critério de clareza), guardada em `outputs/llm_eval_v1_codex.json`.")
         agree = summary["concordancia_entre_revisores"]
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Tipo certo (Claude / Codex)", f"{summary['claude']['tipo']} / {summary['codex']['tipo']}", border=True)

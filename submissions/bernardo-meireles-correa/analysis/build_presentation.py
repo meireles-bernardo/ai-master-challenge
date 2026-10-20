@@ -28,6 +28,7 @@ def main() -> None:
     diag = json.loads((OUTPUTS / "diagnostico.json").read_text(encoding="utf-8"))
     clf = json.loads((OUTPUTS / "classifier_metrics.json").read_text(encoding="utf-8"))
     llm = json.loads((OUTPUTS / "llm_eval.json").read_text(encoding="utf-8"))
+    curve = json.loads((OUTPUTS / "classifier_curve.json").read_text(encoding="utf-8"))
     position = {int(t): i for i, t in enumerate(tickets["Ticket ID"])}
     sample = [{"i": position[r["ticket_id"]], "stage": r["decision"]["stage"]} for r in llm["rows"] if r.get("decision")]
     hook = tickets[tickets["Ticket ID"] == HOOK_TICKET_ID].iloc[0]
@@ -43,6 +44,8 @@ def main() -> None:
         "risk": "".join("1" if policy.keyword_risks(t) else "0" for t in tickets["Description (display)"]),
         "csatMinP": diag["satisfaction"]["min_p"],
         "itTotal": clf["source"]["rows"],
+        "curve": [[c["target"], c["test_coverage"], c["test_precision"]] for c in curve["curve"]],
+        "noise": curve["label_noise"]["other_label_share"],
         "classifier": {"accuracy": clf["test"]["accuracy"], "n": clf["test"]["n"], "auto": clf["test"]["auto_coverage"],
                        "autoPrecision": clf["test"]["auto_precision"]},
         "llm": {"sample": llm["summary"]["sample"], "promises": len(llm["summary"]["forbidden_promises"]),

@@ -61,7 +61,7 @@ def decide_customer(llm: dict | None, text: str) -> Decision:
     if llm.get("ticket_type") in {"Refund request", "Cancellation request"}:
         reasons.append(f"Tipo {llm['ticket_type']} envolve decisão comercial.")
     if llm.get("confidence") == "low":
-        reasons.append("Confiança do modelo: baixa.")
+        reasons.append("Clareza do ticket: baixa. Não dá para saber com segurança o que o cliente quer.")
     if rules - set(llm.get("risk_flags", [])):
         reasons.append("A regra de segurança encontrou risco que o LLM não marcou.")
     if reasons:
@@ -69,7 +69,7 @@ def decide_customer(llm: dict | None, text: str) -> Decision:
     if llm.get("missing_information") or llm.get("confidence") != "high":
         why = ["Rascunho pronto; faltam dados para resolver."] if llm.get("missing_information") else []
         if llm.get("confidence") != "high":
-            why.append("Confiança média: o agente confere tipo e prioridade.")
+            why.append("Clareza média: o texto permite mais de uma leitura; o agente confere tipo e prioridade.")
         return Decision("Agente revisa o rascunho e pede os dados faltantes", True, why, "assistido")
     return Decision("Elegível a resposta automática (fase 2)", False,
                     ["Pergunta informativa, sem risco e com confiança alta. No piloto, ainda passa por revisão."], "automatizável")
