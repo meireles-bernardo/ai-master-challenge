@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # histórico completo para o scan de segredos
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt cfn-lint==1.57.2 pip-audit==2.10.1
+      - name: Segredos no histórico Git (Gitleaks)
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.21.2 git /repo --no-banner --redact
+      - name: Vulnerabilidades nas dependências Python
+        run: pip-audit -r requirements.txt
+      - name: Teste de fumaça do app (sem LLM)
+        run: python tests/test_app.py
+        env:
+          LLM_PROVIDER: "off"
+          ENABLE_REVIEW: "1"
+          REVIEW_FILE: ${{ runner.temp }}/review.csv
+      - name: Verificações da entrega (links, números, dados, segredos)
+        run: python tests/check_delivery.py
+      - name: CloudFormation
+        run: cfn-lint infra/cloudformation.yaml
+      - name: Nenhum segredo versionado
+        run: |
+          ! git grep -nE 'sk-ant-[A-Za-z0-9_-]{10,}|ANTHROPIC_API_KEY=sk-' -- ':!.env.example' ':!.github/'
+
+  image:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build da imagem
+        run: docker build -t g4-support-copilot .
+      - name: Healthcheck do contêiner
+        run: |
+          docker run -d --name app -p 8501:8501 -e LLM_PROVIDER=off g4-support-copilot
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8501/app/_stcore/health && exit 0
+            sleep 2
+          done
+          docker logs app; exit 1
+      - name: Scan da imagem (falha em crítica com correção disponível)
+        run: >
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.57.1
+          image --exit-code 1 --severity CRITICAL --ignore-unfixed --scanners vuln,secret g4-support-copilot

@@ -1,0 +1,75 @@
+{
+  "resumo": "Os números principais de volume, classificador, ROI e contagem da amostra conferem com os JSONs. Não encontrei links relativos quebrados nos cinco arquivos Markdown pedidos. Os achados estão na interpretação da avaliação do LLM, em afirmações operacionais sem prova e em controles de segurança descritos com mais força do que o código permite. Nenhum arquivo foi modificado.",
+  "achados": [
+    {
+      "severidade": "alta",
+      "arquivo": "README.md:19; presentation/index.html:177; analysis/eval_llm.py:62",
+      "problema": "A afirmação de que o LLM não deixou passar nenhum caso de risco excede o teste realizado.",
+      "evidencia": "O cálculo compara os riscos marcados pelo LLM somente com os encontrados pelas expressões de policy.py. llm_eval.json registra 11 tickets com risco pela regra e zero divergências nesse subconjunto; não há gabarito humano para os 60 tickets. O próprio README.md:131 informa que nenhuma pessoa revisou as triagens.",
+      "sugestao": "Descrever o resultado como «zero riscos detectados pela regra e omitidos pelo LLM na amostra» e reservar a conclusão sobre riscos perdidos para revisão humana."
+    },
+    {
+      "severidade": "alta",
+      "arquivo": "app/llm.py:62; outputs/llm_eval.json; README.md:109",
+      "problema": "A garantia de que o texto do ticket é tratado «nunca como instrução» não é sustentada.",
+      "evidencia": "O texto é inserido integralmente no mesmo prompt das instruções, entre <<< e >>>, sem isolamento de papéis. No ticket 4716 de llm_eval.json, o trecho «Please give credit to: @joeyclay» reaparece como compromisso no rascunho: «We’ll also note your request to credit @joeyclay». Isso mostra que uma instrução contida no ticket influenciou a resposta.",
+      "sugestao": "Tratar o conteúdo como entrada não confiável, testar ataques de injeção e retirar a garantia absoluta. Manter revisão humana do rascunho."
+    },
+    {
+      "severidade": "media",
+      "arquivo": "app/limits.py:32; app/ui.py:183",
+      "problema": "O teto diário de chamadas não é rígido sob acessos simultâneos.",
+      "evidencia": "limits.check lê o contador antes da chamada ao LLM; cached_triage chama o provedor e só depois executa limits.record. Sessões simultâneas podem passar pela checagem enquanto o contador ainda está abaixo de 300. O bloqueio por sessão também se baseia em st.session_state, que uma nova visita reinicia.",
+      "sugestao": "Reservar a cota diária atomicamente antes de chamar o provedor e manter o teto de gasto no provedor como proteção final."
+    },
+    {
+      "severidade": "media",
+      "arquivo": "infra/cloudformation.yaml:61; deploy/README.md:20",
+      "problema": "A descrição de permissões IAM é mais restrita do que a política implantada.",
+      "evidencia": "O README diz que o papel «só lê o parâmetro da chave». A política também concede kms:Decrypt com Resource: \"*\", limitado por kms:ViaService à região. Isso não restringe a permissão à chave KMS usada pelo parâmetro.",
+      "sugestao": "Restringir kms:Decrypt à chave necessária ou descrever exatamente a permissão concedida."
+    },
+    {
+      "severidade": "media",
+      "arquivo": "README.md:107; app/context.py:20; app/ui.py:239",
+      "problema": "As regras de privacidade são apresentadas como controles em operação, mas parte delas é apenas texto.",
+      "evidencia": "O README afirma «cada consulta registrada» e «só conversas ligadas ao ticket ou ao cliente». context.recover apenas extrai texto e monta consultas simuladas; não verifica vínculo nem registra consultas. O único registro mostrado em ui.py é o de decisões sobre rascunhos.",
+      "sugestao": "Identificar essas regras como requisitos para uma futura integração e implementar autorização e auditoria antes de consultar fontes reais."
+    },
+    {
+      "severidade": "media",
+      "arquivo": "presentation/index.html:131; outputs/diagnostico.json",
+      "problema": "A apresentação afirma que a fila anda por ordem de chegada sem evidência para essa ordem.",
+      "evidencia": "diagnostico.json contém contagens por status e associações com canal, prioridade e tipo. Não contém histórico de movimentação da fila; o próprio README.md:125 recomenda registrar cada mudança de status. As proporções semelhantes não demonstram atendimento por ordem de chegada.",
+      "sugestao": "Apresentar a ausência de priorização observável como hipótese ou limitar a afirmação ao que as proporções por status mostram."
+    },
+    {
+      "severidade": "media",
+      "arquivo": "README.md:16; presentation/index.html:107; outputs/diagnostico.json",
+      "problema": "A conclusão «nenhuma variável explica a satisfação» transforma ausência de significância em prova de ausência de relação.",
+      "evidencia": "diagnostico.json registra oito testes com menor p = 0,148. Esses resultados não rejeitam as hipóteses nulas nos testes feitos, mas não demonstram que as variáveis não tenham efeito. A apresentação resume isso como «0 de 8 variáveis explicam».",
+      "sugestao": "Dizer que não foi encontrada associação estatisticamente detectável nas oito variáveis testadas."
+    },
+    {
+      "severidade": "media",
+      "arquivo": "README.md:23; presentation/index.html:8; presentation/index.html:104",
+      "problema": "A expressão «tickets reais» pode induzir o avaliador a entender que são registros de uma operação real.",
+      "evidencia": "O mesmo README.md:52 classifica o Dataset 1 como sintético, e presentation/index.html:222 repete essa ressalva. A abertura, porém, chama cada ficha de «ticket real» e a meta description fala em «8.469 tickets reais».",
+      "sugestao": "Usar «registros do dataset sintético» na abertura e no resumo, mantendo a distinção já feita nas limitações."
+    },
+    {
+      "severidade": "baixa",
+      "arquivo": "README.md:103; presentation/index.html:164; app/context.py:16",
+      "problema": "A afirmação de que a garantia está respondida depende de uma regra comercial presumida.",
+      "evidencia": "context.py fixa WARRANTY_MONTHS = 12 e REFERENCE_DATE = 2023-06-01. O repositório não apresenta política de garantia por produto, região ou compra. Produto e data de compra, por si, não resolvem a elegibilidade.",
+      "sugestao": "Apresentar os 12 meses como premissa demonstrativa e deixar a decisão de garantia para uma política verificada."
+    },
+    {
+      "severidade": "baixa",
+      "arquivo": "process-log/README.md:61; evidencias/README.md:5",
+      "problema": "A evidência prometida para a fase com Claude Code não está identificável na entrega.",
+      "evidencia": "O process log remete a uma «transcrição exportada da sessão do Claude Code», enquanto evidencias/README.md lista o export das mensagens do Codex, o histórico Git e a revisão por IA. Não há transcrição do Claude entre os arquivos da pasta de evidências.",
+      "sugestao": "Adicionar a transcrição citada ou retirar essa indicação e apontar os commits que sustentam as decisões da fase 2."
+    }
+  ]
+}

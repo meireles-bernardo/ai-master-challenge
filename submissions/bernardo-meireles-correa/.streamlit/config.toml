@@ -1,0 +1,26 @@
+# Visual do protótipo alinhado com o dossiê (mesmo papel, mesma tinta, mesma fonte de títulos).
+[server]
+enableStaticServing = true
+
+[client]
+toolbarMode = "minimal"
+showSidebarNavigation = false
+
+[theme]
+base = "light"
+backgroundColor = "#F5F2EA"
+secondaryBackgroundColor = "#EDE8DD"
+textColor = "#1B2128"
+primaryColor = "#1B2128"
+linkColor = "#B3261E"
+borderColor = "#D8D1C2"
+showWidgetBorder = true
+baseRadius = "small"
+headingFont = "Bricolage Grotesque, sans-serif"
+font = "sans-serif"
+chartCategoricalColors = ["#C9372C", "#B7791F", "#7E8893", "#1B2128", "#5F6C78"]
+
+[[theme.fontFaces]]
+family = "Bricolage Grotesque"
+url = "app/static/fonts/BricolageGrotesque.woff2"
+weight = "400 800"

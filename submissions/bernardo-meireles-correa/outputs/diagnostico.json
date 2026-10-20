@@ -1,0 +1,314 @@
+{
+  "source": {
+    "zip": "customer-support-ticket-dataset.zip",
+    "member": "customer_support_tickets.csv",
+    "sha256": "99e848c33601eb8863d00f1b8304faa7d1336243b985c2e3ceabe35806149df8",
+    "rows": 8469
+  },
+  "backlog": {
+    "total": 8469,
+    "status": {
+      "Pending Customer Response": 2881,
+      "Open": 2819,
+      "Closed": 2769
+    },
+    "not_closed": 5700,
+    "open_without_first_response": 2819,
+    "critical_not_closed": 1403,
+    "critical_total": 2129,
+    "by_dimension": {
+      "Ticket Channel": {
+        "share_pct": {
+          "Chat": {
+            "Closed": 32.5,
+            "Open": 33.0,
+            "Pending Customer Response": 34.4
+          },
+          "Email": {
+            "Closed": 33.6,
+            "Open": 32.7,
+            "Pending Customer Response": 33.7
+          },
+          "Phone": {
+            "Closed": 32.4,
+            "Open": 34.5,
+            "Pending Customer Response": 33.1
+          },
+          "Social media": {
+            "Closed": 32.2,
+            "Open": 32.9,
+            "Pending Customer Response": 34.9
+          }
+        },
+        "chi2_p": 0.7709841190107417,
+        "cramers_v": 0.013947986290617253
+      },
+      "Ticket Priority": {
+        "share_pct": {
+          "Critical": {
+            "Closed": 34.1,
+            "Open": 32.5,
+            "Pending Customer Response": 33.4
+          },
+          "High": {
+            "Closed": 33.8,
+            "Open": 33.8,
+            "Pending Customer Response": 32.4
+          },
+          "Low": {
+            "Closed": 31.2,
+            "Open": 33.7,
+            "Pending Customer Response": 35.0
+          },
+          "Medium": {
+            "Closed": 31.7,
+            "Open": 33.2,
+            "Pending Customer Response": 35.2
+          }
+        },
+        "chi2_p": 0.22696733419078619,
+        "cramers_v": 0.02194221577992807
+      },
+      "Ticket Type": {
+        "share_pct": {
+          "Billing inquiry": {
+            "Closed": 33.3,
+            "Open": 33.0,
+            "Pending Customer Response": 33.7
+          },
+          "Cancellation request": {
+            "Closed": 30.4,
+            "Open": 34.3,
+            "Pending Customer Response": 35.2
+          },
+          "Product inquiry": {
+            "Closed": 32.5,
+            "Open": 32.4,
+            "Pending Customer Response": 35.1
+          },
+          "Refund request": {
+            "Closed": 34.0,
+            "Open": 32.2,
+            "Pending Customer Response": 33.8
+          },
+          "Technical issue": {
+            "Closed": 33.2,
+            "Open": 34.5,
+            "Pending Customer Response": 32.3
+          }
+        },
+        "chi2_p": 0.3393682274358036,
+        "cramers_v": 0.02309555306538864
+      }
+    }
+  },
+  "resolution_time": {
+    "closed": 2769,
+    "valid_pairs": 1404,
+    "inverted_pairs": 1365,
+    "inverted_pct": 49.3,
+    "median_hours": 6.34,
+    "timestamp_window": [
+      "2023-05-31 21:53:30",
+      "2023-06-02 00:55:33"
+    ],
+    "timestamp_window_hours": 27.0,
+    "by_dimension": {
+      "Ticket Channel": {
+        "median_hours": {
+          "Chat": 6.52,
+          "Email": 6.41,
+          "Phone": 6.05,
+          "Social media": 6.43
+        },
+        "kruskal_p": 0.7907105418975421
+      },
+      "Ticket Priority": {
+        "median_hours": {
+          "Critical": 5.98,
+          "High": 7.12,
+          "Low": 7.08,
+          "Medium": 5.87
+        },
+        "kruskal_p": 0.09092177944741833
+      },
+      "Ticket Type": {
+        "median_hours": {
+          "Billing inquiry": 5.27,
+          "Cancellation request": 6.37,
+          "Product inquiry": 6.98,
+          "Refund request": 6.71,
+          "Technical issue": 6.38
+        },
+        "kruskal_p": 0.16039079221223523
+      }
+    },
+    "combinations_n": 80,
+    "combinations_kruskal_p": 0.45529846998547807,
+    "worst_combinations": [
+      {
+        "Ticket Channel": "Chat",
+        "Ticket Priority": "Low",
+        "Ticket Type": "Technical issue",
+        "median": 13.23,
+        "count": 15
+      },
+      {
+        "Ticket Channel": "Phone",
+        "Ticket Priority": "High",
+        "Ticket Type": "Refund request",
+        "median": 12.65,
+        "count": 13
+      },
+      {
+        "Ticket Channel": "Chat",
+        "Ticket Priority": "High",
+        "Ticket Type": "Refund request",
+        "median": 12.45,
+        "count": 22
+      },
+      {
+        "Ticket Channel": "Email",
+        "Ticket Priority": "Medium",
+        "Ticket Type": "Product inquiry",
+        "median": 9.67,
+        "count": 14
+      },
+      {
+        "Ticket Channel": "Phone",
+        "Ticket Priority": "Low",
+        "Ticket Type": "Cancellation request",
+        "median": 9.25,
+        "count": 10
+      }
+    ],
+    "best_combinations": [
+      {
+        "Ticket Channel": "Email",
+        "Ticket Priority": "Low",
+        "Ticket Type": "Billing inquiry",
+        "median": 3.5,
+        "count": 17
+      },
+      {
+        "Ticket Channel": "Chat",
+        "Ticket Priority": "Critical",
+        "Ticket Type": "Refund request",
+        "median": 3.47,
+        "count": 17
+      },
+      {
+        "Ticket Channel": "Email",
+        "Ticket Priority": "Medium",
+        "Ticket Type": "Technical issue",
+        "median": 3.3,
+        "count": 17
+      },
+      {
+        "Ticket Channel": "Phone",
+        "Ticket Priority": "High",
+        "Ticket Type": "Cancellation request",
+        "median": 3.13,
+        "count": 12
+      },
+      {
+        "Ticket Channel": "Social media",
+        "Ticket Priority": "High",
+        "Ticket Type": "Billing inquiry",
+        "median": 2.71,
+        "count": 16
+      }
+    ],
+    "worst_median_permutation_p": 0.134,
+    "combination_sizes": [
+      8,
+      28
+    ]
+  },
+  "satisfaction": {
+    "rated": 2769,
+    "mean": 2.99,
+    "distribution": {
+      "1": 553,
+      "2": 549,
+      "3": 580,
+      "4": 543,
+      "5": 544
+    },
+    "uniform_chisquare_p": 0.7968287774654618,
+    "low_ratings": 1102,
+    "tests": [
+      {
+        "variable": "Ticket Channel",
+        "test": "qui-quadrado",
+        "p": 0.4674740858864461,
+        "effect": 0.03757987643820035,
+        "effect_name": "V de Cramér"
+      },
+      {
+        "variable": "Ticket Priority",
+        "test": "qui-quadrado",
+        "p": 0.39958800502977093,
+        "effect": 0.038929419693799434,
+        "effect_name": "V de Cramér"
+      },
+      {
+        "variable": "Ticket Type",
+        "test": "qui-quadrado",
+        "p": 0.256509175147102,
+        "effect": 0.04167635416355262,
+        "effect_name": "V de Cramér"
+      },
+      {
+        "variable": "Ticket Subject",
+        "test": "qui-quadrado",
+        "p": 0.8756785097765094,
+        "effect": 0.0655899828311574,
+        "effect_name": "V de Cramér"
+      },
+      {
+        "variable": "Product Purchased",
+        "test": "qui-quadrado",
+        "p": 0.2526254463657908,
+        "effect": 0.12593784398721566,
+        "effect_name": "V de Cramér"
+      },
+      {
+        "variable": "Customer Gender",
+        "test": "qui-quadrado",
+        "p": 0.14807148744112777,
+        "effect": 0.04668658344105194,
+        "effect_name": "V de Cramér"
+      },
+      {
+        "variable": "Idade do cliente",
+        "test": "Spearman",
+        "p": 0.8315190716565333,
+        "effect": -0.004044920808271974,
+        "effect_name": "ρ"
+      },
+      {
+        "variable": "Horas entre 1ª resposta e resolução (pares válidos)",
+        "test": "Spearman",
+        "p": 0.921343215073008,
+        "effect": 0.002637570495552492,
+        "effect_name": "ρ"
+      }
+    ],
+    "min_p": 0.14807148744112777
+  },
+  "text_quality": {
+    "placeholder_product_pct": 100.0,
+    "placeholder_error_message": 472,
+    "resolution_filled": 2769,
+    "resolution_word_range": [
+      3,
+      8
+    ],
+    "resolution_examples": [
+      "Offer investment fish.",
+      "Window range building see answer job boy.",
+      "Should strong investment lead."
+    ]
+  }
+}

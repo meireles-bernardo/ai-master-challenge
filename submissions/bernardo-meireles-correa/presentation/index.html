@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dossiê 002 · Suporte ao cliente</title>
+<meta name="repo-url" content="https://github.com/meireles-bernardo/ai-master-challenge/tree/submission/bernardo-meireles-correa/submissions/bernardo-meireles-correa">
+<meta name="description" content="Análise independente de 8.469 tickets de suporte: onde a fila parou, o que a prioridade não resolve e um plano com IA supervisionada. Challenge 002 do AI Master G4.">
+<!-- Fontes embutidas (OFL) em vendor/fonts.css: a página não depende de internet. -->
+<link rel="stylesheet" href="vendor/fonts.css">
+<style>
+  :root {
+    --paper: #F5F2EA;
+    --sheet: #FFFDF8;
+    --ink: #1B2128;
+    --muted: #59626D;
+    --rule: #D8D1C2;
+    --stamp: #B3261E;
+    --red: #C9372C;
+    --amber: #B7791F;
+    --gray: #7E8893;
+    --night: #121B26;
+    --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+    --serif: "Newsreader", Georgia, serif;
+    --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --wrap: min(68rem, calc(100vw - 2rem));
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 1.125rem; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-underline-offset: 0.2em; }
+  a:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
+  .wrap { width: var(--wrap); margin: 0 auto; }
+  .skip { position: absolute; left: -999px; top: 0; background: var(--ink); color: #fff; padding: 0.5rem 0.8rem; z-index: 20; }
+  .skip:focus { left: 0.5rem; top: 0.5rem; }
+
+  /* moldura comum (a mesma do protótipo) */
+  .frame { position: sticky; top: 0; z-index: 10; background: rgba(245, 242, 234, 0.96); border-bottom: 1px solid var(--rule); }
+  .frame .wrap { display: flex; align-items: center; gap: 1.2rem; min-height: 3.4rem; }
+  .brand { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; white-space: nowrap; font-weight: 600; }
+  .brand b { color: var(--stamp); }
+  .frame nav { display: flex; gap: 1.1rem; overflow-x: auto; scrollbar-width: none; font-family: var(--display); font-size: 0.95rem; margin-left: auto; }
+  .frame nav::-webkit-scrollbar { display: none; }
+  .frame nav a { text-decoration: none; white-space: nowrap; padding: 0.3rem 0; color: var(--muted); }
+  .frame nav a:hover, .frame nav a[aria-current] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--ink); }
+
+  /* capa */
+  .cover { position: relative; background: var(--night); color: #F2F4F6; overflow: hidden; }
+  .cover canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18,27,38,0.94) 0%, rgba(18,27,38,0.88) 56%, rgba(18,27,38,0.2) 85%); pointer-events: none; }
+  .cover .wrap { position: relative; z-index: 2; padding: clamp(3rem, 9vh, 6rem) 0 clamp(2.5rem, 7vh, 4.5rem); }
+  .kicker { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.4rem; }
+  .cover .kicker { color: #F0A93C; }
+  .cover .sub { font-family: var(--mono); font-size: 0.82rem; color: #C3CBD3; margin: 0 0 1.6rem; }
+  h1, h2, h3 { font-family: var(--display); font-optical-sizing: auto; letter-spacing: -0.02em; line-height: 1.02; margin: 0; }
+  h1 { font-size: clamp(2.3rem, 5.6vw, 4.4rem); font-weight: 760; max-width: 15ch; font-variation-settings: "wdth" 85; }
+  .cover .lede { max-width: 34rem; color: #D5DBE1; margin: 1.1rem 0 1.6rem; font-size: 1.15rem; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 11rem)); gap: 0.8rem 1.4rem; margin: 0 0 1.8rem; padding: 0; list-style: none; }
+  .stats li { border-top: 2px solid #F2F4F6; padding-top: 0.5rem; font-family: var(--display); font-size: 0.92rem; line-height: 1.25; color: #D5DBE1; }
+  .stats b { display: block; font-size: 1.9rem; color: #fff; font-weight: 750; margin-bottom: 0.15rem; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; font-family: var(--display); margin: 0; }
+  .btn { display: inline-block; padding: 0.75rem 1.2rem; text-decoration: none; font-weight: 650; border: 2px solid currentColor; }
+  .btn.solid { background: #F2F4F6; color: var(--night); border-color: #F2F4F6; }
+  .btn.ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .cover .note { font-size: 0.85rem; color: #AEB8C2; margin: 1.6rem 0 0; max-width: 40rem; font-family: var(--display); }
+
+  /* corpo do dossiê */
+  section.part { padding: clamp(3rem, 8vh, 5rem) 0 1rem; }
+  .part > .wrap > header { max-width: 44rem; margin-bottom: 2rem; }
+  h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); font-weight: 730; margin-bottom: 0.6rem; }
+  .part header p { color: var(--muted); margin: 0; }
+  .kicker.ink { color: var(--stamp); }
+
+  .prova { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 0 2.2rem; background: var(--sheet); border: 1px solid var(--rule); padding: 1.8rem 2rem; margin: 0 0 1.6rem; }
+  .prova .meta { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+  .prova .num { display: inline-block; font-size: 0.85rem; letter-spacing: 0.08em; color: var(--stamp); border: 2px solid var(--stamp); padding: 0.15rem 0.5rem; margin-bottom: 0.9rem; font-weight: 700; transform: rotate(-2deg); }
+  .prova .meta p { margin: 0 0 0.7rem; }
+  .prova .meta a { color: var(--ink); }
+  .prova h3 { font-size: clamp(1.45rem, 2.6vw, 1.95rem); font-weight: 720; margin-bottom: 0.7rem; }
+  .prova p { margin: 0 0 0.9rem; max-width: 42rem; }
+  .prova strong { font-weight: 600; }
+  .todo { border-left: 4px solid var(--ink); background: var(--paper); padding: 0.7rem 1rem; margin: 1rem 0 0; max-width: 42rem; }
+  .todo b { font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 0.15rem; }
+
+  /* gráficos 2D */
+  .chart { margin: 1rem 0 0.6rem; max-width: 42rem; }
+  .bar { display: flex; height: 2rem; width: 100%; }
+  .bar span { display: block; height: 100%; }
+  .rows { display: grid; grid-template-columns: 6rem minmax(0, 1fr) 3.2rem; gap: 0.45rem 0.8rem; align-items: center; font-family: var(--display); font-size: 0.95rem; }
+  .rows .bar { height: 1.15rem; }
+  .rows .v { text-align: right; font-variant-numeric: tabular-nums; }
+  .rows .hl { font-weight: 700; color: var(--stamp); }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0.6rem 0 0; padding: 0; list-style: none; font-family: var(--display); font-size: 0.9rem; color: var(--muted); }
+  .legend li { display: flex; align-items: center; gap: 0.4rem; }
+  .legend i { width: 0.9rem; height: 0.9rem; display: inline-block; flex: none; }
+  .cols { display: flex; align-items: flex-end; gap: 0.8rem; height: 9rem; max-width: 26rem; }
+  .cols div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-family: var(--display); font-size: 0.9rem; }
+  .cols span { display: block; width: 100%; }
+  .cols small { margin-top: 0.3rem; color: var(--muted); }
+  .quote { border: 1px solid var(--rule); border-top: 4px solid var(--stamp); background: var(--paper); padding: 0.9rem 1.1rem; margin: 1.2rem 0 0; max-width: 42rem; }
+  .quote .chips { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .quote .chips em { font-style: normal; color: #fff; background: var(--stamp); padding: 0 0.35rem; }
+  .quote p { font-style: italic; margin: 0 0 0.3rem; }
+  .quote .pt { font-style: normal; color: var(--muted); font-size: 0.95rem; margin: 0; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; max-width: 46rem; margin-top: 0.8rem; }
+  .pair h4 { font-family: var(--display); font-size: 1rem; margin: 0 0 0.5rem; }
+  .grid100 { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; max-width: 18rem; }
+  .grid100 i { aspect-ratio: 2 / 1; display: block; }
+  .curve { border-collapse: collapse; font-family: var(--display); font-size: 0.95rem; margin: 0.2rem 0 1rem; min-width: min(100%, 24rem); }
+  .curve th, .curve td { text-align: left; padding: 0.3rem 1.2rem 0.3rem 0; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+  .curve th { font-weight: 600; color: var(--muted); font-size: 0.85rem; }
+  .curve tr.now td { font-weight: 700; }
+  .tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; font-family: var(--display); font-size: 0.9rem; }
+  .tray div { border: 1px solid var(--rule); padding: 0.5rem 0.6rem; background: var(--paper); }
+  .tray b { display: block; font-size: 1.6rem; }
+
+  /* plano */
+  .guide { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: var(--sheet); border: 1px solid var(--rule); padding: 1.6rem 2rem; }
+  .guide h3 { font-size: 1.15rem; margin-bottom: 0.8rem; }
+  .guide ol { list-style: none; margin: 0; padding: 0; }
+  .guide li { margin: 0 0 0.75rem; }
+  .guide .q { font-family: var(--display); font-weight: 650; font-size: 1rem; line-height: 1.3; }
+  .guide .d { margin: 0.35rem 0 0 0.8rem; padding: 0.3rem 0 0.3rem 0.8rem; border-left: 4px solid var(--gray); font-size: 0.97rem; line-height: 1.4; }
+  .guide .d.red { border-color: var(--red); } .guide .d.amber { border-color: var(--amber); } .guide .d.light { border-color: var(--ink); }
+  .guide .d b { display: block; font-family: var(--display); font-weight: 650; }
+  .guide .d span { display: block; color: var(--muted); }
+  .guide .ans { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.6rem; margin-top: 1.6rem; }
+  .sheet { background: var(--sheet); border: 1px solid var(--rule); padding: 1.6rem 2rem; }
+  .sheet h3 { font-size: 1.3rem; margin-bottom: 0.7rem; }
+  .sheet ol { margin: 0 0 0.7rem; padding-left: 1.3rem; }
+  .sheet li { margin-bottom: 0.5rem; }
+  .sheet .big { font-family: var(--display); font-size: 3rem; font-weight: 760; line-height: 1; margin: 0.2rem 0 0.4rem; }
+  .sheet p { margin: 0 0 0.7rem; }
+  .muted { color: var(--muted); }
+  footer.end { padding: 2rem 0 4rem; font-family: var(--display); font-size: 0.9rem; color: var(--muted); }
+  footer.end .ctas { margin: 0 0 1.4rem; }
+
+  @media (max-width: 820px) {
+    body { font-size: 1.05rem; }
+    .cover::after { background: linear-gradient(180deg, rgba(18,27,38,0.6) 0%, rgba(18,27,38,0.92) 40%); }
+    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+    .stats b { font-size: 1.4rem; }
+    .stats li { font-size: 0.82rem; }
+    .prova { grid-template-columns: 1fr; padding: 1.3rem 1.1rem; }
+    .prova .meta { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; align-items: baseline; margin-bottom: 0.6rem; }
+    .prova .meta p { margin: 0; }
+    .prova .num { margin-bottom: 0.4rem; }
+    .rows { grid-template-columns: 4.6rem minmax(0, 1fr) 2.8rem; font-size: 0.88rem; }
+    .pair, .guide, .two { grid-template-columns: 1fr; }
+    .guide, .sheet { padding: 1.3rem 1.1rem; }
+    .frame .wrap { gap: 0.8rem; }
+    .brand span { display: none; }
+    .frame nav { -webkit-mask-image: linear-gradient(90deg, #000 80%, transparent); mask-image: linear-gradient(90deg, #000 80%, transparent); padding-right: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#provas">Pular para as provas</a>
+<header class="frame">
+  <div class="wrap">
+    <a class="brand" href="#capa"><b>Dossiê 002</b><span> · Suporte ao cliente</span></a>
+    <nav aria-label="Seções do dossiê e do protótipo">
+      <a href="#capa" aria-current="true">Resumo</a>
+      <a href="#provas">Provas</a>
+      <a href="#plano">Plano</a>
+      <a class="link-app" data-page="" href="../README.md#como-rodar-2-min">Painel</a>
+      <a class="link-app" data-page="triagem" href="../README.md#como-rodar-2-min">Triagem</a>
+      <a class="link-app" data-page="fila" href="../README.md#como-rodar-2-min">Fila</a>
+      <a class="link-app" data-page="validacao" href="../README.md#como-rodar-2-min">Método</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="cover" id="capa" aria-labelledby="veredito">
+    <canvas id="wall" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <p class="kicker">Análise independente de <span data-n="total"></span> tickets</p>
+      <h1 id="veredito">O seu suporte não está lento. Ele está parado, e a prioridade não faz diferença.</h1>
+      <p class="lede">Cada ficha ao fundo é um ticket. Em vermelho, os que nunca tiveram resposta. Este dossiê mostra onde a fila travou e propõe um jeito de destravar, com IA sugerindo e pessoas decidindo.</p>
+      <ul class="stats">
+        <li><b data-n="stuckPct"></b>dos tickets estão parados</li>
+        <li><b>0 de 8</b>variáveis testadas explicam a nota do cliente</li>
+        <li><b>~<span data-n="hours"></span> h</b>por mês de volta para a equipe</li>
+      </ul>
+      <p class="ctas"><a class="btn solid" href="#provas">Ler o dossiê</a><a class="btn link-app" data-page="triagem" href="../README.md#como-rodar-2-min">Triagem de tickets</a></p>
+      <p class="note"><a href="video/demo-dossie-002.mp4">Prefere assistir? Demonstração narrada, 76 s</a></p>
+      <p class="note">Base: dataset público e sintético do Challenge 002 do AI Master G4 (Kaggle). Nada aqui é dado de uma empresa real.</p>
+    </div>
+  </section>
+
+  <section class="part" id="provas" aria-labelledby="provas-t">
+    <div class="wrap">
+      <header>
+        <p class="kicker ink">Provas</p>
+        <h2 id="provas-t">Cinco provas, em qualquer ordem</h2>
+        <p>Cada prova traz o dado, a fonte e o que fazer a respeito. Os números vêm dos <span data-n="total"></span> tickets de clientes e dos <span data-n="itTotal"></span> tickets internos de TI do desafio.</p>
+      </header>
+
+      <article class="prova" id="prova-01" aria-labelledby="p1">
+        <div class="meta"><span class="num">PROVA 01</span><p>Fonte: Customer Support Ticket Dataset</p><p><a class="link-app" data-page="" href="../README.md#como-rodar-2-min">Ver no painel</a></p></div>
+        <div>
+          <h3 id="p1">A fila parou</h3>
+          <p><strong data-n="stuckPct"></strong> dos tickets não foram fechados. <strong data-n="open"></strong> nunca receberam a primeira resposta, e outros <strong data-n="pending"></strong> esperam o cliente mandar algo que faltou. Só <strong data-n="closed"></strong> foram fechados.</p>
+          <div class="chart" role="img" id="c1"></div>
+          <div class="quote">
+            <div class="chips">TICKET <span data-n="hookId"></span> · CRITICAL · <em>NUNCA RESPONDIDO</em></div>
+            <p data-n="quote"></p>
+            <p class="pt">Tradução: meu GoPro Hero travou e perdi todos os dados. Tem como recuperar?</p>
+          </div>
+          <p class="todo"><b>O que fazer</b>Atender primeiro quem nunca teve resposta e quem tem risco no texto, e pedir o que falta já no primeiro contato.</p>
+        </div>
+      </article>
+
+      <article class="prova" id="prova-02" aria-labelledby="p2">
+        <div class="meta"><span class="num">PROVA 02</span><p>Fonte: Customer Support Ticket Dataset · teste qui-quadrado</p><p><a class="link-app" data-page="fila" href="../README.md#como-rodar-2-min">Ver a fila reordenada</a></p></div>
+        <div>
+          <h3 id="p2">A prioridade não prioriza</h3>
+          <p><strong data-n="critPct"></strong> dos tickets <em>Critical</em> estão parados, a mesma proporção dos <em>Low</em>. Canal e tipo também não mudam nada. A fila não é atendida por risco.</p>
+          <div class="chart" role="img" id="c2"></div>
+          <p class="todo"><b>O que fazer</b>Reordenar a fila esta semana: risco no texto primeiro, depois quem nunca teve resposta. Não precisa de IA.</p>
+        </div>
+      </article>
+
+      <article class="prova" id="prova-03" aria-labelledby="p3">
+        <div class="meta"><span class="num">PROVA 03</span><p>Fonte: Customer Support Ticket Dataset · 8 testes estatísticos</p><p><a class="link-app" data-page="validacao" href="../README.md#como-rodar-2-min">Ver o método</a></p></div>
+        <div>
+          <h3 id="p3">A nota do cliente não tem alavanca nestes dados</h3>
+          <p>Só os <strong data-n="closed"></strong> fechados têm nota, e as cinco notas aparecem quase na mesma quantidade. Canal, prioridade, tipo, assunto, produto, gênero, idade e tempo de resolução foram testados, e nenhum tem relação estatística com a nota (menor p = <span data-n="minP"></span>).</p>
+          <div class="chart" role="img" id="c3"></div>
+          <p class="todo"><b>O que fazer</b>Antes de prometer CSAT, registrar a abertura do ticket, cada mudança de situação e o motivo das notas baixas.</p>
+        </div>
+      </article>
+
+      <article class="prova" id="prova-04" aria-labelledby="p4">
+        <div class="meta"><span class="num">PROVA 04</span><p>Fonte: textos dos tickets e cadastro do dataset</p><p><a class="link-app" data-page="triagem" href="../README.md#como-rodar-2-min">Ver na triagem</a></p></div>
+        <div>
+          <h3 id="p4">Um terço espera o cliente, e parte da resposta já existe</h3>
+          <p>Entre os tickets parados, alguns já citam um contato ou um log no próprio texto, e outros chegaram com a mensagem de erro em branco. O cadastro já traz produto e data de compra: todas as compras têm mais de 12 meses, então, se a garantia for de 12 meses (premissa a confirmar), a resposta sobre cobertura está pronta antes de perguntar.</p>
+          <div class="chart" role="img" id="c4"></div>
+          <p class="todo"><b>O que fazer</b>Antes de perguntar de novo, procurar no cadastro, no e-mail do suporte, no CRM e na telemetria. Só leitura, só o que é do ticket, cada consulta registrada e nada vai ao cliente sem uma pessoa. No protótipo, essas fontes aparecem como simuladas.</p>
+        </div>
+      </article>
+
+      <article class="prova" id="prova-05" aria-labelledby="p5">
+        <div class="meta"><span class="num">PROVA 05</span><p>Fonte: IT Service Ticket Dataset e 60 tickets de clientes sorteados</p><p><a class="link-app" data-page="triagem" href="../README.md#como-rodar-2-min">Testar a triagem</a></p></div>
+        <div>
+          <h3 id="p5">A IA foi testada antes de ser proposta</h3>
+          <p>Nos tickets de TI, um classificador treinado acerta <strong data-n="acc"></strong> dos <span data-n="itN"></span> casos que nunca viu. Quando está confiante, encaminha sozinho <strong data-n="auto"></strong> de cada 100, com <span data-n="prec"></span> de acerto. Nos tickets de clientes, um LLM fez a triagem de <span data-n="sample"></span> sorteados sem prometer reembolso nenhuma vez.</p>
+          <p><strong>Por que não 99%?</strong> Os próprios rótulos do dataset têm ruído: <span data-n="noise"></span> dos textos quase idênticos aparecem com categorias diferentes, então o teto fica perto de <span data-n="ceiling"></span>. O que importa é o acerto do que vai sozinho, e esse limiar é uma escolha do negócio:</p>
+          <table class="curve">
+            <thead><tr><th scope="col">Meta</th><th scope="col">Vão sozinhos</th><th scope="col">Acerto medido</th></tr></thead>
+            <tbody id="curve"></tbody>
+          </table>
+          <div class="pair">
+            <div><h4>100 tickets de TI</h4><div class="grid100" role="img" id="c5a"></div><ul class="legend" id="l5a"></ul></div>
+            <div><h4><span data-n="sample"></span> tickets de clientes</h4><div class="tray" role="img" id="c5b"></div></div>
+          </div>
+          <p class="todo"><b>O que fazer</b>Quatro semanas de piloto em sombra: a IA sugere tipo, prioridade e rascunho, a pessoa decide e nada sai sozinho.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="part" id="plano" aria-labelledby="plano-t">
+    <div class="wrap">
+      <header>
+        <p class="kicker ink">Plano</p>
+        <h2 id="plano-t">Para onde cada ticket vai</h2>
+        <p>Depois da triagem, uma regra fixa escolhe o destino. A IA sugere, mas não decide. No protótipo, este mapa fica ao lado de cada ticket analisado e acende o caminho que ele percorreu.</p>
+      </header>
+      <div class="guide" id="guide"></div>
+      <div class="two">
+        <div class="sheet">
+          <h3>Na segunda-feira</h3>
+          <ol>
+            <li>Esta semana, reordenar a fila por risco.</li>
+            <li>Por quatro semanas, IA em sombra: ela sugere, a pessoa decide.</li>
+            <li>Registrar abertura, mudanças de situação e motivo das notas baixas.</li>
+            <li>Reembolso, cancelamento, perda de dados, acesso e jurídico sempre com uma pessoa.</li>
+            <li>Só depois do piloto, resposta automática para perguntas simples.</li>
+          </ol>
+        </div>
+        <div class="sheet">
+          <h3>Retorno estimado</h3>
+          <p class="big">~<span data-n="hours"></span> h/mês</p>
+          <p>Triagem, rascunho da primeira resposta e idas e voltas evitadas, no cenário central: mais que uma pessoa em tempo integral.</p>
+          <p class="muted">Faixa de <span data-n="low"></span> a <span data-n="high"></span> h. O dataset não registra o tempo do agente; essas premissas são o que o piloto vai medir.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part" id="anexos" aria-labelledby="anexos-t">
+    <div class="wrap">
+      <header>
+        <p class="kicker ink">Anexos</p>
+        <h2 id="anexos-t">Método, limites e como a IA foi usada</h2>
+      </header>
+      <div class="two">
+        <div class="sheet">
+          <h3>Limites</h3>
+          <p>O dataset de clientes é sintético: os textos repetem modelos e os rótulos de tipo, assunto e prioridade foram sorteados. As conclusões valem para o desenho do processo (fila, prioridade, falta de registro), não como desempenho real de uma empresa.</p>
+          <p>Por isso o lado de clientes usa um LLM sem treino, e o classificador treinado fica no lado de TI, onde os rótulos têm sinal.</p>
+          <p><a class="link-app" data-page="validacao" href="../README.md#como-rodar-2-min">Ver todas as medições</a></p>
+        </div>
+        <div class="sheet">
+          <h3>Como trabalhei com a IA</h3>
+          <ol>
+            <li><strong>Codex</strong> construiu a primeira versão e várias apresentações, que rejeitei até entender o que faltava.</li>
+            <li>Pedi uma <strong>contraprova</strong>: a IA sozinha, sem as minhas decisões, para comparar.</li>
+            <li><strong>Claude Code</strong> revisou como avaliador cético e reconstruiu comigo, com escopo enxuto.</li>
+            <li>Exigi prova antes de aceitar cada crítica. Base, modelos, custo e direção visual foram decisões minhas.</li>
+          </ol>
+          <p class="muted">Erros corrigidos no caminho: o classificador subiu de 79,0% para 86,5%, o protótipo ganhou IA ao vivo e uma afirmação sobre clientes repetidos caiu ao ser conferida.</p>
+          <p><a class="link-repo" href="../README.md">Ler a submissão</a> · <a class="link-evidence" href="../evidencias/README.md">Ver as evidências</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="end">
+  <div class="wrap">
+    <p class="ctas"><a class="btn ink link-app" data-page="triagem" href="../README.md#como-rodar-2-min">Triagem de tickets</a><a class="btn link-app" data-page="" href="../README.md#como-rodar-2-min">Painel da operação</a></p>
+    <p>Dados: Customer Support Ticket Dataset e IT Service Ticket Classification Dataset (Kaggle, CC0). O Dossiê 002 é a entrega do Challenge 002 do AI Master G4.</p>
+  </div>
+</footer>
+
+<script src="data.js?v=eb36ba4c51"></script>
+<script>
+// Texto, números e gráficos 2D: a página inteira funciona sem WebGL e sem internet.
+(() => {
+  const D = window.DATA, N = D.status.length;
+  const fmt = (n) => n.toLocaleString("pt-BR");
+  const pct = (x, d = 0) => (x * 100).toFixed(d).replace(".", ",") + "%";
+  const count = (s, c) => [...s].filter(x => x === c).length;
+  const by = { o: count(D.status, "o"), p: count(D.status, "p"), c: count(D.status, "c") };
+  const stuckWhere = (flag) => [...D.status].filter((st, i) => st !== "c" && flag[i] === "1").length;
+  const byPri = {};
+  for (const p of "CHML") byPri[p] = { o: 0, p: 0, c: 0, n: 0 };
+  for (let i = 0; i < N; i++) { const b = byPri[D.priority[i]]; b[D.status[i]]++; b.n++; }
+  const stuck = by.o + by.p, found = stuckWhere(D.found), blank = stuckWhere(D.blank);
+  const auto = Math.round(D.classifier.auto * 100), wrong = Math.round(auto * (1 - D.classifier.autoPrecision));
+  const text = {
+    quote: "“" + D.hook.quote + "”", hookId: D.hook.id, total: fmt(N), itTotal: fmt(D.itTotal), open: fmt(by.o), pending: fmt(by.p), closed: fmt(by.c),
+    stuckPct: Math.round(stuck / N * 100) + "%", hours: D.roi.hours.Central, low: D.roi.hours.Conservador, high: D.roi.hours.Otimista,
+    critPct: Math.round((byPri.C.o + byPri.C.p) / byPri.C.n * 100) + "%", minP: D.csatMinP.toFixed(2).replace(".", ","), sample: D.llm.sample,
+    acc: pct(D.classifier.accuracy, 1), itN: fmt(D.classifier.n), auto, prec: pct(D.classifier.autoPrecision),
+    noise: pct(D.noise, 1), ceiling: pct(1 - D.noise, 0),
+  };
+  document.querySelectorAll("[data-n]").forEach(el => el.textContent = text[el.dataset.n]);
+
+  const COL = { o: "var(--red)", p: "var(--amber)", c: "var(--gray)" };
+  const NAME = { o: "nunca respondidos", p: "esperando o cliente", c: "fechados" };
+  const seg = (parts) => `<div class="bar">${parts.map(([v, c]) => `<span style="width:${v}%;background:${c}"></span>`).join("")}</div>`;
+  const legend = (items) => `<ul class="legend">${items.map(([c, t]) => `<li><i style="background:${c}"></i>${t}</li>`).join("")}</ul>`;
+  const set = (id, html, label) => { const el = document.getElementById(id); el.innerHTML = html; if (label) el.setAttribute("aria-label", label); };
+
+  set("c1", seg(["o", "p", "c"].map(s => [by[s] / N * 100, COL[s]])) + legend(["o", "p", "c"].map(s => [COL[s], `${NAME[s]}: ${fmt(by[s])}`])),
+      `Situação dos ${fmt(N)} tickets: ${fmt(by.o)} nunca respondidos, ${fmt(by.p)} esperando o cliente, ${fmt(by.c)} fechados.`);
+  const PRI = { C: "Critical", H: "High", M: "Medium", L: "Low" };
+  const stuckPct = (p) => Math.round((byPri[p].o + byPri[p].p) / byPri[p].n * 100);
+  set("c2", `<div class="rows">${"CHML".split("").map(p => { const b = byPri[p], hl = p === "C" ? "hl" : "";
+      return `<span class="${hl}">${PRI[p]}</span>${seg(["o", "p", "c"].map(s => [b[s] / b.n * 100, COL[s]]))}<span class="v ${hl}">${stuckPct(p)}%</span>`; }).join("")}</div>` +
+      legend([[COL.o, NAME.o], [COL.p, NAME.p], [COL.c, NAME.c]]),
+      "Proporção de tickets parados por prioridade: " + "CHML".split("").map(p => `${PRI[p]} ${stuckPct(p)}%`).join(", ") + ".");
+  const notes = [1, 2, 3, 4, 5].map(n => count(D.csat, String(n))), maxN = Math.max(...notes);
+  const NOTE = ["#C9372C", "#C4622A", "#B7791F", "#8C7A45", "#5F6C78"];
+  set("c3", `<div class="cols">${notes.map((v, k) => `<div><span style="height:${v / maxN * 80}%;background:${NOTE[k]}"></span><small>nota ${k + 1}</small><b>${fmt(v)}</b></div>`).join("")}</div>`,
+      "Tickets por nota de satisfação: " + notes.map((v, k) => `nota ${k + 1}, ${fmt(v)}`).join("; ") + ".");
+  const rest = stuck - found - blank;
+  set("c4", seg([[found / stuck * 100, "var(--ink)"], [blank / stuck * 100, "var(--red)"], [rest / stuck * 100, "var(--gray)"]]) +
+      legend([["var(--ink)", `contato ou log citado no texto: ${fmt(found)}`], ["var(--red)", `mensagem de erro em branco: ${fmt(blank)}`], ["var(--gray)", `depende de integração: ${fmt(rest)}`]]),
+      `Dos ${fmt(stuck)} tickets parados: ${fmt(found)} citam contato ou log, ${fmt(blank)} chegaram com a mensagem de erro em branco, ${fmt(rest)} dependem de integração.`);
+  set("c5a", Array.from({ length: 100 }, (_, k) => `<i style="background:${k < auto - wrong ? "var(--ink)" : k < auto ? "var(--red)" : "var(--gray)"}"></i>`).join(""),
+      `De cada 100 tickets de TI: ${auto - wrong} encaminhados sozinhos e certos, ${wrong} sozinhos e errados, ${100 - auto} para uma pessoa.`);
+  document.getElementById("l5a").outerHTML = legend([["var(--ink)", `sozinhos e certos: ${auto - wrong}`], ["var(--red)", `sozinhos e errados: ${wrong}`], ["var(--gray)", `para uma pessoa: ${100 - auto}`]]);
+  const stages = { "assistido": 0, "julgamento humano": 0, "automatizável": 0 }; D.llm.rows.forEach(r => stages[r.stage]++);
+  set("c5b", `<div><b>${stages["assistido"]}</b>agente com rascunho</div><div><b>${stages["julgamento humano"]}</b>agente sênior</div><div><b>${stages["automatizável"]}</b>resposta automática</div>`,
+      `Destino dos ${D.llm.sample} tickets de clientes: ${stages["assistido"]} para agente com rascunho, ${stages["julgamento humano"]} para agente sênior, ${stages["automatizável"]} para resposta automática.`);
+
+  document.getElementById("curve").innerHTML = D.curve.map(([t, cov, prec]) =>
+    `<tr class="${t === 0.95 ? "now" : ""}"><td>${pct(t)}${t === 0.95 ? " (no protótipo)" : ""}</td><td>${pct(cov)}</td><td>${pct(prec, 1)}</td></tr>`).join("");
+
+  // Mapa de próximos passos (mesmo conteúdo de app/guide.py)
+  const G = D.guide, esc = (t) => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const dest = (key, lead) => { const d = G.destinations[key];
+    return `<div class="d ${d.tone}"><span class="ans">${lead}</span><b>${esc(d.title)}</b><span>${esc(d.who)}. ${esc(d.why)}</span></div>`; };
+  const tree = (title, g) => `<div><h3>${title}</h3><ol>` +
+    g.questions.map(([q, target, exitOn]) => `<li><div class="q">${esc(q)}</div>${dest(target, exitOn ? "Se sim" : "Se não")}</li>`).join("") +
+    `<li>${dest(g.last, "Caso contrário")}</li></ol></div>`;
+  document.getElementById("guide").innerHTML = tree("Tickets de clientes (LLM)", G.customer) + tree("Tickets de TI (classificador)", G.it);
+
+  // Links do protótipo: hospedado, /app/<página>; aberto do disco, o README explica como rodar.
+  if (location.protocol !== "file:") {
+    document.querySelectorAll(".link-app").forEach(a => a.href = "/app/" + a.dataset.page);
+    const repo = document.querySelector('meta[name="repo-url"]').content.replace(/\/$/, "");
+    document.querySelectorAll(".link-repo").forEach(a => repo ? a.href = repo : a.replaceWith(a.textContent));
+    document.querySelectorAll(".link-evidence").forEach(a => repo ? a.href = repo + "/evidencias" : a.replaceWith(a.textContent));
+  }
+
+  // Navegação: marca a seção visível
+  const navLinks = [...document.querySelectorAll('.frame nav a[href^="#"]')];
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const id = e.target.id === "anexos" ? "plano" : e.target.id;
+    navLinks.forEach(a => a.getAttribute("href") === "#" + id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current"));
+  }), { rootMargin: "-40% 0px -55% 0px" });
+  ["capa", "provas", "plano", "anexos"].forEach(id => io.observe(document.getElementById(id)));
+})();
+
+// Capa: a parede de fichas. No desktop com WebGL, em 3D; senão, desenhada em 2D (estática).
+(() => {
+  const D = window.DATA, N = D.status.length, canvas = document.getElementById("wall");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const COLORS = { o: "#E2334A", p: "#F0A93C", c: "#B9C3CC" };
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const order = Array.from({ length: N }, (_, i) => i);
+  for (let i = N - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+
+  function flat() {
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    canvas.width = r.width * dpr; canvas.height = r.height * dpr;
+    const g = canvas.getContext("2d"); g.scale(dpr, dpr); g.fillStyle = "#121B26"; g.fillRect(0, 0, r.width, r.height);
+    const w = 14, h = 7, gap = 3, cols = Math.ceil(r.width / (w + gap)), rows = Math.ceil(r.height / (h + gap));
+    g.globalAlpha = 0.85;
+    for (let k = 0; k < cols * rows; k++) {
+      const i = order[k % N]; g.fillStyle = i === D.hook.index ? "#FFFFFF" : COLORS[D.status[i]];
+      g.fillRect((k % cols) * (w + gap), Math.floor(k / cols) * (h + gap), w, h);
+    }
+  }
+  let gl = null;
+  if (innerWidth >= 900) { try { gl = document.createElement("canvas").getContext("webgl2"); } catch (e) { gl = null; } }
+  if (!gl) { flat(); addEventListener("resize", flat); return; }
+
+  const s = document.createElement("script"); s.src = "vendor/three-src.js";
+  s.onerror = flat;
+  s.onload = async () => {
+    const THREE = await import(URL.createObjectURL(new Blob([window.__THREE_SRC], { type: "text/javascript" })));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+    const scene = new THREE.Scene(), NIGHT = new THREE.Color("#121B26");
+    scene.background = NIGHT; scene.fog = new THREE.Fog(NIGHT, 70, 260);
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 1000);
+    scene.add(new THREE.HemisphereLight(0xdfe7ef, 0x1a2430, 1.6));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(-60, 120, 160); scene.add(sun);
+    const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(2, 1, 0.22), new THREE.MeshStandardMaterial({ roughness: 0.6 }), N);
+    scene.add(mesh);
+    const cols = 96, sx = 2.25, sy = 1.22, rows = Math.ceil(N / cols);
+    const hookSlot = Math.floor(rows * 0.42) * cols + Math.floor(cols * 0.62);
+    { const k = order.indexOf(D.hook.index); [order[k], order[hookSlot]] = [order[hookSlot], order[k]]; }
+    const pos = (k) => { const x = ((k % cols) - (cols - 1) / 2) * sx, y = ((rows - 1) / 2 - Math.floor(k / cols)) * sy; return [x, y, -0.0016 * x * x]; };
+    const m4 = new THREE.Matrix4(), col = new THREE.Color();
+    order.forEach((i, k) => {
+      const [x, y, z] = pos(k); m4.makeTranslation(x, y, z); mesh.setMatrixAt(i, m4);
+      mesh.setColorAt(i, col.set(i === D.hook.index ? "#FFFFFF" : COLORS[D.status[i]]));
+    });
+    const [hx, hy, hz] = pos(hookSlot);
+    const hook = new THREE.Vector3(hx, hy, hz), look = new THREE.Vector3(hx - 14, hy + 2, hz);
+    const near = new THREE.Vector3(hx, hy, hz + 3.2), far = new THREE.Vector3(hx - 40, hy - 8, hz + 62);
+    const cam = new THREE.Vector3(), target = new THREE.Vector3();
+    function resize() { const r = canvas.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); }
+    addEventListener("resize", resize); resize();
+    const t0 = performance.now(), ease = (t) => 1 - Math.pow(1 - t, 3);
+    let visible = true;
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+    function frame(now) {
+      requestAnimationFrame(frame);
+      if (!visible) return;
+      const t = reduced ? 1 : Math.min(1, Math.max(0, (now - t0 - 400) / 2200)), e = ease(t), drift = reduced ? 0 : t;
+      cam.lerpVectors(near, far, e);
+      camera.position.set(cam.x + Math.sin(now / 2600) * 5 * drift, cam.y + Math.cos(now / 3100) * 2 * drift, cam.z);
+      camera.lookAt(target.lerpVectors(hook, look, e));
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(frame);
+  };
+  document.head.appendChild(s);
+})();
+</script>
+</body>
+</html>

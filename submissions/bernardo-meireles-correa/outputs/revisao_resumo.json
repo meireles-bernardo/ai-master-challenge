@@ -1,0 +1,44 @@
+{
+  "tickets": 20,
+  "revisores": [
+    "Claude (Opus 5.5)",
+    "Codex (gpt-6-sol), sem ver a revisão do Claude"
+  ],
+  "nota": "Revisão por IA; o candidato não revisou as triagens.",
+  "claude": {
+    "tipo": 19,
+    "prioridade": 18,
+    "riscos": 20,
+    "rascunho": {
+      "enviaria como está": 13,
+      "enviaria com pequenas edições": 6,
+      "reescreveria": 1
+    }
+  },
+  "codex": {
+    "tipo": 18,
+    "prioridade": 14,
+    "riscos": 20,
+    "rascunho": {
+      "enviaria como está": 14,
+      "enviaria com pequenas edições": 6,
+      "reescreveria": 0
+    }
+  },
+  "concordancia_entre_revisores": {
+    "tipo": 19,
+    "prioridade": 16,
+    "riscos": 20,
+    "rascunho": 17
+  },
+  "discordancias_de_ambos": {
+    "tipo": [
+      1489
+    ],
+    "prioridade": [
+      4716,
+      2128
+    ],
+    "riscos": []
+  }
+}

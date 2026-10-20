@@ -1,0 +1,26 @@
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	# Protótipo (Streamlit usa WebSocket; o reverse_proxy do Caddy já repassa o upgrade)
+	handle /app* {
+		reverse_proxy app:8501
+	}
+
+	# Apresentação estática na raiz
+	handle {
+		root * /srv/presentation
+		# Página e dados sempre revalidados (o Cloudflare guarda .js por horas); bibliotecas e fontes podem ficar em cache.
+		header / Cache-Control "no-cache"
+		header /index.html Cache-Control "no-cache"
+		header /data.js Cache-Control "no-cache"
+		file_server
+	}
+}
