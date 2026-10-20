@@ -3,6 +3,7 @@
 Um .js (e não .json) para a página abrir direto do arquivo, sem servidor.
 Uso: python analysis/build_presentation.py
 """
+import hashlib
 import json
 import re
 import sys
@@ -65,6 +66,11 @@ def main() -> None:
     out = ROOT / "presentation" / "data.js"
     out.parent.mkdir(exist_ok=True)
     out.write_text("window.DATA = " + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
+    # A versão no nome faz o navegador e o Cloudflare buscarem o arquivo novo a cada mudança dos dados.
+    version = hashlib.sha256(out.read_bytes()).hexdigest()[:10]
+    index = ROOT / "presentation" / "index.html"
+    html = index.read_text(encoding="utf-8")
+    index.write_text(re.sub(r'src="data\.js(\?v=[0-9a-f]+)?"', f'src="data.js?v={version}"', html), encoding="utf-8")
     print(f"{out} ({out.stat().st_size // 1024} KB)", scenarios)
 
 
