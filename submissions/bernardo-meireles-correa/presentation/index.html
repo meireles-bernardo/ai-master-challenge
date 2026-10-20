@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dossiê 002 · Suporte ao cliente</title>
-<meta name="repo-url" content="">
+<meta name="repo-url" content="https://github.com/meireles-bernardo/ai-master-challenge/tree/submission/bernardo-meireles-correa/submissions/bernardo-meireles-correa">
 <meta name="description" content="Análise independente de 8.469 tickets de suporte: onde a fila parou, o que a prioridade não resolve e um plano com IA supervisionada. Challenge 002 do AI Master G4.">
 <!-- Fontes embutidas (OFL) em vendor/fonts.css: a página não depende de internet. -->
 <link rel="stylesheet" href="vendor/fonts.css">
@@ -398,7 +398,7 @@
     document.querySelectorAll(".link-app").forEach(a => a.href = "/app/" + a.dataset.page);
     const repo = document.querySelector('meta[name="repo-url"]').content.replace(/\/$/, "");
     document.querySelectorAll(".link-repo").forEach(a => repo ? a.href = repo : a.replaceWith(a.textContent));
-    document.querySelectorAll(".link-evidence").forEach(a => repo ? a.href = repo + "/tree/main/evidencias" : a.replaceWith(a.textContent));
+    document.querySelectorAll(".link-evidence").forEach(a => repo ? a.href = repo + "/evidencias" : a.replaceWith(a.textContent));
   }
 
   // Navegação: marca a seção visível
