@@ -74,13 +74,13 @@ Depois de gravar a chave (passo 1), `./deploy/publish.ps1 -Domain suporte.SEUDOM
 
 ## Riscos aceitos
 
-- A imagem base (python:3.12-slim, Debian 13) tem vulnerabilidades altas sem correção publicada em pacotes como `util-linux` e `mount`. O app não usa essas ferramentas e o contêiner roda sem root, com filesystem somente leitura, sem capabilities e sem escalada de privilégio. A CI reconstrói e roda o Trivy a cada push e falha se surgir uma vulnerabilidade crítica com correção.
+- A imagem base (python:3.12-slim, Debian 13) tem vulnerabilidades altas sem correção publicada em pacotes como `util-linux` e `mount`. O app não usa essas ferramentas e o contêiner roda sem root, com filesystem somente leitura, sem capabilities e sem escalada de privilégio. A CI reconstrói e roda o Trivy e falha se surgir uma vulnerabilidade crítica com correção (a CI em `.github/workflows/ci.yml` repete esses passos quando esta pasta roda como repositório próprio; dentro do repositório do desafio, o GitHub só executa workflows da raiz, então ali ela não roda).
 - O LLM pode ser influenciado pelo texto do ticket; por isso não tem ferramentas, a saída tem schema fixo, a regra decide o destino e nenhum rascunho sai sem uma pessoa.
 
 ## O que já foi validado e o que não
 
 - `cfn-lint` passa no template, e `bash -n` no script.
-- A CI (`.github/workflows/ci.yml`) constrói a imagem e checa o healthcheck do contêiner a cada push.
+- A CI (`.github/workflows/ci.yml`) constrói a imagem e checa o healthcheck do contêiner quando a pasta roda como repositório próprio.
 - A imagem e a stack completa (Caddy + app, com o volume de estado) rodaram localmente no Docker em 19/10, com as mesmas restrições de produção.
 - Em 19/10 a stack foi criada de verdade em us-east-1 (`t4g.small` com Elastic IP). A apresentação e o app responderam pelo IP público, com os arquivos internos dando 404. Uma chamada real ao Claude Haiku 5.5, feita de dentro do contêiner, levou 7,9 s (1.111 tokens de entrada e 495 de saída).
 - Em 19/10 o domínio `g4.bernardomeirelescorrea.com.br` passou a apontar para a VM, com o proxy do Cloudflare ligado. O Caddy obteve o certificado Let's Encrypt pelo desafio HTTP-01 através do proxy. HTTP redireciona para HTTPS (308), os cabeçalhos de segurança chegam ao navegador, os arquivos internos dão 404 e o app (WebSocket) funciona pelo proxy.

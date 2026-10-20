@@ -90,7 +90,7 @@ ticket entra → origem? ─ TI ──────→ classificador ─ confian�
                   │                                └ abaixo ──────────→ triagem humana
                   └ cliente → LLM: tipo, prioridade, riscos, dados faltantes, rascunho
                               + regra de palavras-chave (rede de segurança)
-                              → risco, reembolso/cancelamento ou confiança baixa → agente sênior
+                              → risco, reembolso/cancelamento ou ticket confuso → agente sênior
                               → demais → agente revisa o rascunho e pede o que falta → envia
 ```
 
@@ -107,7 +107,7 @@ Regras exigidas antes de conectar fontes reais (LGPD): somente leitura, só conv
 
 **Segurança do LLM num site público.** O texto do ticket é dado não confiável, e o LLM pode ser influenciado por ele: no ticket 4716, o rascunho repetiu um pedido que veio do próprio texto (dar crédito a @joeyclay). Por isso o desenho não depende de o LLM resistir a isso. O LLM não tem ferramentas nem acesso a sistemas; a saída tem schema fixo (structured outputs); quem decide o destino é a regra determinística, que também procura riscos por palavra-chave, mesmo que o modelo seja manipulado. Recusas do modelo viram triagem humana. Custos: limite por visita, teto diário e teto de gasto no provedor.
 
-**Scan de segurança antes de publicar** (19/10, repetido na CI a cada push):
+**Scan de segurança antes de publicar** (19/10, repetido em 20/10 antes do push). A CI em `.github/workflows/ci.yml` repete esses passos quando esta pasta roda como repositório próprio; dentro do repositório do desafio, o GitHub só executa workflows da raiz, então ali ela não roda.
 
 | Verificação | Ferramenta | Resultado |
 |---|---|---|
@@ -132,14 +132,14 @@ Regras exigidas antes de conectar fontes reais (LGPD): somente leitura, só conv
    | Custo de LLM por ticket | < US$ 0,01 | — |
 3. **Instrumentar:** registrar a abertura do ticket, cada mudança de status e o motivo de cada nota baixa. Sem isso, nenhum SLA ou ganho de CSAT é demonstrável.
 4. **Não automatizar:** reembolso, cancelamento, perda de dados, acesso e segurança, e casos jurídicos. Exemplos dos dados: o ticket com perda de dados após atualização vai para o sênior, mesmo com o LLM confiante.
-5. **Só depois do piloto:** resposta automática para perguntas informativas, sem risco e com confiança alta. Nesta base, nenhum ticket se qualificou, porque todos chegam sem algum dado necessário.
+5. **Só depois do piloto:** resposta automática para perguntas informativas, sem risco e com o ticket claro (clareza alta). Nesta base, nenhum ticket se qualificou, porque todos chegam sem algum dado necessário.
 
 ### Limitações
 
 - O Dataset 1 é sintético. As conclusões de **processo** (fila, prioridade ignorada, falta de instrumentação) orientam o desenho, mas os tempos e o CSAT absolutos não descrevem uma operação real.
 - O ROI depende de minutos assumidos, porque o dataset não registra esforço. Capacidade liberada não vira caixa automaticamente.
 - A avaliação do LLM usa verificações automáticas em 60 tickets e a revisão de 20 deles por dois revisores de IA (Claude e, sem ver a revisão do Claude, o Codex). Os dois discordaram do LLM nos mesmos três pontos: o tipo de 1 ticket e a prioridade de 2. **Nenhuma pessoa revisou as triagens**; isso é o primeiro passo do piloto.
-- Custo do LLM: com os preços do Claude Haiku 5.5 (US$ 0,10 e 0,50 por milhão de tokens de entrada e saída), a estimativa fica abaixo de US$ 0,001 por ticket; o ROI usa US$ 0,01 por cautela. O valor medido sai de `analysis/eval_llm.py` quando rodado com a API.
+- Custo do LLM: com os preços do Claude Haiku 5.5 (US$ 0,10 e 0,50 por milhão de tokens de entrada e saída), o custo medido na avaliação dos 60 tickets foi de US$ 0,0004 por ticket (cerca de 1.300 tokens de entrada e 535 de saída); o ROI usa US$ 0,01 por cautela.
 - O classificador de TI vale para aquela organização e em inglês. Não há integração com helpdesk, autenticação nem envio real.
 
 ---
