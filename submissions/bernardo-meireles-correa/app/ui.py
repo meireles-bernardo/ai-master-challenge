@@ -591,7 +591,7 @@ def section_review():
     summary = load_json("revisao_resumo.json")
     rows = [r for r in EVAL_V1.get("rows", []) if r.get("llm")][:REVIEW_SAMPLE]
     if summary:
-        st.markdown("Nenhuma pessoa revisou estas triagens. Dois revisores de IA leram as mesmas 20, com as mesmas regras: "
+        st.markdown("A revisão sistemática destas 20 triagens foi feita por IA. Dois revisores leram as mesmas 20, com as mesmas regras: "
                     "o Claude primeiro e o Codex depois, **sem ver a revisão do Claude**. Quando os dois discordam do LLM, "
                     "o erro é mais provável. As revisões são da rodada anterior da avaliação (gpt-6-sol pelo Codex, antes do "
                     "critério de clareza), guardada em `outputs/llm_eval_v1_codex.json`.")

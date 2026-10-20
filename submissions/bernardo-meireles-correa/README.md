@@ -8,19 +8,21 @@
 
 ---
 
+## Para avaliar em 2 minutos
+
+| O quê | Onde | O que olhar |
+|---|---|---|
+| **Dossiê** (3 min de leitura) | **https://g4.bernardomeirelescorrea.com.br** | A capa dá o veredito sobre o suporte; as cinco provas trazem o dado, a fonte e o que fazer; o plano mostra para onde cada ticket vai |
+| **Protótipo no ar** | **https://g4.bernardomeirelescorrea.com.br/app/triagem** | Sorteie um ticket e clique em *Analisar*: a IA responde em poucos segundos e o mapa ao lado acende o destino. *Painel*, *Fila* e *Método* estão no menu do topo |
+| **Rodar localmente** | `cd submissions/bernardo-meireles-correa` e os três comandos de [Como rodar](#como-rodar-2-min) | Sem chave de API tudo funciona, menos a triagem de clientes por LLM. O dossiê também abre direto do arquivo `presentation/index.html`, sem internet |
+
+O site fica no ar durante a avaliação. Base: os datasets públicos do desafio; o de clientes é sintético.
+
+---
+
 ## Executive Summary
 
-Respondi às três perguntas do diretor com testes estatísticos, não com médias soltas.
-
-1. **O tempo se perde na fila, e não num canal ou tipo específico.** 67% dos tickets estão parados: 2.819 nunca tiveram primeira resposta e 2.881 esperam o cliente. Um ticket *Critical* tem a mesma chance de estar parado que um *Low*.
-2. **Nenhuma variável testada mostra relação com a satisfação.** As notas de 1 a 5 aparecem em proporções iguais, e nenhuma das 8 variáveis testadas tem associação estatisticamente detectável (menor p = 0,15). Isso não prova que não haja efeito; mostra que estes dados não dão uma alavanca.
-3. **Dá para recuperar cerca de 212 h/mês (≈1,3 pessoa) no cenário central**, com IA na triagem, no rascunho da primeira resposta e na coleta de dados, sempre com revisão humana.
-
-O protótipo roda sobre os registros dos datasets, não sobre exemplos escolhidos. Um classificador treinado nos 47.837 tickets de TI roteia sozinho 74% dos casos com 95% de precisão. Um LLM faz a triagem dos tickets de clientes: numa amostra aleatória de 60, não fez nenhuma promessa indevida, e nenhum dos 11 casos que a regra de palavras-chave marcou como risco ficou sem marcação do LLM.
-
-**Recomendação principal:** atender a fila por risco: hoje a prioridade declarada não muda a proporção de tickets parados. Colocar IA em modo sombra na triagem e na primeira resposta, e instrumentar a operação antes de prometer ganhos de CSAT.
-
-**Comece pelo [Dossiê 002](presentation/index.html)**, que abre direto no navegador, sem instalar nada e sem internet (Three.js e fontes vão junto, em `presentation/vendor/`). A capa dá o veredito sobre o suporte em uma frase; depois vêm cinco provas (cada uma com o dado, a fonte e o que fazer), o plano com o mapa de próximos passos e os anexos de método e de como trabalhei com a IA. O site e o protótipo usam a mesma moldura e a mesma navegação, então qualquer página se explica sozinha. Depois rode o protótipo.
+Analisei os 8.469 tickets de clientes com testes estatísticos: 67% da fila está parada (2.819 tickets nunca tiveram primeira resposta), a prioridade declarada não muda nada (66% dos *Critical* estão parados, como os *Low*) e nenhuma das 8 variáveis testadas explica a nota de satisfação. Com os 47.837 tickets de TI treinei um classificador que encaminha sozinho 74% dos casos com 95% de acerto; nos tickets de clientes, um LLM faz a triagem e uma regra fixa decide o que exige uma pessoa, sem nenhuma promessa indevida nos 60 tickets testados. A estimativa é de cerca de 212 horas por mês recuperáveis, com premissas que o piloto vai medir. Recomendação: atender a fila por risco já nesta semana, sem IA, e rodar quatro semanas de IA em sombra antes de automatizar qualquer resposta.
 
 ---
 
@@ -29,12 +31,13 @@ O protótipo roda sobre os registros dos datasets, não sobre exemplos escolhido
 ### Como rodar (≈2 min)
 
 ```bash
+cd submissions/bernardo-meireles-correa            # a partir da raiz do repositório do desafio
 python -m venv .venv
 .venv/Scripts/pip install -r requirements.txt      # macOS/Linux: .venv/bin/pip
 .venv/Scripts/streamlit run app/app.py             # abre http://localhost:8501
 ```
 
-Ou acesse a versão hospedada: **https://g4.bernardomeirelescorrea.com.br** (apresentação) e **https://g4.bernardomeirelescorrea.com.br/app/** (protótipo). O deploy na AWS (EC2, Docker Compose, Caddy com HTTPS, chave no SSM, sem SSH) está descrito em [deploy/README.md](deploy/README.md).
+Ou acesse a versão hospedada: **https://g4.bernardomeirelescorrea.com.br** (dossiê) e **https://g4.bernardomeirelescorrea.com.br/app/** (protótipo). O deploy na AWS (EC2, Docker Compose, Caddy com HTTPS, chave no SSM, sem SSH) está descrito em [deploy/README.md](deploy/README.md).
 
 O modelo e os resultados já vêm no repositório. A triagem de clientes usa um LLM configurado por `LLM_PROVIDER`:
 
@@ -138,7 +141,7 @@ Regras exigidas antes de conectar fontes reais (LGPD): somente leitura, só conv
 
 - O Dataset 1 é sintético. As conclusões de **processo** (fila, prioridade ignorada, falta de instrumentação) orientam o desenho, mas os tempos e o CSAT absolutos não descrevem uma operação real.
 - O ROI depende de minutos assumidos, porque o dataset não registra esforço. Capacidade liberada não vira caixa automaticamente.
-- A avaliação do LLM usa verificações automáticas em 60 tickets e a revisão de 20 deles por dois revisores de IA (Claude e, sem ver a revisão do Claude, o Codex). Os dois discordaram do LLM nos mesmos três pontos: o tipo de 1 ticket e a prioridade de 2. **Nenhuma pessoa revisou as triagens**; isso é o primeiro passo do piloto.
+- A avaliação do LLM usa verificações automáticas em 60 tickets e a revisão de 20 deles por dois revisores de IA (Claude e, sem ver a revisão do Claude, o Codex). Os dois discordaram do LLM nos mesmos três pontos: o tipo de 1 ticket e a prioridade de 2. Testei a triagem no site publicado, com tickets sorteados e a API real, e revisei os resultados. Foi assim que encontrei o campo de confiança sem critério (virou "Clareza do ticket", com critério no prompt e uma nova avaliação dos 60 tickets) e questionei o limite do classificador. A revisão sistemática das 20 triagens da amostra foi feita por dois revisores de IA (Claude e Codex). Uma revisão humana sistemática é o primeiro passo do piloto.
 - Custo do LLM: com os preços do Claude Haiku 5.5 (US$ 0,10 e 0,50 por milhão de tokens de entrada e saída), o custo medido na avaliação dos 60 tickets foi de US$ 0,0004 por ticket (cerca de 1.300 tokens de entrada e 535 de saída); o ROI usa US$ 0,01 por cautela.
 - O classificador de TI vale para aquela organização e em inglês. Não há integração com helpdesk, autenticação nem envio real.
 
@@ -191,7 +194,8 @@ Detalhes, com data e hora das minhas mensagens, em [process-log/README.md](proce
 
 ## Evidências
 
-- [x] Chat export: [minhas 105 mensagens nas sessões do Codex](evidencias/codex/mensagens-do-candidato.md), com data e hora, e a [linha do tempo das decisões](evidencias/README.md)
+- [x] Linha do tempo das decisões, com data e hora: [evidencias/README.md](evidencias/README.md)
+- [x] A ferramenta funcionando: [dossiê](https://g4.bernardomeirelescorrea.com.br) e [protótipo](https://g4.bernardomeirelescorrea.com.br/app/triagem) no ar
 - [x] Git history: um commit por etapa da reconstrução
 - [x] Resultados reproduzíveis: [diagnóstico](outputs/diagnostico.json), [classificador](outputs/classifier_metrics.json), [erros do modelo](outputs/classifier_errors.csv), [avaliação do LLM](outputs/llm_eval.json)
 - [x] Narrativa escrita: [process-log/README.md](process-log/README.md)
