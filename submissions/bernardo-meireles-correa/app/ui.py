@@ -328,7 +328,7 @@ def log_decision(row: dict):
 def page_triage():
     frame("triagem", "Prova 05 em ação", "Triagem de tickets",
           "Cole um ticket ou sorteie um dos datasets. A IA sugere tipo, prioridade e rascunho, uma regra fixa decide o destino "
-          "e uma pessoa aprova o que for para o cliente. Ao lado, o mapa mostra o caminho que o ticket percorreu.")
+          "e uma pessoa aprova o que for para o cliente. O mapa de próximos passos mostra o caminho que o ticket percorreu.")
     tickets, it_sample = load_tickets(), load_it_sample()
 
     c1, c2 = st.columns([2, 1], vertical_alignment="bottom")
